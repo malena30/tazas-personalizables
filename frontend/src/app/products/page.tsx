@@ -1,42 +1,38 @@
 "use client";
+
 import { useState } from "react";
-import { useCartStore } from "@/store/cartStore";
+import { useCartStore, Product } from "@/store/cartStore";
 
 export default function ProductsPage() {
   const addToCart = useCartStore((state) => state.addToCart);
+  const [tooltipVisible, setTooltipVisible] = useState<number | null>(null);
+  const [quantities, setQuantities] = useState<Record<number, number>>({});
 
-  const products = [
+  const clickSound = typeof window !== "undefined" ? new Audio("/sounds/click.wav") : null;
+
+  const products: Product[] = [
     {
       id: 1,
       name: "Taza Minimalista",
       description: "Perfecta para frases simples o logos. Cerámica premium.",
       price: 3500,
-      image:
-        "https://images.pexels.com/photos/1415550/pexels-photo-1415550.jpeg",
+      image: "https://images.pexels.com/photos/1415550/pexels-photo-1415550.jpeg",
     },
     {
       id: 2,
       name: "Taza con Foto",
       description: "Ideal para regalos personalizados con fotos.",
       price: 4200,
-      image:
-        "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg",
+      image: "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg",
     },
     {
       id: 3,
       name: "Taza Ilustrada",
       description: "Perfecta para diseños creativos, dibujos o ilustraciones.",
       price: 3900,
-      image:
-        "https://images.pexels.com/photos/326682/pexels-photo-326682.jpeg",
+      image: "https://images.pexels.com/photos/326682/pexels-photo-326682.jpeg",
     },
   ];
-
-  const [tooltipVisible, setTooltipVisible] = useState<number | null>(null);
-  const [quantities, setQuantities] = useState<Record<number, number>>({});
-
-  const clickSound = typeof window !== "undefined" ? new Audio("/sounds/click.wav") : null;
-
 
   const handleQuantityChange = (productId: number, delta: number) => {
     setQuantities((prev) => ({
@@ -45,14 +41,12 @@ export default function ProductsPage() {
     }));
   };
 
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (product: Product) => {
     const quantity = quantities[product.id] || 1;
     addToCart({ ...product, quantity });
     setTooltipVisible(product.id);
 
-    // reproducir sonido
     clickSound?.play();
-
     setTimeout(() => setTooltipVisible(null), 2000);
   };
 
@@ -66,56 +60,47 @@ export default function ProductsPage() {
             key={product.id}
             className="flex flex-col md:flex-row items-center bg-white shadow rounded-xl p-4 hover:shadow-xl hover:-translate-y-1 transition relative"
           >
-            {/* Imagen */}
             <img
               src={product.image}
               alt={product.name}
               className="w-full md:w-60 h-60 object-cover rounded-lg cursor-pointer"
             />
 
-            {/* Información */}
             <div className="mt-4 md:mt-0 md:ml-6 flex-1">
-              <h2 className="text-2xl font-bold cursor-default text-black">{product.name}</h2>
-              <p className="text-black mt-2 cursor-default">{product.description}</p>
-              <p className="text-3xl font-bold text-blue-600 mt-4 cursor-default">
+              <h2 className="text-2xl font-bold text-black">{product.name}</h2>
+              <p className="text-black mt-2">{product.description}</p>
+              <p className="text-3xl font-bold text-blue-600 mt-4">
                 ${product.price.toLocaleString("es-AR")}
               </p>
 
-              {/* Selector de cantidad + botón */}
               <div className="flex items-center mt-4">
-                {/* Selector de cantidad */}
-                <div className="flex items-center border rounded-lg overflow-hidden">
+                <div className="flex items-center border rounded-lg overflow-hidden text-black">
                   <button
                     onClick={() => handleQuantityChange(product.id, -1)}
-                    className="px-3 py-1 bg-black hover:bg-black cursor-pointer"
+                    className="px-3 py-1 bg-black text-white hover:bg-gray-800"
                   >
                     -
                   </button>
-                  <span className="px-4 py-1 cursor-default text-black">
-                    {quantities[product.id] || 1}
-                  </span>
+                  <span className="px-4 py-1">{quantities[product.id] || 1}</span>
                   <button
                     onClick={() => handleQuantityChange(product.id, +1)}
-                    className="px-3 py-1 bg-black hover:bg-black cursor-pointer"
+                    className="px-3 py-1 bg-black text-white hover:bg-gray-800"
                   >
                     +
                   </button>
                 </div>
 
-                {/* Botón agregar al carrito */}
                 <div className="relative inline-block ml-4">
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 cursor-pointer transition"
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
                   >
                     Agregar al carrito
                   </button>
 
-                  {/* Tooltip al costado derecho con fade */}
                   {tooltipVisible === product.id && (
                     <span
-                      className="absolute top-1/2 left-full ml-3 -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded whitespace-nowrap
-                      transition-opacity duration-300 opacity-100"
+                      className="absolute top-1/2 left-full ml-3 -translate-y-1/2 bg-black text-white text-sm px-4 py-1 rounded opacity-100 transition-opacity duration-300 whitespace-nowrap"
                     >
                       {quantities[product.id] || 1} agregado
                       {(quantities[product.id] || 1) > 1 ? "s" : ""} al carrito
