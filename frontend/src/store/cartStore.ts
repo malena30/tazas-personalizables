@@ -1,5 +1,4 @@
 "use client";
-
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -8,7 +7,6 @@ export interface Product {
   name: string;
   price: number;
   image: string;
-  description: string;
 }
 
 export interface CartItem extends Product {
@@ -17,23 +15,25 @@ export interface CartItem extends Product {
 
 interface CartState {
   cart: CartItem[];
+  shippingCost: number;
   addToCart: (product: Product & { quantity?: number }) => void;
   removeFromCart: (id: number) => void;
-  increaseQty: (id: number) => void;
-  decreaseQty: (id: number) => void;
+  updateQuantity: (id: number, quantity: number) => void;
   clearCart: () => void;
+  setShippingCost: (cost: number) => void;
 }
 
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       cart: [],
+      shippingCost: 0,
 
       addToCart: (product) =>
         set((state) => {
-          const existingProduct = state.cart.find((item) => item.id === product.id);
+          const existing = state.cart.find((item) => item.id === product.id);
 
-          if (existingProduct) {
+          if (existing) {
             return {
               cart: state.cart.map((item) =>
                 item.id === product.id
@@ -41,38 +41,39 @@ export const useCartStore = create<CartState>()(
                   : item
               ),
             };
-          } else {
-            return { cart: [...state.cart, { ...product, quantity: product.quantity || 1 }] };
           }
+
+          return {
+            cart: [
+              ...state.cart,
+              { ...product, quantity: product.quantity || 1 },
+            ],
+          };
         }),
 
       removeFromCart: (id) =>
-        set({
-          cart: get().cart.filter((item) => item.id !== id),
-        }),
+        set((state) => ({
+          cart: state.cart.filter((item) => item.id !== id),
+        })),
 
-      increaseQty: (id) =>
-        set({
-          cart: get().cart.map((item) =>
-            item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      updateQuantity: (id, quantity) =>
+        set((state) => ({
+          cart: state.cart.map((item) =>
+            item.id === id ? { ...item, quantity } : item
           ),
-        }),
-
-      decreaseQty: (id) =>
-        set({
-          cart: get().cart
-            .map((item) =>
-              item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-            )
-            .filter((item) => item.quantity > 0),
-        }),
+        })),
 
       clearCart: () => set({ cart: [] }),
+
+      setShippingCost: (cost) => set({ shippingCost: cost }),
     }),
+
     {
-      name: "cart-storage",
+      name: "cart-storage", // nombre en localStorage
+      partialize: (state) => ({
+        cart: state.cart,
+        shippingCost: state.shippingCost,
+      }),
     }
   )
 );
-
-
