@@ -3,6 +3,7 @@
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useCartStore } from "@/store/cartStore";
 import { useState } from "react";
+import Link from "next/link"; // <-- IMPORTANTE
 
 export default function CartPage() {
   const {
@@ -120,9 +121,6 @@ export default function CartPage() {
               <FaRegTrashAlt size={18} />
               Vaciar carrito
             </button>
-
-
-
           </>
         )}
       </div>
@@ -174,10 +172,13 @@ export default function CartPage() {
               <span>${total}</span>
             </p>
 
-            {/* BOTÓN COMPRAR */}
-            <button className="w-full mt-6 bg-blue-600 text-white py-3 text-lg font-semibold rounded-lg shadow hover:bg-blue-700">
+            {/* BOTÓN COMPRAR → LLEVA A /checkout */}
+            <Link
+              href="/checkout"
+              className="w-full mt-6 bg-blue-600 text-white py-3 text-lg font-semibold rounded-lg shadow hover:bg-blue-700 block text-center"
+            >
               Comprar
-            </button>
+            </Link>
           </div>
         </div>
       )}
