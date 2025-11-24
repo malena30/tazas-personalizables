@@ -2,7 +2,7 @@
 
 import { useCheckout } from "@/context/CheckoutContext";
 
-export default function ShippingOptions() {
+export default function ShippingCalculator() {
   const { shipping, setShipping } = useCheckout();
 
   const handleSelect = (method: string, cost: number) => {

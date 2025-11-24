@@ -1,116 +1,154 @@
+import Image from "next/image";
+import Link from "next/link";
+
 export default function Home() {
   return (
-    <main className="w-full flex flex-col items-center">
+    <main className="w-full flex flex-col items-center bg-[#EBEBEB] min-h-screen pb-20">
 
-      {/* HERO CON IMAGEN GRANDE */}
-<section
-  className="relative w-full h-[85vh] bg-cover bg-center flex items-center justify-center"
-  style={{
-    backgroundImage:
-      "url('https://images.pexels.com/photos/1415550/pexels-photo-1415550.jpeg')"
-  }}
->
-  {/* Oscurecido para que el texto se vea */}
-  <div className="absolute inset-0 bg-black/40"></div>
-
-  {/* Contenido del Hero */}
-  <div className="relative z-10 text-center text-white px-6 max-w-2xl">
-    <h1 className="text-4xl md:text-6xl font-bold drop-shadow-lg">
-      Creá tu Taza Personalizada
-    </h1>
-
-    <p className="text-lg md:text-2xl mt-4 mb-8 drop-shadow-md">
-      Convertí tus fotos, frases o dibujos en una taza única.
-    </p>
-
-    <a
-      href="/customizer"
-      className="bg-white text-blue-600 font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-gray-100 transition-all"
-    >
-      Diseñar ahora
-    </a>
-  </div>
-</section>
-
-
-      {/* PRODUCTOS DESTACADOS */}
-      <section className="max-w-6xl w-full px-6 py-16">
-        <h2 className="text-3xl font-bold text-center mb-10">
-          Modelos más vendidos
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-
-          {/* Card 1 */}
-          <div className="bg-white shadow rounded-xl p-4 hover:scale-105 transition">
-            <img
-              src="https://images.pexels.com/photos/1415550/pexels-photo-1415550.jpeg"
-              className="rounded-lg h-60 w-full object-cover"
-            />
-            <h3 className="text-xl font-semibold mt-4 text-black">Taza Minimalista</h3>
-            <p className="text-gray-600 my-2">Perfecta para frases simples.</p>
-            <button className="bg-blue-600 text-white font-medium w-full py-2 rounded-lg mt-2 hover:bg-blue-700">
-              Ver detalles
-            </button>
+      {/* HERO BANNER (Estilo Carrusel ML) */}
+      <section className="w-full bg-gradient-to-r from-[#FFE600] to-[#F2D000] py-10 px-4">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between">
+          <div className="md:w-1/2 text-[#333] mb-8 md:mb-0">
+            <h1 className="text-3xl md:text-5xl font-light mb-4">
+              Creá tu taza <br /> <span className="font-bold">única y original</span>
+            </h1>
+            <p className="text-lg md:text-xl mb-6 font-light">
+              Personalizala con tus fotos, frases o diseños favoritos.
+            </p>
+            <Link
+              href="/customizer"
+              className="bg-[#3483FA] text-white font-semibold px-6 py-3 rounded hover:bg-[#2968C8] transition-colors shadow-md inline-block"
+            >
+              Diseñar ahora
+            </Link>
           </div>
 
-          {/* Card 2 */}
-          <div className="bg-white shadow rounded-xl p-4 hover:scale-105 transition">
-            <img
-              src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg"
-              className="rounded-lg h-60 w-full object-cover"
-            />
-            <h3 className="text-xl font-semibold mt-4 text-black">Taza con Foto</h3>
-            <p className="text-gray-600 my-2">Ideal para regalos personalizados.</p>
-            <button className="bg-blue-600 text-white font-medium w-full py-2 rounded-lg mt-2 hover:bg-blue-700">
-              Ver detalles
-            </button>
-          </div>
-
-          {/* Card 3 */}
-          <div className="bg-white shadow rounded-xl p-4 hover:scale-105 transition">
-            <img
-              src="https://images.pexels.com/photos/326682/pexels-photo-326682.jpeg"
-              className="rounded-lg h-60 w-full object-cover"
-            />
-            <h3 className="text-xl font-semibold mt-4 text-black">Taza Ilustrada</h3>
-            <p className="text-gray-600 my-2">Para diseños artísticos o dibujos.</p>
-            <button className="bg-blue-600 text-white font-medium w-full py-2 rounded-lg mt-2 hover:bg-blue-700">
-              Ver detalles
-            </button>
+          <div className="md:w-1/2 flex justify-center">
+            <div className="relative w-full max-w-md h-64 md:h-80 bg-white rounded-lg shadow-lg overflow-hidden">
+              <Image
+                src="https://images.pexels.com/photos/1415550/pexels-photo-1415550.jpeg"
+                alt="Banner Tazas"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* BENEFICIOS */}
-      <section className="w-full bg-gray-100 py-16 px-6">
-        <h2 className="text-3xl font-bold text-center mb-10 text-black">
-          ¿Por qué elegirnos?
-        </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto text-center">
+      {/* SECCIÓN DE PRODUCTOS (Estilo Cards ML) */}
+      <section className="max-w-6xl w-full px-4 mt-12">
+        <div className="flex items-center gap-4 mb-6">
+          <h2 className="text-2xl font-light text-[#666]">
+            Basado en tu última visita
+          </h2>
+          <Link href="/products" className="text-[#3483FA] text-sm hover:underline">Ver historial</Link>
+        </div>
 
-          <div>
-            <h3 className="text-xl font-semibold text-black">🎨 Calidad de impresión</h3>
-            <p className="mt-2 text-gray-600">
-              Colores nítidos, resistentes al lavado.
-            </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+
+          {/* Card 1 */}
+          <div className="bg-white rounded shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
+            <div className="relative h-56 w-full border-b border-gray-100">
+              <Image
+                src="https://images.pexels.com/photos/1415550/pexels-photo-1415550.jpeg"
+                alt="Taza Minimalista"
+                fill
+                className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="p-4">
+              <h3 className="text-2xl font-normal text-[#333]">$ 3.500</h3>
+              <p className="text-sm text-[#00A650] font-semibold mt-1">Envío gratis</p>
+              <p className="text-sm text-[#666] mt-2 line-clamp-2">Taza Minimalista Cerámica Premium Personalizable</p>
+            </div>
           </div>
 
-          <div>
-            <h3 className="text-xl font-semibold text-black">🚚 Envíos seguros</h3>
-            <p className="mt-2 text-gray-600">
-              Llegan protegidas y sin golpes.
-            </p>
+          {/* Card 2 */}
+          <div className="bg-white rounded shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
+            <div className="relative h-56 w-full border-b border-gray-100">
+              <Image
+                src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg"
+                alt="Taza con Foto"
+                fill
+                className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="p-4">
+              <h3 className="text-2xl font-normal text-[#333]">$ 4.200</h3>
+              <p className="text-sm text-[#00A650] font-semibold mt-1">Llega mañana</p>
+              <p className="text-sm text-[#666] mt-2 line-clamp-2">Taza Personalizada Con Tu Foto Full Color</p>
+            </div>
           </div>
 
-          <div>
-            <h3 className="text-xl font-semibold text-black">⚡ Personalización rápida</h3>
-            <p className="mt-2 text-gray-600">
-              Diseñá tu taza en minutos.
-            </p>
+          {/* Card 3 */}
+          <div className="bg-white rounded shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
+            <div className="relative h-56 w-full border-b border-gray-100">
+              <Image
+                src="https://images.pexels.com/photos/326682/pexels-photo-326682.jpeg"
+                alt="Taza Ilustrada"
+                fill
+                className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="p-4">
+              <h3 className="text-2xl font-normal text-[#333]">$ 3.900</h3>
+              <p className="text-xs text-[#666] mt-1">Mismo precio en 3 cuotas de $1.300</p>
+              <p className="text-sm text-[#666] mt-2 line-clamp-2">Taza Ilustrada Diseño Exclusivo Artístico</p>
+            </div>
           </div>
 
+          {/* Card 4 (Extra para completar grid) */}
+          <div className="bg-white rounded shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
+            <div className="relative h-56 w-full border-b border-gray-100">
+              <Image
+                src="https://images.pexels.com/photos/1207918/pexels-photo-1207918.jpeg"
+                alt="Set de Tazas"
+                fill
+                className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="p-4">
+              <h3 className="text-2xl font-normal text-[#333]">$ 7.500</h3>
+              <p className="text-sm text-[#00A650] font-semibold mt-1">Envío gratis</p>
+              <p className="text-sm text-[#666] mt-2 line-clamp-2">Set X2 Tazas Pareja Personalizadas Amor</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* BENEFICIOS (Estilo Banner ML) */}
+      <section className="max-w-6xl w-full px-4 mt-12 mb-10">
+        <div className="bg-white rounded shadow-sm p-6 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-4">
+            <div className="text-4xl">💳</div>
+            <div>
+              <h3 className="text-lg font-semibold text-[#333]">Pagá con tarjeta o en efectivo</h3>
+              <Link href="#" className="text-[#3483FA] text-sm hover:underline">Ver medios de pago</Link>
+            </div>
+          </div>
+
+          <div className="w-px h-12 bg-gray-200 hidden md:block"></div>
+
+          <div className="flex items-center gap-4">
+            <div className="text-4xl">📦</div>
+            <div>
+              <h3 className="text-lg font-semibold text-[#333]">Envío rápido a todo el país</h3>
+              <Link href="#" className="text-[#3483FA] text-sm hover:underline">Ver costos y tiempos</Link>
+            </div>
+          </div>
+
+          <div className="w-px h-12 bg-gray-200 hidden md:block"></div>
+
+          <div className="flex items-center gap-4">
+            <div className="text-4xl">🛡️</div>
+            <div>
+              <h3 className="text-lg font-semibold text-[#333]">Compra protegida</h3>
+              <Link href="#" className="text-[#3483FA] text-sm hover:underline">Se abren en una nueva pestaña</Link>
+            </div>
+          </div>
         </div>
       </section>
 

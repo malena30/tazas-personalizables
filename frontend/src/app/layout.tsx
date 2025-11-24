@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Carts from "@/components/Cart";
 
 export const metadata: Metadata = {
   title: "Tazas Personalizables",
