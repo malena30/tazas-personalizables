@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* Reset */
 * {
@@ -11,30 +9,36 @@
 
 /* Variables */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --font-sans: var(
-    --font-geist-sans,
-    "Inter",
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif
-  );
-  --font-mono: var(
-    --font-geist-mono,
-    "JetBrains Mono",
-    ui-monospace,
-    SFMono-Regular,
-    "SFMono-Regular",
-    Menlo,
-    Monaco,
-    Consolas,
-    "Liberation Mono",
-    "Courier New",
-    monospace
-  );
+  --background: #EBEBEB;
+  /* Gris claro de fondo */
+  --foreground: #333333;
+  /* Texto oscuro */
+  --primary-yellow: #FFE600;
+  /* Amarillo ML */
+  --primary-blue: #3483FA;
+  /* Azul botones */
+  --secondary-blue: #2968C8;
+  /* Azul hover */
+  --white: #FFFFFF;
+  --gray-text: #666666;
+  --font-sans: var(--font-geist-sans,
+      "Inter",
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif);
+  --font-mono: var(--font-geist-mono,
+      "JetBrains Mono",
+      ui-monospace,
+      SFMono-Regular,
+      "SFMono-Regular",
+      Menlo,
+      Monaco,
+      Consolas,
+      "Liberation Mono",
+      "Courier New",
+      monospace);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -52,7 +56,7 @@ body {
 
 /* Body defaults */
 body {
-  @apply bg-white text-gray-900 antialiased;
+  @apply bg-[var(--background)] text-[var(--foreground)] antialiased;
   font-family: var(--font-sans);
 }
 

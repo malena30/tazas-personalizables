@@ -10,54 +10,53 @@ export default function Navbar() {
   const totalItems = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
 
   return (
-    <nav className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
-      <div className="max-w-6xl mx-auto px-5 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold text-blue-600">
+    <nav className="w-full bg-[#FFE600] shadow-sm fixed top-0 left-0 z-50">
+      <div className="max-w-7xl mx-auto px-6 py-10 flex justify-between items-center">
+
+        {/* LOGO */}
+        <Link href="/" className="text-3xl font-extrabold text-[#2D3277] tracking-tight">
           Tazas.shop
         </Link>
 
-        <div className="hidden md:flex gap-8 text-lg items-center">
-          <Link href="/" className="text-black hover:text-blue-500">Home</Link>
-          <Link href="/products" className="text-black hover:text-blue-500">Productos</Link>
-          <Link href="/customizer" className="text-black hover:text-blue-500">Personalizar</Link>
+        {/* MENÚ DESKTOP */}
+        <div className="hidden md:flex gap-8 text-base text-[#333] items-center font-medium">
+          <Link href="/" className="hover:text-[#3483FA] transition-colors">Inicio</Link>
+          <Link href="/products" className="hover:text-[#3483FA] transition-colors">Productos</Link>
+          <Link href="/customizer" className="hover:text-[#3483FA] transition-colors">Personalizar</Link>
 
-          {/* Carrito con badge */}
+          {/* Carrito */}
           <div className="relative">
-            <Link href="/cart" className="text-black hover:text-blue-500">
-              Carrito
+            <Link href="/cart" className="flex items-center gap-2 hover:text-[#3483FA] transition-colors">
+              <span className="text-2xl">🛒</span>
             </Link>
 
             {totalItems > 0 && (
-              <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full animate-pulse">
+              <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
                 {totalItems}
               </span>
             )}
           </div>
         </div>
 
-        <button 
+        {/* Botón menú móvil */}
+        <button
           onClick={() => setOpen(!open)}
-          className="md:hidden text-2xl focus:outline-none"
+          className="md:hidden text-3xl text-[#333] focus:outline-none"
         >
           {open ? "✖" : "☰"}
         </button>
       </div>
 
+      {/* MENÚ MÓVIL */}
       {open && (
-        <div className="md:hidden bg-white w-full px-5 pb-4 flex flex-col gap-4 shadow-md">
-          <Link href="/" onClick={() => setOpen(false)}>Home</Link>
-          <Link href="/products" onClick={() => setOpen(false)}>Productos</Link>
-          <Link href="/customizer" onClick={() => setOpen(false)}>Personalizar</Link>
-
-          {/* Carrito en menú móvil */}
-          <div className="relative">
-            <Link href="/cart" onClick={() => setOpen(false)}>Carrito</Link>
-            {totalItems > 0 && (
-              <span className="absolute -top-1 -right-3 bg-red-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full animate-pulse">
-                {totalItems}
-              </span>
-            )}
-          </div>
+        <div className="md:hidden bg-white w-full px-5 py-4 flex flex-col gap-4 shadow-md border-t">
+          <Link href="/" onClick={() => setOpen(false)} className="text-[#333]">Inicio</Link>
+          <Link href="/products" onClick={() => setOpen(false)} className="text-[#333]">Productos</Link>
+          <Link href="/customizer" onClick={() => setOpen(false)} className="text-[#333]">Personalizar</Link>
+          <Link href="/cart" onClick={() => setOpen(false)} className="text-[#333] flex justify-between">
+            Carrito
+            {totalItems > 0 && <span className="text-red-600 font-bold">({totalItems})</span>}
+          </Link>
         </div>
       )}
     </nav>
