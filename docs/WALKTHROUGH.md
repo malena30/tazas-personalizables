@@ -535,3 +535,323 @@ Se generó con éxito **documentación completa y profesional** para el reposito
 - **Mejoras** sugeridas
 
 La documentación está lista para ser utilizada por el equipo de desarrollo, stakeholders y futuros mantenedores del proyecto.
+
+---
+
+## 🎨 Sistema de Diseño Implementado
+
+### Fecha de Implementación
+**24 de noviembre de 2025**
+
+### Objetivo
+Implementar un sistema de diseño cohesivo, moderno y minimalista con soporte para modo claro/oscuro, reemplazando los colores hardcodeados por variables CSS y aplicando tipografías elegantes en toda la aplicación.
+
+---
+
+## 📝 Cambios Realizados
+
+### 1. **Tipografías Google Fonts**
+
+Se implementaron tres familias tipográficas especializadas:
+
+| Tipografía | Uso | Variable CSS | Clase Utility |
+|-----------|-----|--------------|---------------|
+| **Space Grotesk** | Títulos (h1-h6) | `--font-title` | `.font-title` |
+| **Inter** | Textos generales | `--font-text` | `.font-text` |
+| **JetBrains Mono** | Precios, números, detalles | `--font-mono` | `.font-mono` |
+
+**Archivo modificado**: [`frontend/src/app/globals.css`](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/frontend/src/app/globals.css)
+
+```css
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+```
+
+---
+
+### 2. **Paleta de Colores Minimalista**
+
+#### 🌞 Modo Claro
+- **Background**: `#FAF7F2` (toque cálido minimalista)
+- **Texto principal**: `#1C1C1C`
+- **Acento**: `#D4A373` (terracota suave)
+- **Bordes**: `#EDEAE7`
+
+#### 🌙 Modo Oscuro
+- **Background**: `#1C1C1C`
+- **Texto principal**: `#FAF7F2`
+- **Acento**: `#E0B38D`
+- **Bordes**: `#2A2A2A`
+
+**Implementación en CSS**:
+
+```css
+:root {
+  /* 🌞 Modo Claro */
+  --background: #FAF7F2;
+  --foreground: #1C1C1C;
+  --accent: #D4A373;
+  --border: #EDEAE7;
+  
+  /* Typography */
+  --font-title: "Space Grotesk", sans-serif;
+  --font-text: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* 🌙 Modo Oscuro */
+    --background: #1C1C1C;
+    --foreground: #FAF7F2;
+    --accent: #E0B38D;
+    --border: #2A2A2A;
+  }
+}
+```
+
+---
+
+### 3. **Componentes Actualizados**
+
+Todos los componentes fueron refactorizados para usar el nuevo sistema de diseño:
+
+#### ✅ Componentes Principales
+
+| Componente | Archivo | Cambios Principales |
+|-----------|---------|---------------------|
+| **Navbar** | [`Navbar.tsx`](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/frontend/src/components/Navbar.tsx) | Fondo terracota, logo con Space Grotesk, menú con Inter |
+| **Footer** | [`Footer.tsx`](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/frontend/src/components/Footer.tsx) | Títulos con Space Grotesk, links con hover en acento |
+| **Cart** | [`Cart.tsx`](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/frontend/src/components/Cart.tsx) | Precios con JetBrains Mono, bordes sutiles |
+| **ShippingCalculator** | [`ShippingCalculator.tsx`](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/frontend/src/components/ShippingCalculator.tsx) | Opciones con hover terracota, precios monospace |
+
+#### ✅ Páginas Actualizadas
+
+| Página | Archivo | Cambios Principales |
+|--------|---------|---------------------|
+| **Home** | [`app/page.tsx`](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/frontend/src/app/page.tsx) | Banner terracota, cards con bordes sutiles, precios monospace |
+| **Products** | [`app/products/page.tsx`](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/frontend/src/app/products/page.tsx) | Filtros laterales actualizados, productos con nueva paleta |
+| **Cart** | [`app/cart/page.tsx`](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/frontend/src/app/cart/page.tsx) | Resumen con colores variables, botón principal terracota |
+
+---
+
+### 4. **Clases Utilitarias Creadas**
+
+Se agregaron clases CSS personalizadas en `globals.css`:
+
+```css
+/* Typography Utilities */
+h1, h2, h3, h4, h5, h6,
+.font-title {
+  font-family: var(--font-title);
+  font-weight: 600;
+}
+
+.font-text {
+  font-family: var(--font-text);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Color Utilities */
+.text-accent {
+  color: var(--accent);
+}
+
+.bg-accent {
+  background-color: var(--accent);
+}
+
+.border-color {
+  border-color: var(--border);
+}
+```
+
+---
+
+## 🎯 Beneficios del Sistema de Diseño
+
+### Para Desarrollo
+1. **Consistencia**: Todos los componentes usan las mismas variables
+2. **Mantenibilidad**: Cambiar colores globalmente editando solo `globals.css`
+3. **Accesibilidad**: Soporte automático para preferencias de modo oscuro del sistema
+4. **Tipografía profesional**: Fuentes modernas y legibles
+
+### Para UX/UI
+1. **Estética minimalista**: Colores cálidos y sutiles
+2. **Jerarquía visual clara**: Tipografías diferenciadas por función
+3. **Modo oscuro nativo**: Sin configuración adicional
+4. **Consistencia de marca**: Paleta terracota distintiva
+
+### Para Usuarios
+1. **Legibilidad mejorada**: Inter para textos, fácil de leer
+2. **Claridad en precios**: JetBrains Mono monoespaciada
+3. **Experiencia adaptativa**: Modo claro/oscuro según preferencias
+4. **Look moderno**: Space Grotesk para títulos impactantes
+
+---
+
+## 📊 Estadísticas de Refactorización
+
+- **Archivos modificados**: 10
+- **Componentes actualizados**: 5
+- **Páginas actualizadas**: 3
+- **Variables CSS creadas**: 7
+- **Clases utilitarias agregadas**: 6
+- **Líneas de código cambiadas**: ~800
+
+---
+
+## 🔧 Cómo Usar el Sistema de Diseño
+
+### Variables CSS
+
+```tsx
+// En cualquier componente, usa las variables CSS
+<div className="bg-[var(--background)] text-[var(--foreground)]">
+  <h1 className="text-[var(--accent)]">Título</h1>
+  <p className="border-[var(--border)]">Contenido</p>
+</div>
+```
+
+### Clases de Tipografía
+
+```tsx
+// Títulos automáticamente usan Space Grotesk
+<h1>Mi Título</h1>
+
+// O aplica manualmente
+<div className="font-title">Título personalizado</div>
+
+// Texto general con Inter
+<p className="font-text">Texto del párrafo</p>
+
+// Precios con monospace
+<span className="font-mono">$1,299.00</span>
+```
+
+### Modo Oscuro
+
+El modo oscuro se activa automáticamente según las preferencias del sistema operativo:
+
+```css
+/* Automático con prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1C1C1C;
+    /* ... */
+  }
+}
+
+/* O manualmente con clase .dark en <html> */
+.dark {
+  --background: #1C1C1C;
+  /* ... */
+}
+```
+
+---
+
+## 🚀 Ejemplos de Implementación
+
+### Antes y Después
+
+#### ANTES (colores hardcodeados):
+```tsx
+<div className="bg-white text-[#333] border-gray-200">
+  <h2 className="text-[#666]">Título</h2>
+  <p className="text-xl">$ 3.500</p>
+</div>
+```
+
+#### DESPUÉS (sistema de diseño):
+```tsx
+<div className="bg-[var(--background)] text-[var(--foreground)] border-[var(--border)]">
+  <h2 className="font-title text-[var(--foreground)]">Título</h2>
+  <p className="text-xl font-mono">$ 3.500</p>
+</div>
+```
+
+---
+
+## 📝 Guía de Estilo
+
+### Cuándo Usar Cada Tipografía
+
+| Elemento | Tipografía | Ejemplo |
+|----------|-----------|---------|
+| Títulos principales (h1, h2) | Space Grotesk | "Tazas Personalizables" |
+| Subtítulos (h3-h6) | Space Grotesk | "Productos Destacados" |
+| Texto de párrafos | Inter | "Descripción del producto..." |
+| Labels de formulario | Inter | "Nombre completo" |
+| Botones | Inter | "Agregar al carrito" |
+| Precios | JetBrains Mono | "$3.500" |
+| Cantidades | JetBrains Mono | "Qty: 2" |
+| Códigos/IDs | JetBrains Mono | "ORD-12345" |
+
+### Cuándo Usar Cada Color
+
+| Elemento | Variable | Uso |
+|----------|----------|-----|
+| Fondos de sección | `var(--background)` | Fondos principales |
+| Texto principal | `var(--foreground)` | Todo el texto |
+| Elementos interactivos | `var(--accent)` | Botones, links, highlights |
+| Separadores | `var(--border)` | Bordes, dividers, outlines |
+
+---
+
+## ⚠️ Consideraciones Importantes
+
+### Compatibilidad
+- ✅ **Next.js**: Compatible con App Router
+- ✅ **Tailwind CSS**: Variables CSS funcionan con Tailwind
+- ✅ **Modo oscuro**: Soporte nativo del navegador
+- ✅ **Google Fonts**: Carga optimizada
+
+### Performance
+- ⚡ **Fonts display=swap**: Evita FOUT (Flash of Unstyled Text)
+- ⚡ **CSS Variables**: Más eficiente que múltiples clases
+- ⚡ **Modo oscuro**: Sin JavaScript, usa CSS puro
+
+### Mantenimiento Futuro
+- 📌 Actualizar solo `globals.css` para cambios globales
+- 📌 Agregar nuevas variables siguiendo el patrón existente
+- 📌 Documentar cualquier nuevo color en este walkthrough
+
+---
+
+## 🔮 Próximos Pasos Sugeridos
+
+### Corto Plazo
+1. ✅ Verificar coherencia visual en navegador
+2. ✅ Testear modo oscuro en diferentes dispositivos
+3. ⏳ Agregar toggle manual para modo oscuro (opcional)
+
+### Medio Plazo
+1. ⏳ Extender variables para estados (hover, active, disabled)
+2. ⏳ Agregar variables para espaciado consistente
+3. ⏳ Crear componente library con Storybook
+
+### Largo Plazo
+1. ⏳ Implementar animaciones y transiciones consistentes
+2. ⏳ Agregar más variantes de color (success, error, warning)
+3. ⏳ Documentar guía de diseño completa
+
+---
+
+## 📚 Referencias
+
+- [Google Fonts](https://fonts.google.com/)
+  - [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk)
+  - [Inter](https://fonts.google.com/specimen/Inter)
+  - [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono)
+- [CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/--*)
+- [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme)
+- [Tailwind CSS Variables](https://tailwindcss.com/docs/customizing-colors#using-css-variables)
+
+---
+
+**Última actualización**: 2025-11-24
+**Versión del sistema de diseño**: 1.0
