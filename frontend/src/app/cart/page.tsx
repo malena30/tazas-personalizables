@@ -51,22 +51,22 @@ export default function CartPage() {
   return (
     <div className="max-w-6xl mx-auto p-6 mt-20 grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* COLUMNA IZQUIERDA: LISTA DE PRODUCTOS */}
-      <div className="lg:col-span-2 space-y-4 text-black">
-        <h1 className="text-3xl font-bold mb-4 text-white">Carrito</h1>
+      <div className="lg:col-span-2 space-y-4 text-[var(--foreground)]">
+        <h1 className="text-3xl font-title font-bold mb-4 text-[var(--foreground)]">Carrito</h1>
 
         {cart.length === 0 ? (
-          <p className="text-gray-500 text-lg">Tu carrito está vacío.</p>
+          <p className="text-[var(--foreground)] opacity-60 font-text text-lg">Tu carrito está vacío.</p>
         ) : (
           <>
             {cart.map((item) => (
               <div
                 key={item.id}
-                className="p-4 border rounded-lg flex justify-between items-center bg-white shadow-sm"
+                className="p-4 border border-[var(--border)] rounded-lg flex justify-between items-center bg-[var(--background)] shadow-sm"
               >
                 {/* Nombre y precio */}
                 <div>
-                  <p className="font-semibold text-black">{item.name}</p>
-                  <p className="text-gray-700 text-black">${item.price}</p>
+                  <p className="font-title font-semibold text-[var(--foreground)]">{item.name}</p>
+                  <p className="text-[var(--foreground)] font-mono">${item.price}</p>
                 </div>
 
                 {/* Controles */}
@@ -75,16 +75,16 @@ export default function CartPage() {
                     onClick={() =>
                       updateQuantity(item.id, Math.max(1, item.quantity - 1))
                     }
-                    className="px-3 py-1 border rounded"
+                    className="px-3 py-1 border border-[var(--border)] rounded font-mono"
                   >
                     -
                   </button>
 
-                  <span>{item.quantity}</span>
+                  <span className="font-mono text-[var(--foreground)]">{item.quantity}</span>
 
                   <button
                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="px-3 py-1 border rounded"
+                    className="px-3 py-1 border border-[var(--border)] rounded font-mono"
                   >
                     +
                   </button>
@@ -116,7 +116,7 @@ export default function CartPage() {
             {/* Botón Vaciar */}
             <button
               onClick={clearCart}
-              className="bg-red-500 text-white px-4 py-2 rounded flex items-center gap-2 cursor-pointer hover:bg-red-600"
+              className="bg-red-500 text-white px-4 py-2 rounded font-text flex items-center gap-2 cursor-pointer hover:bg-red-600 transition-colors"
             >
               <FaRegTrashAlt size={18} />
               Vaciar carrito
@@ -127,22 +127,22 @@ export default function CartPage() {
 
       {/* COLUMNA DERECHA: RESUMEN + ENVÍO */}
       {cart.length > 0 && (
-        <div className="p-6 border rounded-lg bg-white shadow-md h-fit sticky top-24">
-          <h2 className="text-2xl font-bold mb-4 text-black">Resumen de compra</h2>
+        <div className="p-6 border border-[var(--border)] rounded-lg bg-[var(--background)] shadow-md h-fit sticky top-24">
+          <h2 className="text-2xl font-title font-bold mb-4 text-[var(--foreground)]">Resumen de compra</h2>
 
           <div className="text-lg">
-            <p className="flex justify-between mb-2 text-black">
+            <p className="flex justify-between mb-2 text-[var(--foreground)] font-text">
               <span>Productos</span>
-              <span>${subtotal}</span>
+              <span className="font-mono">${subtotal}</span>
             </p>
 
             {/* SELECT DE PROVINCIA */}
             <div className="my-4">
-              <label className="font-medium text-black">Envío</label>
+              <label className="font-text font-medium text-[var(--foreground)]">Envío</label>
               <select
                 value={province}
                 onChange={handleProvinceChange}
-                className="w-full mt-2 p-2 border rounded text-black"
+                className="w-full mt-2 p-2 border border-[var(--border)] rounded text-[var(--foreground)] bg-[var(--background)] font-text"
               >
                 <option value="">Seleccionar provincia</option>
                 <option>Buenos Aires</option>
@@ -159,23 +159,23 @@ export default function CartPage() {
                 <option>Tierra del Fuego</option>
               </select>
 
-              <p className="mt-2 flex justify-between text-black">
+              <p className="mt-2 flex justify-between text-[var(--foreground)] font-text">
                 <span>Costo de envío</span>
-                <span>${shippingCost}</span>
+                <span className="font-mono">${shippingCost}</span>
               </p>
             </div>
 
             <hr className="my-4" />
 
-            <p className="text-2xl font-bold flex justify-between text-black">
+            <p className="text-2xl font-title font-bold flex justify-between text-[var(--foreground)]">
               <span>Total</span>
-              <span>${total}</span>
+              <span className="font-mono">${total}</span>
             </p>
 
             {/* BOTÓN COMPRAR → LLEVA A /checkout */}
             <Link
               href="/checkout"
-              className="w-full mt-6 bg-blue-600 text-white py-3 text-lg font-semibold rounded-lg shadow hover:bg-blue-700 block text-center"
+              className="w-full mt-6 bg-[var(--accent)] text-[var(--foreground)] py-3 text-lg font-text font-semibold rounded-lg shadow hover:opacity-90 transition-opacity block text-center"
             >
               Comprar
             </Link>
