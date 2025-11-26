@@ -61,7 +61,7 @@ export default function ProductsPage() {
 
           <div className="bg-[var(--background)] border border-[var(--border)] rounded-lg shadow-sm divide-y divide-[var(--border)]">
             {products.map((product) => (
-              <div key={product.id} className="flex flex-col md:flex-row p-6 gap-6 hover:bg-[#F6d2ac] transition-colors">
+              <div key={product.id} className="flex flex-col md:flex-row p-6 gap-6 hover:bg-[var(--hover-bg)] transition-colors">
 
                 {/* Imagen */}
                 <div className="relative w-full md:w-48 h-48 shrink-0">
@@ -84,8 +84,6 @@ export default function ProductsPage() {
                       $ {product.price.toLocaleString("es-AR")}
                     </span>
                   </div>
-
-
 
                   <p className="text-sm text-[var(--foreground)] opacity-70 font-text mb-4 hidden md:block">
                     {product.description}
