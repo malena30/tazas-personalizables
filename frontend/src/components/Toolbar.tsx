@@ -16,6 +16,9 @@ interface ToolbarProps {
     fontSize: number;
     onFontSizeChange: (size: number) => void;
     hasSelection: boolean;
+    hasElements: boolean;
+    mugRotation: number;
+    onRotateMug: (direction: 'left' | 'right') => void;
 }
 
 export default function Toolbar({
@@ -31,7 +34,10 @@ export default function Toolbar({
     onTextColorChange,
     fontSize,
     onFontSizeChange,
-    hasSelection
+    hasSelection,
+    hasElements,
+    mugRotation,
+    onRotateMug
 }: ToolbarProps) {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -183,12 +189,42 @@ export default function Toolbar({
 
             <hr className="border-[var(--border)]" />
 
-            {/* Botón exportar */}
+            {/* Rotación de la taza */}
+            <div>
+                <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
+                    Rotar Vista de Taza
+                </h3>
+                <div className="flex gap-2 items-center">
+                    <button
+                        onClick={() => onRotateMug('left')}
+                        className="flex-1 px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded font-text text-sm hover:bg-[var(--hover-bg)] transition-colors text-[var(--foreground)]"
+                    >
+                        ← Izquierda
+                    </button>
+                    <div className="px-3 py-2 bg-[var(--accent)] text-[var(--foreground)] rounded font-mono text-sm font-semibold">
+                        {mugRotation}°
+                    </div>
+                    <button
+                        onClick={() => onRotateMug('right')}
+                        className="flex-1 px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded font-text text-sm hover:bg-[var(--hover-bg)] transition-colors text-[var(--foreground)]"
+                    >
+                        Derecha →
+                    </button>
+                </div>
+            </div>
+
+            <hr className="border-[var(--border)]" />
+
+            {/* Botón agregar al carrito */}
             <button
                 onClick={onExport}
-                className="w-full bg-green-600 text-white px-4 py-3 rounded-lg font-text font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                disabled={!hasElements}
+                className={`w-full px-4 py-3 rounded-lg font-text font-semibold transition-opacity flex items-center justify-center gap-2 ${hasElements
+                    ? 'bg-[var(--accent)] text-[var(--foreground)] hover:opacity-90 cursor-pointer'
+                    : 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
+                    }`}
             >
-                💾 Exportar Diseño
+                🛒 Agregar al Carrito ($3.500)
             </button>
         </aside>
     );

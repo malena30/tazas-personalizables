@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState, forwardRef } from "react";
+import dynamic from "next/dynamic";
 import { Stage, Layer, Rect, Text as KonvaText, Image as KonvaImage, Transformer } from "react-konva";
 import { CanvasElement } from "@/types/customizer";
 
@@ -10,6 +11,7 @@ interface MugCanvasProps {
     onSelect: (id: string | null) => void;
     onUpdateElement: (element: CanvasElement) => void;
     mugColor: string;
+    mugRotation: number;
 }
 
 // Componente para renderizar imágenes
@@ -31,7 +33,7 @@ function CanvasImageElement({ element, isSelected, onSelect, onChange }: any) {
             transformerRef.current.nodes([imageRef.current]);
             transformerRef.current.getLayer().batchDraw();
         }
-    }, [isSelected]);
+    }, [isSelected, image]);
 
     return (
         <>
@@ -83,6 +85,15 @@ function CanvasImageElement({ element, isSelected, onSelect, onChange }: any) {
             {isSelected && image && (
                 <Transformer
                     ref={transformerRef}
+                    enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
+                    keepRatio={false}
+                    rotateEnabled={true}
+                    borderStroke="#4A90E2"
+                    borderStrokeWidth={2}
+                    anchorSize={10}
+                    anchorStroke="#4A90E2"
+                    anchorFill="#FFFFFF"
+                    anchorStrokeWidth={2}
                     boundBoxFunc={(oldBox: any, newBox: any) => {
                         if (newBox.width < 5 || newBox.height < 5) {
                             return oldBox;
@@ -172,7 +183,8 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
     selectedId,
     onSelect,
     onUpdateElement,
-    mugColor
+    mugColor,
+    mugRotation
 }, ref) {
 
     const stageRef = useRef(null);
@@ -185,8 +197,9 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
     const canvasWidth = 600;
     const canvasHeight = 600;
 
-    const designAreaWidth = 400;
-    const designAreaHeight = 300;
+    // Dimensiones del área de diseño (ajustadas para la taza)
+    const designAreaWidth = 320;
+    const designAreaHeight = 380;
     const designAreaX = (canvasWidth - designAreaWidth) / 2;
     const designAreaY = (canvasHeight - designAreaHeight) / 2;
 
@@ -199,84 +212,172 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
     };
 
     return (
-        <div className="flex items-center justify-center bg-[var(--background)] border-2 border-[var(--border)] rounded-lg p-4">
-            <Stage
-                width={canvasWidth}
-                height={canvasHeight}
-                ref={ref || stageRef}
-                onMouseDown={(e: any) => {
-                    const clickedOnEmpty = e.target === e.target.getStage();
-                    if (clickedOnEmpty) {
-                        onSelect(null);
-                    }
-                }}
-            >
-                <Layer>
-                    <Rect x={0} y={0} width={canvasWidth} height={canvasHeight} fill="#F0F0F0" />
+        <div className="flex items-center justify-center bg-[var(--background)] border-2 border-[var(--border)] rounded-lg p-8 overflow-hidden">
 
-                    <Rect
-                        x={designAreaX}
-                        y={designAreaY}
-                        width={designAreaWidth}
-                        height={designAreaHeight}
-                        fill={mugColor}
-                        stroke="#CCCCCC"
-                        strokeWidth={2}
-                        cornerRadius={10}
+            <div className="relative" style={{ width: canvasWidth, height: canvasHeight }}>
+
+                {/* Contenedor de la Taza con Rotación 3D */}
+                <div
+                    className="absolute inset-0 flex items-center justify-center"
+                    style={{
+                        transform: `rotateY(${mugRotation}deg)`,
+                        transformStyle: 'preserve-3d',
+                        transition: 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+                    }}
+                >
+                    {/* ASA DE LA TAZA (Lado Derecho) */}
+                    <div
+                        style={{
+                            position: 'absolute',
+                            right: '100px',
+                            top: '50%',
+                            width: '140px',
+                            height: '200px',
+                            transform: 'translateY(-50%) translateZ(-40px) rotateY(15deg)',
+                            border: '25px solid #E5E5E5',
+                            borderRadius: '0 80px 80px 0',
+                            zIndex: -1,
+                            boxShadow: 'inset 5px 0 15px rgba(0,0,0,0.1)'
+                        }}
                     />
 
-                    <KonvaText
-                        x={designAreaX}
-                        y={designAreaY - 25}
-                        text="Área de diseño"
-                        fontSize={14}
-                        fill="#666666"
-                        fontFamily="Inter"
-                    />
-
-                    {canvasElements
-                        .sort((a, b) => a.zIndex - b.zIndex)
-                        .map((element) => {
-                            const isSelected = element.id === selectedId;
-
-                            if (element.type === 'image') {
-                                return (
-                                    <CanvasImageElement
-                                        key={element.id}
-                                        element={element}
-                                        isSelected={isSelected}
-                                        onSelect={() => onSelect(element.id)}
-                                        onChange={handleElementChange}
-                                    />
-                                );
-                            } else if (element.type === 'text') {
-                                return (
-                                    <CanvasTextElement
-                                        key={element.id}
-                                        element={element}
-                                        isSelected={isSelected}
-                                        onSelect={() => onSelect(element.id)}
-                                        onChange={handleElementChange}
-                                    />
-                                );
-                            }
-                            return null;
-                        })}
-
-                    {canvasElements.length === 0 && (
-                        <KonvaText
-                            x={canvasWidth / 2}
-                            y={canvasHeight / 2}
-                            text="Agregá imágenes o texto para empezar"
-                            fontSize={16}
-                            fill="#999999"
-                            fontFamily="Inter"
-                            align="center"
-                            offsetX={150}
+                    {/* CUERPO DE LA TAZA (Canvas + Máscara) */}
+                    <div
+                        className="relative bg-white shadow-2xl"
+                        style={{
+                            width: designAreaWidth,
+                            height: designAreaHeight,
+                            // Forma de taza realista usando border-radius complejo
+                            borderRadius: '10px 10px 140px 140px / 20px 20px 60px 60px',
+                            overflow: 'hidden',
+                            transform: 'translateZ(1px)', // Traer al frente
+                            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.3)'
+                        }}
+                    >
+                        {/* Capa de Color de la Taza */}
+                        <div
+                            className="absolute inset-0 z-0"
+                            style={{ backgroundColor: mugColor }}
                         />
-                    )}
-                </Layer>
-            </Stage>
+
+                        {/* Canvas de Konva */}
+                        <div className="absolute inset-0 z-10">
+                            <Stage
+                                width={designAreaWidth}
+                                height={designAreaHeight}
+                                ref={ref || stageRef}
+                                onMouseDown={(e: any) => {
+                                    const clickedOnEmpty = e.target === e.target.getStage();
+                                    if (clickedOnEmpty) {
+                                        onSelect(null);
+                                    }
+                                }}
+                            >
+                                <Layer>
+                                    {/* Grid o guía visual opcional */}
+
+                                    {canvasElements
+                                        .sort((a, b) => a.zIndex - b.zIndex)
+                                        .map((element) => {
+                                            const isSelected = element.id === selectedId;
+
+                                            // Ajustar posición relativa al nuevo canvas más pequeño
+                                            // Esto es un truco visual, idealmente remapearíamos coordenadas
+                                            const adjustedElement = {
+                                                ...element,
+                                                position: {
+                                                    x: element.position.x - designAreaX,
+                                                    y: element.position.y - designAreaY
+                                                }
+                                            };
+
+                                            if (element.type === 'image') {
+                                                return (
+                                                    <CanvasImageElement
+                                                        key={element.id}
+                                                        element={adjustedElement} // Usar ajustado
+                                                        isSelected={isSelected}
+                                                        onSelect={() => onSelect(element.id)}
+                                                        onChange={(newEl: any) => {
+                                                            // Restaurar coordenadas globales al guardar
+                                                            handleElementChange({
+                                                                ...newEl,
+                                                                position: {
+                                                                    x: newEl.position.x + designAreaX,
+                                                                    y: newEl.position.y + designAreaY
+                                                                }
+                                                            });
+                                                        }}
+                                                    />
+                                                );
+                                            } else if (element.type === 'text') {
+                                                return (
+                                                    <CanvasTextElement
+                                                        key={element.id}
+                                                        element={adjustedElement} // Usar ajustado
+                                                        isSelected={isSelected}
+                                                        onSelect={() => onSelect(element.id)}
+                                                        onChange={(newEl: any) => {
+                                                            handleElementChange({
+                                                                ...newEl,
+                                                                position: {
+                                                                    x: newEl.position.x + designAreaX,
+                                                                    y: newEl.position.y + designAreaY
+                                                                }
+                                                            });
+                                                        }}
+                                                    />
+                                                );
+                                            }
+                                            return null;
+                                        })}
+
+                                    {canvasElements.length === 0 && (
+                                        <KonvaText
+                                            x={designAreaWidth / 2}
+                                            y={designAreaHeight / 2}
+                                            text="Diseñá acá"
+                                            fontSize={20}
+                                            fill="#CCCCCC"
+                                            fontFamily="Inter"
+                                            align="center"
+                                            offsetX={50}
+                                            offsetY={10}
+                                        />
+                                    )}
+                                </Layer>
+                            </Stage>
+                        </div>
+
+                        {/* Overlay de Iluminación Realista (Cilíndrico) */}
+                        <div
+                            className="absolute inset-0 z-20 pointer-events-none"
+                            style={{
+                                background: `
+                                    linear-gradient(90deg, 
+                                        rgba(0,0,0,0.15) 0%, 
+                                        rgba(0,0,0,0.05) 15%, 
+                                        rgba(255,255,255,0) 40%, 
+                                        rgba(255,255,255,0.3) 50%, 
+                                        rgba(255,255,255,0) 60%, 
+                                        rgba(0,0,0,0.05) 85%, 
+                                        rgba(0,0,0,0.2) 100%
+                                    )
+                                `
+                            }}
+                        />
+
+                        {/* Borde Superior (Rim) */}
+                        <div
+                            className="absolute top-0 left-0 right-0 h-4 z-30 pointer-events-none"
+                            style={{
+                                background: 'linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0))',
+                                borderBottom: '1px solid rgba(0,0,0,0.05)'
+                            }}
+                        />
+                    </div>
+                </div>
+            </div>
         </div>
     );
 });
