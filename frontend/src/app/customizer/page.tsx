@@ -1,11 +1,16 @@
 "use client";
 
-"use client";
-
 import { useState, useRef, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { CanvasElement, ImageElement, TextElement } from "@/types/customizer";
-import MugCanvas from "@/components/MugCanvas";
 import Toolbar from "@/components/Toolbar";
+import { useCartStore } from "@/store/cartStore";
+
+// Importación dinámica de MugCanvas para evitar errores de SSR con Konva
+const MugCanvas = dynamic(() => import("@/components/MugCanvas"), {
+    ssr: false,
+    loading: () => <div className="w-full h-[600px] bg-gray-100 animate-pulse rounded-lg flex items-center justify-center">Cargando diseñador...</div>
+});
 
 export default function CustomizerPage() {
     const [elements, setElements] = useState<CanvasElement[]>([]);
@@ -13,7 +18,10 @@ export default function CustomizerPage() {
     const [mugColor, setMugColor] = useState("#FFFFFF");
     const [textColor, setTextColor] = useState("#000000");
     const [fontSize, setFontSize] = useState(24);
+    const [showTooltip, setShowTooltip] = useState(false);
+    const [mugRotation, setMugRotation] = useState(0); // 0, 90, 180, 270
     const canvasRef = useRef<any>(null);
+    const addToCart = useCartStore((state) => state.addToCart);
 
     // Generar ID único
     const generateId = () => `element-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -110,21 +118,38 @@ export default function CustomizerPage() {
         }
     }, [fontSize]);
 
-    // Exportar diseño
-    const handleExport = () => {
+    // Manejar rotación de la taza
+    const handleRotateMug = (direction: 'left' | 'right') => {
+        setMugRotation(prev => {
+            if (direction === 'left') {
+                return (prev - 90 + 360) % 360;
+            } else {
+                return (prev + 90) % 360;
+            }
+        });
+    };
+
+    // Agregar al carrito
+    const handleAddToCart = () => {
         if (canvasRef.current) {
+            // Exportar diseño como imagen
             const uri = canvasRef.current.toDataURL({
-                pixelRatio: 3, // Alta calidad
+                pixelRatio: 3,
                 mimeType: 'image/png',
             });
 
-            // Crear link de descarga
-            const link = document.createElement('a');
-            link.download = `taza-personalizada-${Date.now()}.png`;
-            link.href = uri;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // Agregar al carrito
+            addToCart({
+                id: Date.now(), // ID único basado en timestamp
+                name: "Taza Personalizada",
+                price: 3500, // Precio de la taza personalizada
+                image: uri, // Imagen del diseño
+                description: `Taza personalizada con ${elements.length} elemento(s)`
+            });
+
+            // Mostrar tooltip de confirmación
+            setShowTooltip(true);
+            setTimeout(() => setShowTooltip(false), 3000);
         }
     };
 
@@ -141,7 +166,7 @@ export default function CustomizerPage() {
                     <Toolbar
                         onAddImage={handleAddImage}
                         onAddText={handleAddText}
-                        onExport={handleExport}
+                        onExport={handleAddToCart}
                         onDelete={handleDeleteElement}
                         onBringToFront={handleBringToFront}
                         onSendToBack={handleSendToBack}
@@ -152,6 +177,9 @@ export default function CustomizerPage() {
                         fontSize={fontSize}
                         onFontSizeChange={setFontSize}
                         hasSelection={selectedId !== null}
+                        hasElements={elements.length > 0}
+                        mugRotation={mugRotation}
+                        onRotateMug={handleRotateMug}
                     />
 
                     {/* Canvas principal - Centro */}
@@ -163,6 +191,7 @@ export default function CustomizerPage() {
                             onSelect={setSelectedId}
                             onUpdateElement={handleUpdateElement}
                             mugColor={mugColor}
+                            mugRotation={mugRotation}
                         />
 
                         {/* Información del diseño */}
@@ -181,6 +210,18 @@ export default function CustomizerPage() {
 
                 </div>
             </div>
+
+            {/* Tooltip de confirmación */}
+            {showTooltip && (
+                <div className="fixed bottom-8 right-8 bg-[var(--accent)] text-[var(--foreground)] px-6 py-4 rounded-lg shadow-lg font-text font-semibold animate-slide-up flex items-center gap-3 z-50">
+                    <div className="bg-white rounded-full p-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[var(--accent)]" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                    </div>
+                    ¡Taza agregada al carrito! ($3.500)
+                </div>
+            )}
         </main>
     );
 }
