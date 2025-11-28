@@ -18,6 +18,7 @@ export default function CustomizerPage() {
     const [mugColor, setMugColor] = useState("#FFFFFF");
     const [textColor, setTextColor] = useState("#000000");
     const [fontSize, setFontSize] = useState(24);
+    const [fontFamily, setFontFamily] = useState("Inter");
     const [showTooltip, setShowTooltip] = useState(false);
     const [mugRotation, setMugRotation] = useState(0); // 0, 90, 180, 270
     const canvasRef = useRef<any>(null);
@@ -118,6 +119,18 @@ export default function CustomizerPage() {
         }
     }, [fontSize]);
 
+    // Sincronizar fuente cuando cambia y hay un texto seleccionado
+    useEffect(() => {
+        if (selectedId) {
+            const selectedElement = elements.find(el => el.id === selectedId);
+            if (selectedElement && selectedElement.type === 'text') {
+                setElements(elements.map(el =>
+                    el.id === selectedId ? { ...el, fontFamily: fontFamily } : el
+                ));
+            }
+        }
+    }, [fontFamily]);
+
     // Manejar rotación de la taza
     const handleRotateMug = (direction: 'left' | 'right') => {
         setMugRotation(prev => {
@@ -176,6 +189,8 @@ export default function CustomizerPage() {
                         onTextColorChange={setTextColor}
                         fontSize={fontSize}
                         onFontSizeChange={setFontSize}
+                        fontFamily={fontFamily}
+                        onFontFamilyChange={setFontFamily}
                         hasSelection={selectedId !== null}
                         hasElements={elements.length > 0}
                         mugRotation={mugRotation}

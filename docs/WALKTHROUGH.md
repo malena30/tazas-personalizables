@@ -13,13 +13,13 @@ Se generó documentación exhaustiva y estructurada para **todo el repositorio**
 | Categoría | Cantidad | Ubicación |
 |-----------|----------|-----------|
 | **Backend** | 2 | `docs/backend/` |
-| **Frontend - Páginas** | 8 | `docs/frontend/app/` |
-| **Frontend - Componentes** | 10 | `docs/frontend/components/` & `app/checkout/components/` |
+| **Frontend - Páginas** | 9 | `docs/frontend/app/` |
+| **Frontend - Componentes** | 12 | `docs/frontend/components/` & `app/checkout/components/` |
 | **Frontend - Estado** | 3 | `docs/frontend/context/`, `store/`, `hooks/` |
 | **Frontend - Estilos** | 1 | `docs/frontend/app/` |
 | **Frontend - Config** | 5 | `docs/frontend/config/` |
 | **README Principal** | 1 | `docs/` |
-| **TOTAL** | **30 archivos .md** | - |
+| **TOTAL** | **33 archivos .md** | - |
 
 ### Tamaño de Documentación
 
@@ -99,48 +99,18 @@ Para entender la aplicación paso a paso, se recomienda leer la documentación e
     - Agregar al carrito
     - Filtros (visuales)
 
-#### Paso 3: Carrito
-12. **[frontend/app/cart/page.tsx.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/frontend/app/cart/page.tsx.md)**
+#### Paso 3: Personalización
+12. **[frontend/app/customizer/page.tsx.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/frontend/app/customizer/page.tsx.md)**
+    - Editor de tazas 3D
+    - Manipulación de canvas
+    - Herramientas de texto e imagen
+
+#### Paso 4: Carrito
+13. **[frontend/app/cart/page.tsx.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/frontend/app/cart/page.tsx.md)**
     - Visualización del carrito
     - Edición de cantidades
     - Cálculo de envío
     - Botón "Comprar"
-
-13. **[frontend/components/Cart.tsx.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/frontend/components/Cart.tsx.md)** (opcional)
-    - Widget alternativo de carrito
-
-#### Paso 4: Checkout (Flujo Completo)
-
-14. **[frontend/app/checkout/layout.jsx.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/frontend/app/checkout/layout.jsx.md)**
-    - Provider del contexto
-    - Scope del checkout
-
-15. **[frontend/app/checkout/page.jsx.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/frontend/app/checkout/page.jsx.md)**
-    - Orquestador principal
-    - Integración de componentes
-
-16. **[frontend/app/checkout/components/BuyerForm.jsx.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/frontend/app/checkout/components/BuyerForm.jsx.md)**
-    - Formulario de datos personales
-
-17. **[frontend/app/checkout/components/ShippingOptions.jsx.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/frontend/app/checkout/components/ShippingOptions.jsx.md)**
-    - Selección de envío
-
-18. **[frontend/components/ShippingCalculator.tsx.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/frontend/components/ShippingCalculator.tsx.md)**
-    - Calculadora de costos
-
-19. **[frontend/app/checkout/components/PaymentMethods.jsx.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/frontend/app/checkout/components/PaymentMethods.jsx.md)**
-    - Métodos de pago
-
-20. **[frontend/app/checkout/components/OrderSummary.jsx.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/frontend/app/checkout/components/OrderSummary.jsx.md)**
-    - Resumen final
-    - Confirmación
-
-21. **[frontend/app/checkout/components/CheckoutSuccess.jsx.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/frontend/app/checkout/components/CheckoutSuccess.jsx.md)**
-    - Confirmación de compra (pendiente)
-
-### 🔌 Nivel 6: Backend (Opcional por ahora)
-
-22. **[backend/main.py.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/backend/main.py.md)**
     - API FastAPI básica
 
 23. **[backend/database.py.md](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/docs/backend/database.py.md)**

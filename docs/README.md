@@ -80,6 +80,8 @@ tazas-personalizables/
 │   │   │   ├── globals.css        # Estilos globales
 │   │   │   ├── products/
 │   │   │   │   └── page.tsx       # Catálogo
+│   │   │   ├── customizer/
+│   │   │   │   └── page.tsx       # Personalizador de tazas
 │   │   │   ├── cart/
 │   │   │   │   └── page.tsx       # Carrito
 │   │   │   └── checkout/
@@ -95,6 +97,8 @@ tazas-personalizables/
 │   │   │   ├── Navbar.tsx
 │   │   │   ├── Footer.tsx
 │   │   │   ├── Cart.tsx
+│   │   │   ├── Toolbar.tsx          # Editor del customizer
+│   │   │   ├── MugCanvas.tsx        # Canvas 3D de la taza
 │   │   │   ├── ShippingCalculator.tsx
 │   │   │   └── CheckoutForm.tsx
 │   │   ├── context/
@@ -140,6 +144,7 @@ tazas-personalizables/
 | `app/page.tsx` | `/` | Landing page con hero banner y productos destacados | [Documentación](./frontend/app/page.tsx.md) |
 | `app/layout.tsx` | - | Layout raíz con Navbar, Footer y metadata SEO | [Documentación](./frontend/app/layout.tsx.md) |
 | `app/products/page.tsx` | `/products` | Catálogo completo con filtros y agregar al carrito | [Documentación](./frontend/app/products/page.tsx.md) |
+| `app/customizer/page.tsx` | `/customizer` | Personalizador de tazas con rotación 3D y edición | [Documentación](./frontend/app/customizer/page.tsx.md) |
 | `app/cart/page.tsx` | `/cart` | Carrito con edición de cantidades y cálculo de envío | [Documentación](./frontend/app/cart/page.tsx.md) |
 
 #### Checkout Flow
@@ -163,13 +168,15 @@ tazas-personalizables/
 
 ---
 
-### Frontend - Componentes Compartidos (5 archivos)
+### Frontend - Componentes Compartidos (7 archivos)
 
 | Archivo | Propósito | Enlace |
 |---------|-----------|--------|
 | `Navbar.tsx` | Barra de navegación superior fija | [Documentación](./frontend/components/Navbar.tsx.md) |
 | `Footer.tsx` | Pie de página con enlaces y copyright | [Documentación](./frontend/components/Footer.tsx.md) |
 | `Cart.tsx` | Widget de carrito (versión simplificada) | [Documentación](./frontend/components/Cart.tsx.md) |
+| `Toolbar.tsx` | Panel de herramientas del customizer con controles | [Documentación](./frontend/components/Toolbar.tsx.md) |
+| `MugCanvas.tsx` | Canvas Konva con visualización 3D de la taza | [Documentación](./frontend/components/MugCanvas.tsx.md) |
 | `ShippingCalculator.tsx` | Calculadora de opciones/costos de envío | [Documentación](./frontend/components/ShippingCalculator.tsx.md) |
 | `CheckoutForm.tsx` | Formulario unificado ⚠️ Vacío | [Documentación](./frontend/components/CheckoutForm.tsx.md) |
 
@@ -211,6 +218,20 @@ tazas-personalizables/
 
 - [x] Landing page con diseño ML
 - [x] Catálogo de productos con agregar al carrito
+- [x] **Personalizador de Tazas (/customizer)**
+  - [x] Canvas interactivo con Konva.js
+  - [x] Agregar y editar imágenes
+  - [x] Agregar y editar texto
+  - [x] Edición inline de texto (doble clic)
+  - [x] Selector de fuentes (8 Google Fonts)
+  - [x] Control de color y tamaño de texto
+  - [x] Rotación 3D de la taza (0°, 90°, 180°, 270°)
+  - [x] Visualización realista con forma cilíndrica
+  - [x] Iluminación y sombras para efecto 3D
+  - [x] Asa de taza que rota con el modelo
+  - [x] Control de capas (traer al frente/enviar atrás)
+  - [x] Exportar diseño a imagen
+  - [x] Agregar al carrito con diseño personalizado
 - [x] Carrito con edición de cantidades
 - [x] Cálculo de envío por provincia
 - [x] Persistencia de carrito en localStorage
@@ -223,7 +244,6 @@ tazas-personalizables/
 ### ⚠️ Parciales/Incompletas
 
 - [ ] Backend con solo endpoint de health check
-- [ ] Ruta `/customizer` (referenciada pero no existe)
 - [ ] Integración de pago real (Mercado Pago deshabilitado)
 - [ ] Confirmación de orden (sin handler de submit)
 - [ ] Base de datos (archivo vacío)
@@ -259,7 +279,6 @@ tazas-personalizables/
 
 #### Rutas Faltantes
 
-- `/customizer` - Personalización de tazas
 - `/checkout/success` - Confirmación de compra
 - `/orders` - Historial de pedidos
 
@@ -354,11 +373,19 @@ npm run dev
 3. Crear página `/checkout/success`
 4. Implementar historial de pedidos
 
-### Fase 3: Pagos y Customización
+### Fase 3: ~~Pagos y Customización~~ Pagos y Mejoras
+
 1. Integrar Mercado Pago SDK
-2. Implementar `/customizer` con editor de imágenes
-3. Aplicar descuento de efectivo en cálculos
-4. Validaciones de formularios
+2. ~~Implementar `/customizer` con editor de imágenes~~ ✅ **Completado**
+3. **Mejoras al Customizer**:
+   - [ ] Guardar/cargar diseños en localStorage
+   - [ ] Deshacer/Rehacer (Undo/Redo)
+   - [ ] Galería de stickers/clipart predefinidos
+   - [ ] Negrita/cursiva para textos
+   - [ ] Más opciones de fuentes
+   - [ ] Exportar múltiples vistas (4 lados de la taza)
+4. Aplicar descuento de efectivo en cálculos
+5. Validaciones de formularios
 
 ### Fase 4: Optimizaciones
 1. Downgrade a React 18.x y Tailwind v3 para estabilidad
