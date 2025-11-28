@@ -15,6 +15,8 @@ interface ToolbarProps {
     onTextColorChange: (color: string) => void;
     fontSize: number;
     onFontSizeChange: (size: number) => void;
+    fontFamily: string;
+    onFontFamilyChange: (font: string) => void;
     hasSelection: boolean;
     hasElements: boolean;
     mugRotation: number;
@@ -34,6 +36,8 @@ export default function Toolbar({
     onTextColorChange,
     fontSize,
     onFontSizeChange,
+    fontFamily,
+    onFontFamilyChange,
     hasSelection,
     hasElements,
     mugRotation,
@@ -185,6 +189,29 @@ export default function Toolbar({
                 <p className="text-sm font-mono text-[var(--foreground)] mt-1">
                     {fontSize}px
                 </p>
+            </div>
+
+            {/* Selector de Fuente */}
+            <div>
+                <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
+                    Tipografía
+                </h3>
+                <select
+                    value={fontFamily}
+                    onChange={(e) => onFontFamilyChange(e.target.value)}
+                    disabled={!hasSelection}
+                    className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded font-text text-sm text-[var(--foreground)] disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ fontFamily }}
+                >
+                    <option value="Inter" style={{ fontFamily: 'Inter' }}>Inter</option>
+                    <option value="Roboto" style={{ fontFamily: 'Roboto' }}>Roboto</option>
+                    <option value="Montserrat" style={{ fontFamily: 'Montserrat' }}>Montserrat</option>
+                    <option value="Playfair Display" style={{ fontFamily: 'Playfair Display' }}>Playfair Display</option>
+                    <option value="Pacifico" style={{ fontFamily: 'Pacifico' }}>Pacifico</option>
+                    <option value="Dancing Script" style={{ fontFamily: 'Dancing Script' }}>Dancing Script</option>
+                    <option value="Bebas Neue" style={{ fontFamily: 'Bebas Neue' }}>Bebas Neue</option>
+                    <option value="Oswald" style={{ fontFamily: 'Oswald' }}>Oswald</option>
+                </select>
             </div>
 
             <hr className="border-[var(--border)]" />

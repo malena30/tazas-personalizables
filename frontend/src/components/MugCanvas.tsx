@@ -107,7 +107,7 @@ function CanvasImageElement({ element, isSelected, onSelect, onChange }: any) {
 }
 
 // Componente para renderizar texto  
-function CanvasTextElement({ element, isSelected, onSelect, onChange }: any) {
+function CanvasTextElement({ element, isSelected, onSelect, onChange, onDoubleClick }: any) {
     const textRef = useRef<any>(null);
     const transformerRef = useRef<any>(null);
 
@@ -133,12 +133,8 @@ function CanvasTextElement({ element, isSelected, onSelect, onChange }: any) {
                 onClick={onSelect}
                 onTap={onSelect}
                 onDblClick={() => {
-                    const newText = prompt("Editar texto:", element.content);
-                    if (newText && newText.trim() !== '') {
-                        onChange({
-                            ...element,
-                            content: newText
-                        });
+                    if (onDoubleClick) {
+                        onDoubleClick(element);
                     }
                 }}
                 fontStyle={`${element.isBold ? 'bold' : ''} ${element.isItalic ? 'italic' : ''}`}
@@ -188,7 +184,16 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
 }, ref) {
 
     const stageRef = useRef(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const [canvasElements, setCanvasElements] = useState(elements);
+    const [editingText, setEditingText] = useState<{
+        id: string;
+        content: string;
+        position: { x: number; y: number };
+        fontSize: number;
+        fontFamily: string;
+        color: string;
+    } | null>(null);
 
     useEffect(() => {
         setCanvasElements(elements);
@@ -317,6 +322,17 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
                                                         element={adjustedElement} // Usar ajustado
                                                         isSelected={isSelected}
                                                         onSelect={() => onSelect(element.id)}
+                                                        onDoubleClick={(el: any) => {
+                                                            // Iniciar edición inline
+                                                            setEditingText({
+                                                                id: element.id,
+                                                                content: element.content,
+                                                                position: element.position,
+                                                                fontSize: element.fontSize,
+                                                                fontFamily: element.fontFamily || 'Inter',
+                                                                color: element.color
+                                                            });
+                                                        }}
                                                         onChange={(newEl: any) => {
                                                             handleElementChange({
                                                                 ...newEl,
@@ -378,6 +394,75 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
                     </div>
                 </div>
             </div>
+
+            {/* Editor de Texto Inline */}
+            {editingText && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        zIndex: 1000,
+                        pointerEvents: 'auto'
+                    }}
+                >
+                    <input
+                        type="text"
+                        value={editingText.content}
+                        onChange={(e) => {
+                            setEditingText({
+                                ...editingText,
+                                content: e.target.value
+                            });
+                        }}
+                        onBlur={() => {
+                            // Guardar cambios
+                            if (editingText.content.trim() !== '') {
+                                const element = canvasElements.find(el => el.id === editingText.id);
+                                if (element && element.type === 'text') {
+                                    handleElementChange({
+                                        ...element,
+                                        content: editingText.content
+                                    });
+                                }
+                            }
+                            setEditingText(null);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                // Guardar con Enter
+                                if (editingText.content.trim() !== '') {
+                                    const element = canvasElements.find(el => el.id === editingText.id);
+                                    if (element && element.type === 'text') {
+                                        handleElementChange({
+                                            ...element,
+                                            content: editingText.content
+                                        });
+                                    }
+                                }
+                                setEditingText(null);
+                            } else if (e.key === 'Escape') {
+                                // Cancelar con Escape
+                                setEditingText(null);
+                            }
+                        }}
+                        autoFocus
+                        style={{
+                            fontSize: `${editingText.fontSize}px`,
+                            fontFamily: editingText.fontFamily,
+                            color: editingText.color,
+                            background: 'rgba(255, 255, 255, 0.95)',
+                            border: '2px solid #4A90E2',
+                            outline: 'none',
+                            padding: '4px 8px',
+                            minWidth: '100px',
+                            borderRadius: '4px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                        }}
+                    />
+                </div>
+            )}
         </div>
     );
 });
