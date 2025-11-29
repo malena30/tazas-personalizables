@@ -239,7 +239,7 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
                             width: '140px',
                             height: '200px',
                             transform: 'translateY(-50%) translateZ(-40px) rotateY(15deg)',
-                            border: '25px solid #E5E5E5',
+                            border: `25px solid ${mugColor}`,
                             borderRadius: '0 80px 80px 0',
                             zIndex: -1,
                             boxShadow: 'inset 5px 0 15px rgba(0,0,0,0.1)'
