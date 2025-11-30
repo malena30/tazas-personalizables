@@ -11,7 +11,6 @@ interface MugCanvasProps {
     onSelect: (id: string | null) => void;
     onUpdateElement: (element: CanvasElement) => void;
     mugColor: string;
-    mugRotation: number;
 }
 
 // Componente para renderizar imágenes
@@ -179,13 +178,15 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
     selectedId,
     onSelect,
     onUpdateElement,
-    mugColor,
-    mugRotation
+    mugColor
 }, ref) {
 
     const stageRef = useRef(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [canvasElements, setCanvasElements] = useState(elements);
+    const [mugRotation, setMugRotation] = useState(0);
+    const [isDraggingMug, setIsDraggingMug] = useState(false);
+    const [dragStartX, setDragStartX] = useState(0);
     const [editingText, setEditingText] = useState<{
         id: string;
         content: string;
@@ -216,6 +217,29 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
         onUpdateElement(updatedElement);
     };
 
+    // Handlers para rotación con mouse
+    const handleMugMouseDown = (e: React.MouseEvent) => {
+        setIsDraggingMug(true);
+        setDragStartX(e.clientX);
+    };
+
+    const handleMugMouseMove = (e: React.MouseEvent) => {
+        if (isDraggingMug) {
+            const deltaX = e.clientX - dragStartX;
+            const rotationSpeed = 0.5; // Ajusta la velocidad de rotación
+            setMugRotation(prev => prev + deltaX * rotationSpeed);
+            setDragStartX(e.clientX);
+        }
+    };
+
+    const handleMugMouseUp = () => {
+        setIsDraggingMug(false);
+    };
+
+    const handleMugMouseLeave = () => {
+        setIsDraggingMug(false);
+    };
+
     return (
         <div className="flex items-center justify-center bg-[var(--background)] border-2 border-[var(--border)] rounded-lg p-8 overflow-hidden">
 
@@ -224,10 +248,16 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
                 {/* Contenedor de la Taza con Rotación 3D */}
                 <div
                     className="absolute inset-0 flex items-center justify-center"
+                    onMouseDown={handleMugMouseDown}
+                    onMouseMove={handleMugMouseMove}
+                    onMouseUp={handleMugMouseUp}
+                    onMouseLeave={handleMugMouseLeave}
                     style={{
                         transform: `rotateY(${mugRotation}deg)`,
                         transformStyle: 'preserve-3d',
-                        transition: 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+                        transition: isDraggingMug ? 'none' : 'transform 0.2s ease-out',
+                        cursor: isDraggingMug ? 'grabbing' : 'grab',
+                        userSelect: 'none'
                     }}
                 >
                     {/* ASA DE LA TAZA (Lado Derecho) */}

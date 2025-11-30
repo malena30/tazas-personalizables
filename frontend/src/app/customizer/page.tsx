@@ -20,7 +20,6 @@ export default function CustomizerPage() {
     const [fontSize, setFontSize] = useState(24);
     const [fontFamily, setFontFamily] = useState("Inter");
     const [showTooltip, setShowTooltip] = useState(false);
-    const [mugRotation, setMugRotation] = useState(0); // 0, 90, 180, 270
     const canvasRef = useRef<any>(null);
     const addToCart = useCartStore((state) => state.addToCart);
 
@@ -131,16 +130,7 @@ export default function CustomizerPage() {
         }
     }, [fontFamily]);
 
-    // Manejar rotación de la taza
-    const handleRotateMug = (direction: 'left' | 'right') => {
-        setMugRotation(prev => {
-            if (direction === 'left') {
-                return (prev - 90 + 360) % 360;
-            } else {
-                return (prev + 90) % 360;
-            }
-        });
-    };
+
 
     // Agregar al carrito
     const handleAddToCart = () => {
@@ -193,8 +183,6 @@ export default function CustomizerPage() {
                         onFontFamilyChange={setFontFamily}
                         hasSelection={selectedId !== null}
                         hasElements={elements.length > 0}
-                        mugRotation={mugRotation}
-                        onRotateMug={handleRotateMug}
                     />
 
                     {/* Canvas principal - Centro */}
@@ -206,7 +194,6 @@ export default function CustomizerPage() {
                             onSelect={setSelectedId}
                             onUpdateElement={handleUpdateElement}
                             mugColor={mugColor}
-                            mugRotation={mugRotation}
                         />
 
                         {/* Información del diseño */}

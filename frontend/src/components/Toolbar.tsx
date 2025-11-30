@@ -19,11 +19,9 @@ interface ToolbarProps {
     onFontFamilyChange: (font: string) => void;
     hasSelection: boolean;
     hasElements: boolean;
-    mugRotation: number;
-    onRotateMug: (direction: 'left' | 'right') => void;
 }
 
-type Tab = 'elementos' | 'texto' | 'taza';
+type Tab = 'imagen' | 'texto' | 'taza';
 
 export default function Toolbar({
     onAddImage,
@@ -41,13 +39,11 @@ export default function Toolbar({
     fontFamily,
     onFontFamilyChange,
     hasSelection,
-    hasElements,
-    mugRotation,
-    onRotateMug
+    hasElements
 }: ToolbarProps) {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [activeTab, setActiveTab] = useState<Tab>('elementos');
+    const [activeTab, setActiveTab] = useState<Tab>('imagen');
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -66,7 +62,7 @@ export default function Toolbar({
     };
 
     const tabs: { id: Tab; label: string; icon: string }[] = [
-        { id: 'elementos', label: 'Elementos', icon: '📝' },
+        { id: 'imagen', label: 'Imagen', icon: '🖼️' },
         { id: 'texto', label: 'Texto', icon: '🔤' },
         { id: 'taza', label: 'Taza', icon: '☕' }
     ];
@@ -87,8 +83,8 @@ export default function Toolbar({
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`px-2 py-3 font-text text-sm font-medium transition-colors flex flex-col items-center gap-1 ${activeTab === tab.id
-                                ? 'bg-[var(--accent)] text-[var(--foreground)] border-b-2 border-[var(--foreground)]'
-                                : 'bg-[var(--background)] text-[var(--foreground)] opacity-60 hover:opacity-100'
+                            ? 'bg-[var(--accent)] text-[var(--foreground)] border-b-2 border-[var(--foreground)]'
+                            : 'bg-[var(--background)] text-[var(--foreground)] opacity-60 hover:opacity-100'
                             }`}
                     >
                         <span className="text-lg">{tab.icon}</span>
@@ -100,8 +96,8 @@ export default function Toolbar({
             {/* Tab Content */}
             <div className="p-6 space-y-4 flex-1" style={{ minHeight: '350px', maxHeight: '450px', overflowY: 'auto' }}>
 
-                {/* TAB: Elementos */}
-                {activeTab === 'elementos' && (
+                {/* TAB: Imagen */}
+                {activeTab === 'imagen' && (
                     <>
                         <div>
                             <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
@@ -122,24 +118,12 @@ export default function Toolbar({
                             </button>
                         </div>
 
-                        <div>
-                            <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
-                                Agregar Texto
-                            </h3>
-                            <button
-                                onClick={onAddText}
-                                className="w-full bg-[var(--accent)] text-[var(--foreground)] px-4 py-3 rounded-lg font-text font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-                            >
-                                ✏️ Agregar Texto
-                            </button>
-                        </div>
-
                         {hasSelection && (
                             <>
                                 <hr className="border-[var(--border)]" />
                                 <div>
                                     <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
-                                        Elemento Seleccionado
+                                        Editar Imagen
                                     </h3>
                                     <div className="grid grid-cols-2 gap-2">
                                         <button
@@ -164,12 +148,34 @@ export default function Toolbar({
                                 </div>
                             </>
                         )}
+
+                        {!hasSelection && (
+                            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p className="text-sm text-blue-800">
+                                    💡 Subí una imagen y seleccionala para editarla
+                                </p>
+                            </div>
+                        )}
                     </>
                 )}
 
                 {/* TAB: Texto */}
                 {activeTab === 'texto' && (
                     <>
+                        <div>
+                            <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
+                                Agregar Texto
+                            </h3>
+                            <button
+                                onClick={onAddText}
+                                className="w-full bg-[var(--accent)] text-[var(--foreground)] px-4 py-3 rounded-lg font-text font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                            >
+                                ✏️ Agregar Texto
+                            </button>
+                        </div>
+
+                        <hr className="border-[var(--border)]" />
+
                         <div>
                             <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
                                 Color de Texto
@@ -232,10 +238,41 @@ export default function Toolbar({
                             </select>
                         </div>
 
+                        {hasSelection && (
+                            <>
+                                <hr className="border-[var(--border)]" />
+                                <div>
+                                    <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
+                                        Organizar Texto
+                                    </h3>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <button
+                                            onClick={onBringToFront}
+                                            className="px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded font-text text-sm hover:bg-[var(--hover-bg)] transition-colors text-[var(--foreground)]"
+                                        >
+                                            ⬆️ Al frente
+                                        </button>
+                                        <button
+                                            onClick={onSendToBack}
+                                            className="px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded font-text text-sm hover:bg-[var(--hover-bg)] transition-colors text-[var(--foreground)]"
+                                        >
+                                            ⬇️ Atrás
+                                        </button>
+                                    </div>
+                                    <button
+                                        onClick={onDelete}
+                                        className="w-full mt-2 px-4 py-2 bg-red-600 text-white rounded-lg font-text font-semibold hover:bg-red-700 transition-colors"
+                                    >
+                                        🗑️ Eliminar
+                                    </button>
+                                </div>
+                            </>
+                        )}
+
                         {!hasSelection && (
                             <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                                 <p className="text-sm text-yellow-800">
-                                    💡 Seleccioná un texto para editar sus propiedades
+                                    💡 Agregá un texto y seleccionalo para editarlo
                                 </p>
                             </div>
                         )}
@@ -265,32 +302,9 @@ export default function Toolbar({
                             </div>
                         </div>
 
-                        <div>
-                            <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
-                                Rotar Vista 3D
-                            </h3>
-                            <div className="flex gap-2 items-center">
-                                <button
-                                    onClick={() => onRotateMug('left')}
-                                    className="flex-1 px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded font-text text-sm hover:bg-[var(--hover-bg)] transition-colors text-[var(--foreground)]"
-                                >
-                                    ← Izquierda
-                                </button>
-                                <div className="px-3 py-2 bg-[var(--accent)] text-[var(--foreground)] rounded font-mono text-sm font-semibold">
-                                    {mugRotation}°
-                                </div>
-                                <button
-                                    onClick={() => onRotateMug('right')}
-                                    className="flex-1 px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded font-text text-sm hover:bg-[var(--hover-bg)] transition-colors text-[var(--foreground)]"
-                                >
-                                    Derecha →
-                                </button>
-                            </div>
-                        </div>
-
                         <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                             <p className="text-sm text-blue-800">
-                                💡 Girá la taza para ver cómo se ve tu diseño desde diferentes ángulos
+                                💡 Usá el selector de vista arriba del canvas para ver diferentes ángulos de la taza
                             </p>
                         </div>
                     </>
