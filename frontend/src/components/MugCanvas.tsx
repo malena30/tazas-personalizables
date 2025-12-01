@@ -218,15 +218,20 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
     };
 
     // Handlers para rotación con mouse
+    const [isOverKonva, setIsOverKonva] = useState(false);
+
     const handleMugMouseDown = (e: React.MouseEvent) => {
-        setIsDraggingMug(true);
-        setDragStartX(e.clientX);
+        // Solo rotar si NO estamos sobre el canvas de Konva
+        if (!isOverKonva) {
+            setIsDraggingMug(true);
+            setDragStartX(e.clientX);
+        }
     };
 
     const handleMugMouseMove = (e: React.MouseEvent) => {
-        if (isDraggingMug) {
+        if (isDraggingMug && !isOverKonva) {
             const deltaX = e.clientX - dragStartX;
-            const rotationSpeed = 0.5; // Ajusta la velocidad de rotación
+            const rotationSpeed = 0.5;
             setMugRotation(prev => prev + deltaX * rotationSpeed);
             setDragStartX(e.clientX);
         }
@@ -296,7 +301,11 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
                         />
 
                         {/* Canvas de Konva */}
-                        <div className="absolute inset-0 z-10">
+                        <div
+                            className="absolute inset-0 z-10"
+                            onMouseEnter={() => setIsOverKonva(true)}
+                            onMouseLeave={() => setIsOverKonva(false)}
+                        >
                             <Stage
                                 width={designAreaWidth}
                                 height={designAreaHeight}
