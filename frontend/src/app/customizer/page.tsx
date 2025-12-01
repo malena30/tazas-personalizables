@@ -163,9 +163,9 @@ export default function CustomizerPage() {
                     Diseñá tu Taza Personalizada
                 </h1>
 
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div className="flex gap-6">
 
-                    {/* Panel de herramientas - Izquierda */}
+                    {/* Panel de herramientas - Izquierda (ancho flexible) */}
                     <Toolbar
                         onAddImage={handleAddImage}
                         onAddText={handleAddText}
@@ -186,7 +186,7 @@ export default function CustomizerPage() {
                     />
 
                     {/* Canvas principal - Centro */}
-                    <div className="lg:col-span-3">
+                    <div className="flex-1 max-w-4xl">
                         <MugCanvas
                             ref={canvasRef}
                             elements={elements}
@@ -213,9 +213,34 @@ export default function CustomizerPage() {
                 </div>
             </div>
 
+            {/* Footer fijo - Botón Agregar al Carrito */}
+            <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[var(--border)] shadow-lg z-50">
+                <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                            <span className="text-2xl">🛒</span>
+                            <div>
+                                <p className="text-lg font-title font-bold text-[var(--foreground)]">$3.500</p>
+                                <p className="text-xs text-[var(--foreground)] opacity-60">Taza personalizada</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleAddToCart}
+                        disabled={elements.length === 0}
+                        className={`px-8 py-3 rounded-lg font-text font-semibold transition-all text-base ${elements.length > 0
+                                ? 'bg-[var(--accent)] text-[var(--foreground)] hover:opacity-90 cursor-pointer shadow-md hover:shadow-lg'
+                                : 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
+                            }`}
+                    >
+                        Añadir al carrito
+                    </button>
+                </div>
+            </div>
+
             {/* Tooltip de confirmación */}
             {showTooltip && (
-                <div className="fixed bottom-8 right-8 bg-[var(--accent)] text-[var(--foreground)] px-6 py-4 rounded-lg shadow-lg font-text font-semibold animate-slide-up flex items-center gap-3 z-50">
+                <div className="fixed bottom-24 right-8 bg-[var(--accent)] text-[var(--foreground)] px-6 py-4 rounded-lg shadow-lg font-text font-semibold animate-slide-up flex items-center gap-3 z-50">
                     <div className="bg-white rounded-full p-1">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[var(--accent)]" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
