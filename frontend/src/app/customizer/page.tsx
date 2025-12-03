@@ -21,9 +21,15 @@ export default function CustomizerPage() {
     const [fontFamily, setFontFamily] = useState("Inter");
     // Estados para opciones avanzadas de texto
     const [stroke, setStroke] = useState<string>("");
-    const [strokeWidth, setStrokeWidth] = useState<number>(1);
+    const [strokeWidth, setStrokeWidth] = useState<number>(0.5);
     const [shadowColor, setShadowColor] = useState<string>("");
-    const [shadowBlur, setShadowBlur] = useState<number>(5);
+    const [shadowBlur, setShadowBlur] = useState<number>(1);
+    const [shadowOpacity, setShadowOpacity] = useState<number>(0.8);
+    const [shadowOffsetX, setShadowOffsetX] = useState<number>(3);
+    const [shadowOffsetY, setShadowOffsetY] = useState<number>(3);
+
+    // Estado para la pestaña activa del toolbar
+    const [activeTab, setActiveTab] = useState<'producto' | 'capas' | 'imagen' | 'texto' | null>(null);
 
     const [showTooltip, setShowTooltip] = useState(false);
     const canvasRef = useRef<any>(null);
@@ -45,7 +51,9 @@ export default function CustomizerPage() {
             opacity: 1
         };
         setElements([...elements, newImage]);
+        setElements([...elements, newImage]);
         setSelectedId(newImage.id);
+        setActiveTab('imagen'); // Auto-abrir pestaña imagen
     };
 
     // Agregar texto
@@ -61,17 +69,12 @@ export default function CustomizerPage() {
             rotation: 0,
             zIndex: elements.length,
             isBold: false,
-            isItalic: false,
-            stroke: stroke || undefined,
-            strokeWidth: strokeWidth,
-            shadowColor: shadowColor || undefined,
-            shadowBlur: shadowBlur,
-            shadowOffsetX: 5,
-            shadowOffsetY: 5,
-            shadowOpacity: 0.5
+            isItalic: false
         };
         setElements([...elements, newText]);
+        setElements([...elements, newText]);
         setSelectedId(newText.id);
+        setActiveTab('texto'); // Auto-abrir pestaña texto
     };
 
     // Eliminar elemento seleccionado
@@ -154,9 +157,26 @@ export default function CustomizerPage() {
                 setStrokeWidth(selectedElement.strokeWidth || 1);
                 setShadowColor(selectedElement.shadowColor || "");
                 setShadowBlur(selectedElement.shadowBlur || 5);
+                setShadowOpacity(selectedElement.shadowOpacity || 0.8);
+                setShadowOffsetX(selectedElement.shadowOffsetX || 3);
+                setShadowOffsetY(selectedElement.shadowOffsetY || 3);
             }
         }
     }, [selectedId, elements]);
+
+    // Auto-cambiar de pestaña al seleccionar un elemento
+    useEffect(() => {
+        if (selectedId) {
+            const selectedElement = elements.find(el => el.id === selectedId);
+            if (selectedElement) {
+                if (selectedElement.type === 'text') {
+                    setActiveTab('texto');
+                } else if (selectedElement.type === 'image') {
+                    setActiveTab('imagen');
+                }
+            }
+        }
+    }, [selectedId]);
 
     // Handlers para actualizar propiedades avanzadas en el elemento seleccionado
     useEffect(() => {
@@ -202,6 +222,39 @@ export default function CustomizerPage() {
             }));
         }
     }, [shadowBlur]);
+
+    useEffect(() => {
+        if (selectedId) {
+            setElements(prev => prev.map(el => {
+                if (el.id === selectedId && el.type === 'text') {
+                    return { ...el, shadowOpacity: shadowOpacity };
+                }
+                return el;
+            }));
+        }
+    }, [shadowOpacity]);
+
+    useEffect(() => {
+        if (selectedId) {
+            setElements(prev => prev.map(el => {
+                if (el.id === selectedId && el.type === 'text') {
+                    return { ...el, shadowOffsetX: shadowOffsetX };
+                }
+                return el;
+            }));
+        }
+    }, [shadowOffsetX]);
+
+    useEffect(() => {
+        if (selectedId) {
+            setElements(prev => prev.map(el => {
+                if (el.id === selectedId && el.type === 'text') {
+                    return { ...el, shadowOffsetY: shadowOffsetY };
+                }
+                return el;
+            }));
+        }
+    }, [shadowOffsetY]);
 
 
 
@@ -264,6 +317,14 @@ export default function CustomizerPage() {
                         onShadowColorChange={setShadowColor}
                         shadowBlur={shadowBlur}
                         onShadowBlurChange={setShadowBlur}
+                        shadowOpacity={shadowOpacity}
+                        onShadowOpacityChange={setShadowOpacity}
+                        shadowOffsetX={shadowOffsetX}
+                        onShadowOffsetXChange={setShadowOffsetX}
+                        shadowOffsetY={shadowOffsetY}
+                        onShadowOffsetYChange={setShadowOffsetY}
+                        activeTab={activeTab}
+                        onTabChange={setActiveTab}
                     />
 
                     {/* Canvas principal - Centro */}

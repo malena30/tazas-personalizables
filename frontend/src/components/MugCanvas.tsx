@@ -129,11 +129,14 @@ function CanvasTextElement({ element, isSelected, onSelect, onChange, onDoubleCl
                 fill={element.color}
                 stroke={element.stroke}
                 strokeWidth={element.strokeWidth}
-                shadowColor={element.shadowColor}
-                shadowBlur={element.shadowBlur}
-                shadowOffsetX={element.shadowOffsetX}
-                shadowOffsetY={element.shadowOffsetY}
-                shadowOpacity={element.shadowOpacity}
+                // Solo aplicar sombra si shadowColor está definido
+                {...(element.shadowColor ? {
+                    shadowColor: element.shadowColor,
+                    shadowBlur: element.shadowBlur,
+                    shadowOffsetX: element.shadowOffsetX,
+                    shadowOffsetY: element.shadowOffsetY,
+                    shadowOpacity: element.shadowOpacity
+                } : {})}
                 rotation={element.rotation}
                 draggable
                 onClick={onSelect}
