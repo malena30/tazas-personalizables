@@ -19,6 +19,12 @@ export default function CustomizerPage() {
     const [textColor, setTextColor] = useState("#000000");
     const [fontSize, setFontSize] = useState(24);
     const [fontFamily, setFontFamily] = useState("Inter");
+    // Estados para opciones avanzadas de texto
+    const [stroke, setStroke] = useState<string>("");
+    const [strokeWidth, setStrokeWidth] = useState<number>(1);
+    const [shadowColor, setShadowColor] = useState<string>("");
+    const [shadowBlur, setShadowBlur] = useState<number>(5);
+
     const [showTooltip, setShowTooltip] = useState(false);
     const canvasRef = useRef<any>(null);
     const addToCart = useCartStore((state) => state.addToCart);
@@ -55,7 +61,14 @@ export default function CustomizerPage() {
             rotation: 0,
             zIndex: elements.length,
             isBold: false,
-            isItalic: false
+            isItalic: false,
+            stroke: stroke || undefined,
+            strokeWidth: strokeWidth,
+            shadowColor: shadowColor || undefined,
+            shadowBlur: shadowBlur,
+            shadowOffsetX: 5,
+            shadowOffsetY: 5,
+            shadowOpacity: 0.5
         };
         setElements([...elements, newText]);
         setSelectedId(newText.id);
@@ -130,6 +143,66 @@ export default function CustomizerPage() {
         }
     }, [fontFamily]);
 
+    // Sincronizar propiedades avanzadas cuando cambia la selección
+    useEffect(() => {
+        if (selectedId) {
+            const selectedElement = elements.find(el => el.id === selectedId);
+            if (selectedElement && selectedElement.type === 'text') {
+                // Si el elemento tiene estas propiedades, actualizar el estado
+                // Si no, resetear a valores por defecto
+                setStroke(selectedElement.stroke || "");
+                setStrokeWidth(selectedElement.strokeWidth || 1);
+                setShadowColor(selectedElement.shadowColor || "");
+                setShadowBlur(selectedElement.shadowBlur || 5);
+            }
+        }
+    }, [selectedId, elements]);
+
+    // Handlers para actualizar propiedades avanzadas en el elemento seleccionado
+    useEffect(() => {
+        if (selectedId) {
+            setElements(prev => prev.map(el => {
+                if (el.id === selectedId && el.type === 'text') {
+                    return { ...el, stroke: stroke || undefined };
+                }
+                return el;
+            }));
+        }
+    }, [stroke]);
+
+    useEffect(() => {
+        if (selectedId) {
+            setElements(prev => prev.map(el => {
+                if (el.id === selectedId && el.type === 'text') {
+                    return { ...el, strokeWidth: strokeWidth };
+                }
+                return el;
+            }));
+        }
+    }, [strokeWidth]);
+
+    useEffect(() => {
+        if (selectedId) {
+            setElements(prev => prev.map(el => {
+                if (el.id === selectedId && el.type === 'text') {
+                    return { ...el, shadowColor: shadowColor || undefined };
+                }
+                return el;
+            }));
+        }
+    }, [shadowColor]);
+
+    useEffect(() => {
+        if (selectedId) {
+            setElements(prev => prev.map(el => {
+                if (el.id === selectedId && el.type === 'text') {
+                    return { ...el, shadowBlur: shadowBlur };
+                }
+                return el;
+            }));
+        }
+    }, [shadowBlur]);
+
 
 
     // Agregar al carrito
@@ -183,6 +256,14 @@ export default function CustomizerPage() {
                         onFontFamilyChange={setFontFamily}
                         hasSelection={selectedId !== null}
                         hasElements={elements.length > 0}
+                        stroke={stroke}
+                        onStrokeChange={setStroke}
+                        strokeWidth={strokeWidth}
+                        onStrokeWidthChange={setStrokeWidth}
+                        shadowColor={shadowColor}
+                        onShadowColorChange={setShadowColor}
+                        shadowBlur={shadowBlur}
+                        onShadowBlurChange={setShadowBlur}
                     />
 
                     {/* Canvas principal - Centro */}
@@ -229,8 +310,8 @@ export default function CustomizerPage() {
                         onClick={handleAddToCart}
                         disabled={elements.length === 0}
                         className={`px-8 py-3 rounded-lg font-text font-semibold transition-all text-base ${elements.length > 0
-                                ? 'bg-[var(--accent)] text-[var(--foreground)] hover:opacity-90 cursor-pointer shadow-md hover:shadow-lg'
-                                : 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
+                            ? 'bg-[var(--accent)] text-[var(--foreground)] hover:opacity-90 cursor-pointer shadow-md hover:shadow-lg'
+                            : 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
                             }`}
                     >
                         Añadir al carrito

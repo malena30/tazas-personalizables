@@ -35,6 +35,14 @@ export interface TextElement extends BaseElement {
     color: string;
     isBold: boolean;
     isItalic: boolean;
+    // Propiedades avanzadas (opcionales para compatibilidad hacia atrás)
+    stroke?: string;
+    strokeWidth?: number;
+    shadowColor?: string;
+    shadowBlur?: number;
+    shadowOffsetX?: number;
+    shadowOffsetY?: number;
+    shadowOpacity?: number;
 }
 
 export type CanvasElement = ImageElement | TextElement;

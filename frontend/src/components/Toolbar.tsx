@@ -19,6 +19,15 @@ interface ToolbarProps {
     onFontFamilyChange: (font: string) => void;
     hasSelection: boolean;
     hasElements: boolean;
+    // Advanced Text Props
+    stroke?: string;
+    onStrokeChange: (color: string) => void;
+    strokeWidth?: number;
+    onStrokeWidthChange: (width: number) => void;
+    shadowColor?: string;
+    onShadowColorChange: (color: string) => void;
+    shadowBlur?: number;
+    onShadowBlurChange: (blur: number) => void;
 }
 
 type Tab = 'producto' | 'capas' | 'imagen' | 'texto' | null;
@@ -39,7 +48,15 @@ export default function Toolbar({
     fontFamily,
     onFontFamilyChange,
     hasSelection,
-    hasElements
+    hasElements,
+    stroke,
+    onStrokeChange,
+    strokeWidth,
+    onStrokeWidthChange,
+    shadowColor,
+    onShadowColorChange,
+    shadowBlur,
+    onShadowBlurChange
 }: ToolbarProps) {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -84,11 +101,10 @@ export default function Toolbar({
                         key={tab.id}
                         onClick={() => handleTabClick(tab.id)}
                         title={tab.label}
-                        className={`h-16 w-full flex flex-col items-center justify-center gap-1 border-b border-[var(--border)] transition-colors ${
-                            activeTab === tab.id
-                                ? 'bg-[var(--accent)] text-[var(--foreground)]'
-                                : 'bg-[var(--background)] text-[var(--foreground)] opacity-60 hover:opacity-100 hover:bg-[var(--hover-bg)]'
-                        }`}
+                        className={`h-16 w-full flex flex-col items-center justify-center gap-1 border-b border-[var(--border)] transition-colors ${activeTab === tab.id
+                            ? 'bg-[var(--accent)] text-[var(--foreground)]'
+                            : 'bg-[var(--background)] text-[var(--foreground)] opacity-60 hover:opacity-100 hover:bg-[var(--hover-bg)]'
+                            }`}
                     >
                         <span className="text-2xl">{tab.icon}</span>
                         <span className="text-xs font-text">{tab.label}</span>
@@ -310,6 +326,87 @@ export default function Toolbar({
                                     </select>
                                 </div>
 
+                                <hr className="border-[var(--border)]" />
+
+                                {/* Borde (Stroke) */}
+                                <div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <h3 className="text-sm font-title font-semibold text-[var(--foreground)]">
+                                            Borde
+                                        </h3>
+                                        <input
+                                            type="checkbox"
+                                            checked={!!stroke}
+                                            onChange={(e) => onStrokeChange(e.target.checked ? '#000000' : '')}
+                                            disabled={!hasSelection}
+                                            className="w-4 h-4 rounded border-gray-300 text-[var(--accent)] focus:ring-[var(--accent)]"
+                                        />
+                                    </div>
+                                    {stroke && (
+                                        <div className="space-y-2 pl-2 border-l-2 border-[var(--border)]">
+                                            <div className="flex gap-2">
+                                                <input
+                                                    type="color"
+                                                    value={stroke}
+                                                    onChange={(e) => onStrokeChange(e.target.value)}
+                                                    className="w-8 h-8 rounded border border-[var(--border)] cursor-pointer"
+                                                />
+                                                <input
+                                                    type="range"
+                                                    min="0"
+                                                    max="10"
+                                                    step="0.5"
+                                                    value={strokeWidth || 0}
+                                                    onChange={(e) => onStrokeWidthChange(parseFloat(e.target.value))}
+                                                    className="flex-1"
+                                                />
+                                            </div>
+                                            <p className="text-xs text-right font-mono text-[var(--foreground)] opacity-70">
+                                                Grosor: {strokeWidth}px
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Sombra (Shadow) */}
+                                <div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <h3 className="text-sm font-title font-semibold text-[var(--foreground)]">
+                                            Sombra
+                                        </h3>
+                                        <input
+                                            type="checkbox"
+                                            checked={!!shadowColor}
+                                            onChange={(e) => onShadowColorChange(e.target.checked ? '#000000' : '')}
+                                            disabled={!hasSelection}
+                                            className="w-4 h-4 rounded border-gray-300 text-[var(--accent)] focus:ring-[var(--accent)]"
+                                        />
+                                    </div>
+                                    {shadowColor && (
+                                        <div className="space-y-2 pl-2 border-l-2 border-[var(--border)]">
+                                            <div className="flex gap-2">
+                                                <input
+                                                    type="color"
+                                                    value={shadowColor}
+                                                    onChange={(e) => onShadowColorChange(e.target.value)}
+                                                    className="w-8 h-8 rounded border border-[var(--border)] cursor-pointer"
+                                                />
+                                                <input
+                                                    type="range"
+                                                    min="0"
+                                                    max="20"
+                                                    value={shadowBlur || 0}
+                                                    onChange={(e) => onShadowBlurChange(parseInt(e.target.value))}
+                                                    className="flex-1"
+                                                />
+                                            </div>
+                                            <p className="text-xs text-right font-mono text-[var(--foreground)] opacity-70">
+                                                Difuminado: {shadowBlur}px
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+
                                 {!hasSelection && (
                                     <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                                         <p className="text-sm text-yellow-800">
@@ -321,7 +418,8 @@ export default function Toolbar({
                         )}
                     </div>
                 </aside>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 }
