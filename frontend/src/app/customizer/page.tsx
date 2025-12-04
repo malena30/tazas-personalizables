@@ -6,10 +6,10 @@ import { CanvasElement, ImageElement, TextElement } from "@/types/customizer";
 import Toolbar from "@/components/Toolbar";
 import { useCartStore } from "@/store/cartStore";
 
-// Importación dinámica de MugCanvas para evitar errores de SSR con Konva
-const MugCanvas = dynamic(() => import("@/components/MugCanvas"), {
+// Importación dinámica de Mug3DViewer para evitar errores de SSR con Three.js y Konva
+const Mug3DViewer = dynamic(() => import("@/components/Mug3DViewer"), {
     ssr: false,
-    loading: () => <div className="w-full h-[600px] bg-gray-100 animate-pulse rounded-lg flex items-center justify-center">Cargando diseñador...</div>
+    loading: () => <div className="w-full h-[500px] bg-gray-100 animate-pulse rounded-lg flex items-center justify-center">Cargando visor 3D...</div>
 });
 
 export default function CustomizerPage() {
@@ -27,6 +27,7 @@ export default function CustomizerPage() {
     const [shadowOpacity, setShadowOpacity] = useState<number>(0.8);
     const [shadowOffsetX, setShadowOffsetX] = useState<number>(3);
     const [shadowOffsetY, setShadowOffsetY] = useState<number>(3);
+    const [curvature, setCurvature] = useState<number>(0);
 
     // Estado para la pestaña activa del toolbar
     const [activeTab, setActiveTab] = useState<'producto' | 'capas' | 'imagen' | 'texto' | null>(null);
@@ -51,7 +52,6 @@ export default function CustomizerPage() {
             opacity: 1
         };
         setElements([...elements, newImage]);
-        setElements([...elements, newImage]);
         setSelectedId(newImage.id);
         setActiveTab('imagen'); // Auto-abrir pestaña imagen
     };
@@ -69,9 +69,9 @@ export default function CustomizerPage() {
             rotation: 0,
             zIndex: elements.length,
             isBold: false,
-            isItalic: false
+            isItalic: false,
+            curvature: 0
         };
-        setElements([...elements, newText]);
         setElements([...elements, newText]);
         setSelectedId(newText.id);
         setActiveTab('texto'); // Auto-abrir pestaña texto
@@ -160,9 +160,11 @@ export default function CustomizerPage() {
                 setShadowOpacity(selectedElement.shadowOpacity || 0.8);
                 setShadowOffsetX(selectedElement.shadowOffsetX || 3);
                 setShadowOffsetY(selectedElement.shadowOffsetY || 3);
+                setCurvature(selectedElement.curvature || 0);
             }
         }
-    }, [selectedId, elements]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedId]); // Solo sincronizar cuando cambia la selección, NO cuando cambia elements
 
     // Auto-cambiar de pestaña al seleccionar un elemento
     useEffect(() => {
@@ -256,6 +258,17 @@ export default function CustomizerPage() {
         }
     }, [shadowOffsetY]);
 
+    useEffect(() => {
+        if (selectedId) {
+            setElements(prev => prev.map(el => {
+                if (el.id === selectedId && el.type === 'text') {
+                    return { ...el, curvature: curvature };
+                }
+                return el;
+            }));
+        }
+    }, [curvature]);
+
 
 
     // Agregar al carrito
@@ -325,11 +338,13 @@ export default function CustomizerPage() {
                         onShadowOffsetYChange={setShadowOffsetY}
                         activeTab={activeTab}
                         onTabChange={setActiveTab}
+                        curvature={curvature}
+                        onCurvatureChange={setCurvature}
                     />
 
-                    {/* Canvas principal - Centro */}
-                    <div className="flex-1 max-w-4xl">
-                        <MugCanvas
+                    {/* Visor 3D de la Taza - Centro */}
+                    <div className="flex-1">
+                        <Mug3DViewer
                             ref={canvasRef}
                             elements={elements}
                             selectedId={selectedId}
