@@ -43,6 +43,8 @@ export interface TextElement extends BaseElement {
     shadowOffsetX?: number;
     shadowOffsetY?: number;
     shadowOpacity?: number;
+    // Propiedad para texto curvo
+    curvature?: number; // -100 a 100
 }
 
 export type CanvasElement = ImageElement | TextElement;

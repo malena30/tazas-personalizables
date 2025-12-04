@@ -36,6 +36,8 @@ interface ToolbarProps {
     onShadowOffsetYChange: (offset: number) => void;
     activeTab: 'producto' | 'capas' | 'imagen' | 'texto' | null;
     onTabChange: (tab: 'producto' | 'capas' | 'imagen' | 'texto' | null) => void;
+    curvature?: number;
+    onCurvatureChange: (curvature: number) => void;
 }
 
 type Tab = 'producto' | 'capas' | 'imagen' | 'texto' | null;
@@ -72,7 +74,9 @@ export default function Toolbar({
     shadowOffsetY,
     onShadowOffsetYChange,
     activeTab,
-    onTabChange
+    onTabChange,
+    curvature,
+    onCurvatureChange
 }: ToolbarProps) {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -342,6 +346,34 @@ export default function Toolbar({
                                         <option value="Bebas Neue" style={{ fontFamily: 'Bebas Neue' }}>Bebas Neue</option>
                                         <option value="Oswald" style={{ fontFamily: 'Oswald' }}>Oswald</option>
                                     </select>
+                                </div>
+
+                                <hr className="border-[var(--border)]" />
+
+                                {/* Curvatura */}
+                                <div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <h3 className="text-sm font-title font-semibold text-[var(--foreground)]">
+                                            Curvatura
+                                        </h3>
+                                        <span className="text-xs font-mono text-[var(--foreground)] opacity-70">
+                                            {curvature || 0}°
+                                        </span>
+                                    </div>
+                                    <input
+                                        type="range"
+                                        min="-100"
+                                        max="100"
+                                        value={curvature || 0}
+                                        onChange={(e) => onCurvatureChange(parseInt(e.target.value))}
+                                        disabled={!hasSelection}
+                                        className="w-full"
+                                    />
+                                    <div className="flex justify-between text-[10px] text-[var(--foreground)] opacity-50 mt-1">
+                                        <span>Concavo</span>
+                                        <span>Plano</span>
+                                        <span>Convexo</span>
+                                    </div>
                                 </div>
 
                                 <hr className="border-[var(--border)]" />

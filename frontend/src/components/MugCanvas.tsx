@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState, forwardRef } from "react";
 import dynamic from "next/dynamic";
-import { Stage, Layer, Rect, Text as KonvaText, Image as KonvaImage, Transformer } from "react-konva";
+import { Stage, Layer, Rect, Text as KonvaText, TextPath, Image as KonvaImage, Transformer } from "react-konva";
 import { CanvasElement } from "@/types/customizer";
 
 interface MugCanvasProps {
@@ -115,59 +115,124 @@ function CanvasTextElement({ element, isSelected, onSelect, onChange, onDoubleCl
             transformerRef.current.nodes([textRef.current]);
             transformerRef.current.getLayer().batchDraw();
         }
-    }, [isSelected]);
+    }, [isSelected, element.curvature]);
+
+    const isCurved = element.curvature && element.curvature !== 0;
+
+    // Generar path para texto curvo
+    const pathData = (() => {
+        if (!isCurved) return "";
+        const width = element.content.length * (element.fontSize * 0.6); // Estimación de ancho
+        const curve = element.curvature || 0;
+        // Curva cuadrática simple: M startX,startY Q controlX,controlY endX,endY
+        return `M 0,0 Q ${width / 2},${curve * 2} ${width},0`;
+    })();
 
     return (
         <>
-            <KonvaText
-                ref={textRef}
-                text={element.content}
-                x={element.position.x}
-                y={element.position.y}
-                fontSize={element.fontSize}
-                fontFamily={element.fontFamily}
-                fill={element.color}
-                stroke={element.stroke}
-                strokeWidth={element.strokeWidth}
-                // Solo aplicar sombra si shadowColor está definido
-                {...(element.shadowColor ? {
-                    shadowColor: element.shadowColor,
-                    shadowBlur: element.shadowBlur,
-                    shadowOffsetX: element.shadowOffsetX,
-                    shadowOffsetY: element.shadowOffsetY,
-                    shadowOpacity: element.shadowOpacity
-                } : {})}
-                rotation={element.rotation}
-                draggable
-                onClick={onSelect}
-                onTap={onSelect}
-                onDblClick={() => {
-                    if (onDoubleClick) {
-                        onDoubleClick(element);
-                    }
-                }}
-                fontStyle={`${element.isBold ? 'bold' : ''} ${element.isItalic ? 'italic' : ''}`}
-                onDragEnd={(e: any) => {
-                    onChange({
-                        ...element,
-                        position: {
-                            x: e.target.x(),
-                            y: e.target.y()
+            {isCurved ? (
+                <TextPath
+                    ref={textRef}
+                    data={pathData}
+                    text={element.content}
+                    x={element.position.x}
+                    y={element.position.y}
+                    fontSize={element.fontSize}
+                    fontFamily={element.fontFamily}
+                    fill={element.color}
+                    align="center"
+                    stroke={element.stroke}
+                    strokeWidth={element.strokeWidth}
+                    // Solo aplicar sombra si shadowColor está definido
+                    {...(element.shadowColor ? {
+                        shadowColor: element.shadowColor,
+                        shadowBlur: element.shadowBlur,
+                        shadowOffsetX: element.shadowOffsetX,
+                        shadowOffsetY: element.shadowOffsetY,
+                        shadowOpacity: element.shadowOpacity
+                    } : {})}
+                    rotation={element.rotation}
+                    draggable
+                    onClick={onSelect}
+                    onTap={onSelect}
+                    onDblClick={() => {
+                        if (onDoubleClick) {
+                            onDoubleClick(element);
                         }
-                    });
-                }}
-                onTransformEnd={(e: any) => {
-                    const node = textRef.current;
-                    onChange({
-                        ...element,
-                        position: {
-                            x: node.x(),
-                            y: node.y()
-                        },
-                        rotation: node.rotation()
-                    });
-                }}
-            />
+                    }}
+                    fontStyle={`${element.isBold ? 'bold' : ''} ${element.isItalic ? 'italic' : ''}`}
+                    onDragEnd={(e: any) => {
+                        onChange({
+                            ...element,
+                            position: {
+                                x: e.target.x(),
+                                y: e.target.y()
+                            }
+                        });
+                    }}
+                    onTransformEnd={(e: any) => {
+                        const node = textRef.current;
+                        onChange({
+                            ...element,
+                            position: {
+                                x: node.x(),
+                                y: node.y()
+                            },
+                            rotation: node.rotation()
+                        });
+                    }}
+                />
+            ) : (
+                <KonvaText
+                    ref={textRef}
+                    text={element.content}
+                    x={element.position.x}
+                    y={element.position.y}
+                    fontSize={element.fontSize}
+                    fontFamily={element.fontFamily}
+                    fill={element.color}
+                    stroke={element.stroke}
+                    strokeWidth={element.strokeWidth}
+                    // Solo aplicar sombra si shadowColor está definido
+                    {...(element.shadowColor ? {
+                        shadowColor: element.shadowColor,
+                        shadowBlur: element.shadowBlur,
+                        shadowOffsetX: element.shadowOffsetX,
+                        shadowOffsetY: element.shadowOffsetY,
+                        shadowOpacity: element.shadowOpacity
+                    } : {})}
+                    rotation={element.rotation}
+                    draggable
+                    onClick={onSelect}
+                    onTap={onSelect}
+                    onDblClick={() => {
+                        if (onDoubleClick) {
+                            onDoubleClick(element);
+                        }
+                    }}
+                    fontStyle={`${element.isBold ? 'bold' : ''} ${element.isItalic ? 'italic' : ''}`}
+                    onDragEnd={(e: any) => {
+                        onChange({
+                            ...element,
+                            position: {
+                                x: e.target.x(),
+                                y: e.target.y()
+                            }
+                        });
+                    }}
+                    onTransformEnd={(e: any) => {
+                        const node = textRef.current;
+                        onChange({
+                            ...element,
+                            position: {
+                                x: node.x(),
+                                y: node.y()
+                            },
+                            rotation: node.rotation()
+                        });
+                    }}
+                />
+            )}
             {isSelected && (
                 <Transformer
                     ref={transformerRef}
@@ -258,7 +323,15 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
     return (
         <div className="flex items-center justify-center bg-[var(--background)] border-2 border-[var(--border)] rounded-lg p-8 overflow-hidden">
 
-            <div className="relative" style={{ width: canvasWidth, height: canvasHeight }}>
+            <div
+                className="relative"
+                style={{
+                    width: canvasWidth,
+                    height: canvasHeight,
+                    perspective: '1000px', // Añadir perspectiva 3D
+                    perspectiveOrigin: '50% 50%'
+                }}
+            >
 
                 {/* Contenedor de la Taza con Rotación 3D */}
                 <div
@@ -270,7 +343,7 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
                     style={{
                         transform: `rotateY(${mugRotation}deg)`,
                         transformStyle: 'preserve-3d',
-                        transition: isDraggingMug ? 'none' : 'transform 0.2s ease-out',
+                        transition: isDraggingMug ? 'none' : 'transform 0.3s ease-out',
                         cursor: isDraggingMug ? 'grabbing' : 'grab',
                         userSelect: 'none'
                     }}
@@ -279,19 +352,74 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
                     <div
                         style={{
                             position: 'absolute',
-                            right: '100px',
+                            right: '80px',
                             top: '50%',
-                            width: '140px',
-                            height: '200px',
-                            transform: 'translateY(-50%) translateZ(-40px) rotateY(15deg)',
-                            border: `25px solid ${mugColor}`,
-                            borderRadius: '0 80px 80px 0',
+                            width: '120px',
+                            height: '180px',
+                            transform: 'translateY(-50%) translateZ(-60px) rotateY(20deg)',
+                            border: `22px solid ${mugColor}`,
+                            borderRadius: '0 70px 70px 0',
                             zIndex: -1,
-                            boxShadow: 'inset 5px 0 15px rgba(0,0,0,0.1)'
+                            boxShadow: 'inset 5px 0 15px rgba(0,0,0,0.15)'
                         }}
                     />
 
-                    {/* CUERPO DE LA TAZA (Canvas + Máscara) */}
+                    {/* LADO IZQUIERDO DE LA TAZA - Visible al girar */}
+                    <div
+                        style={{
+                            position: 'absolute',
+                            width: designAreaWidth * 0.3,
+                            height: designAreaHeight,
+                            backgroundColor: mugColor,
+                            borderRadius: '10px 0 100px 100px / 20px 0 60px 60px',
+                            transform: `translateX(-${designAreaWidth * 0.35}px) rotateY(-70deg) translateZ(${designAreaWidth * 0.15}px)`,
+                            boxShadow: 'inset -10px 0 30px rgba(0,0,0,0.2)',
+                            backfaceVisibility: 'hidden'
+                        }}
+                    />
+
+                    {/* LADO DERECHO DE LA TAZA - Visible al girar */}
+                    <div
+                        style={{
+                            position: 'absolute',
+                            width: designAreaWidth * 0.3,
+                            height: designAreaHeight,
+                            backgroundColor: mugColor,
+                            borderRadius: '0 10px 100px 100px / 0 20px 60px 60px',
+                            transform: `translateX(${designAreaWidth * 0.35}px) rotateY(70deg) translateZ(${designAreaWidth * 0.15}px)`,
+                            boxShadow: 'inset 10px 0 30px rgba(0,0,0,0.2)',
+                            backfaceVisibility: 'hidden'
+                        }}
+                    />
+
+                    {/* PARTE TRASERA DE LA TAZA - Visible al girar 180° */}
+                    <div
+                        style={{
+                            position: 'absolute',
+                            width: designAreaWidth,
+                            height: designAreaHeight,
+                            backgroundColor: mugColor,
+                            borderRadius: '10px 10px 140px 140px / 20px 20px 60px 60px',
+                            transform: `rotateY(180deg) translateZ(${designAreaWidth * 0.15}px)`,
+                            boxShadow: 'inset 0 0 40px rgba(0,0,0,0.1)',
+                            backfaceVisibility: 'hidden',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}
+                    >
+                        <span style={{
+                            color: 'rgba(0,0,0,0.2)',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            textTransform: 'uppercase',
+                            letterSpacing: '2px'
+                        }}>
+                            🔄 Girá para ver diseño
+                        </span>
+                    </div>
+
+                    {/* CUERPO DE LA TAZA (Canvas + Máscara) - FRENTE */}
                     <div
                         className="relative bg-white shadow-2xl"
                         style={{
@@ -300,8 +428,9 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
                             // Forma de taza realista usando border-radius complejo
                             borderRadius: '10px 10px 140px 140px / 20px 20px 60px 60px',
                             overflow: 'hidden',
-                            transform: 'translateZ(1px)', // Traer al frente
-                            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.3)'
+                            transform: `translateZ(${designAreaWidth * 0.15}px)`, // Mover hacia adelante
+                            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.3)',
+                            backfaceVisibility: 'hidden' // Ocultar cuando se ve desde atrás
                         }}
                     >
                         {/* Capa de Color de la Taza */}
