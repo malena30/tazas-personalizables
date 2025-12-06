@@ -29,7 +29,7 @@ export default function Footer() {
             <h3 className="font-title font-semibold text-[var(--foreground)] mb-4">Redes sociales</h3>
             <ul className="space-y-2 text-sm text-[var(--foreground)] opacity-60 font-text">
               <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Instagram</a></li>
-              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Twitter</a></li>
+              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Tik Tok</a></li>
               <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Facebook</a></li>
             </ul>
           </div>
