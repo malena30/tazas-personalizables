@@ -55,15 +55,15 @@ function Mug({ mugColor, designTexture }: { mugColor: string; designTexture: THR
             </mesh>
 
             {/* Asa de la taza */}
-            <mesh position={[1.5, 0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
+            <mesh position={[1.05, 0, 0]} rotation={[0, 0, -Math.PI / 2]} castShadow>
                 <torusGeometry args={[0.6, 0.12, 16, 32, Math.PI]} />
                 <meshStandardMaterial color={color} roughness={0.3} />
             </mesh>
 
-            {/* Área del diseño - rotada para corregir orientación */}
+            {/* Área del diseño */}
             {designTexture && (
-                <mesh position={[0, 0.2, 0]} rotation={[Math.PI, 0, 0]}>
-                    <cylinderGeometry args={[1.22, 1.02, 2, 64, 1, true, Math.PI * 0.6, Math.PI * 0.8]} />
+                <mesh position={[0, 0, 0]}>
+                    <cylinderGeometry args={[1.23, 1.03, 2.5, 64, 1, true, 0, Math.PI * 2]} />
                     <meshStandardMaterial
                         map={designTexture}
                         transparent
@@ -188,6 +188,15 @@ function CanvasTextElement({ element, isSelected, onSelect, onChange }: any) {
         draggable: true,
         onClick: onSelect,
         onTap: onSelect,
+        onDblClick: () => {
+            const newText = prompt('Editar texto:', element.content);
+            if (newText !== null && newText.trim() !== '') {
+                onChange({
+                    ...element,
+                    content: newText
+                });
+            }
+        },
         fontStyle: `${element.isBold ? 'bold' : ''} ${element.isItalic ? 'italic' : ''}`,
         onDragEnd: (e: any) => {
             onChange({
@@ -233,8 +242,8 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
     const konvaStageRef = useRef<any>(null);
     const [designTexture, setDesignTexture] = useState<THREE.Texture | null>(null);
 
-    const designWidth = 400;
-    const designHeight = 300;
+    const designWidth = 500;
+    const designHeight = 450;
 
     // Actualizar textura cuando cambian los elementos
     useEffect(() => {
@@ -247,9 +256,7 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
                     const canvas = stage.toCanvas({ pixelRatio: 2 });
 
                     const texture = new THREE.CanvasTexture(canvas);
-                    texture.flipY = false;
-                    texture.wrapS = THREE.RepeatWrapping;
-                    texture.repeat.x = -1; // Invertir horizontalmente para quitar efecto espejo
+                    texture.flipY = true;
                     texture.needsUpdate = true;
                     texture.colorSpace = THREE.SRGBColorSpace;
 
@@ -283,36 +290,37 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
             {/* Canvas 3D de la taza */}
             <div
                 className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-inner"
-                style={{ width: 500, height: 450 }}
+                style={{ width: 600, height: 450 }}
             >
                 <Canvas
                     shadows
-                    camera={{ position: [0, 1, 5], fov: 45 }}
+                    camera={{ position: [0, 1, 6], fov: 60 }}
                     gl={{ preserveDrawingBuffer: true }}
                 >
-                    <ambientLight intensity={0.5} />
+                    <ambientLight intensity={0.8} />
                     <directionalLight
                         position={[5, 5, 5]}
-                        intensity={1}
+                        intensity={1.2}
                         castShadow
                         shadow-mapSize-width={1024}
                         shadow-mapSize-height={1024}
                     />
-                    <pointLight position={[-5, 5, -5]} intensity={0.5} />
+                    <pointLight position={[-5, 5, -5]} intensity={0.7} />
+                    <pointLight position={[0, -2, 3]} intensity={0.4} /> {/* Luz de relleno */}
 
                     <Mug mugColor={mugColor} designTexture={designTexture} />
 
                     <OrbitControls
                         enablePan={false}
-                        minDistance={3}
-                        maxDistance={8}
+                        minDistance={4}
+                        maxDistance={10}
                         minPolarAngle={Math.PI / 4}
                         maxPolarAngle={Math.PI / 1.5}
                     />
 
                     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]} receiveShadow>
                         <planeGeometry args={[10, 10]} />
-                        <meshStandardMaterial color="#f0f0f0" roughness={0.8} />
+                        <meshStandardMaterial color="#ffff" roughness={0.8} />
                     </mesh>
                 </Canvas>
             </div>
