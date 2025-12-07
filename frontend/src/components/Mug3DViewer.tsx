@@ -20,15 +20,15 @@ function Mug({ mugColor, designTexture }: { mugColor: string; designTexture: THR
     const color = useMemo(() => new THREE.Color(mugColor), [mugColor]);
 
     return (
-        <group rotation={[0, 0, 0]}>
+        <group rotation={[0, Math.PI, 0]}>
             {/* Cuerpo principal de la taza (cilindro) */}
             <mesh position={[0, 0, 0]} castShadow receiveShadow>
                 <cylinderGeometry args={[1.2, 1, 2.5, 64, 1, true]} />
                 <meshStandardMaterial
                     color={color}
                     side={THREE.DoubleSide}
-                    roughness={0.3}
-                    metalness={0.1}
+                    roughness={0.15}
+                    metalness={0.05}
                 />
             </mesh>
 
@@ -287,44 +287,6 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
 
     return (
         <div className="flex flex-col lg:flex-row gap-6 items-center justify-center w-full">
-            {/* Canvas 3D de la taza */}
-            <div
-                className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-inner"
-                style={{ width: 600, height: 450 }}
-            >
-                <Canvas
-                    shadows
-                    camera={{ position: [0, 1, 6], fov: 60 }}
-                    gl={{ preserveDrawingBuffer: true }}
-                >
-                    <ambientLight intensity={0.8} />
-                    <directionalLight
-                        position={[5, 5, 5]}
-                        intensity={1.2}
-                        castShadow
-                        shadow-mapSize-width={1024}
-                        shadow-mapSize-height={1024}
-                    />
-                    <pointLight position={[-5, 5, -5]} intensity={0.7} />
-                    <pointLight position={[0, -2, 3]} intensity={0.4} /> {/* Luz de relleno */}
-
-                    <Mug mugColor={mugColor} designTexture={designTexture} />
-
-                    <OrbitControls
-                        enablePan={false}
-                        minDistance={4}
-                        maxDistance={10}
-                        minPolarAngle={Math.PI / 4}
-                        maxPolarAngle={Math.PI / 1.5}
-                    />
-
-                    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]} receiveShadow>
-                        <planeGeometry args={[10, 10]} />
-                        <meshStandardMaterial color="#ffff" roughness={0.8} />
-                    </mesh>
-                </Canvas>
-            </div>
-
             {/* Canvas 2D para el diseño */}
             <div
                 className="bg-white rounded-lg shadow-lg border-2 border-dashed border-gray-300 relative"
@@ -374,6 +336,45 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
                             })}
                     </Layer>
                 </Stage>
+            </div>
+
+            {/* Canvas 3D de la taza */}
+            <div
+                className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-inner"
+                style={{ width: 600, height: 450 }}
+            >
+                <Canvas
+                    shadows
+                    camera={{ position: [0, 1, 6], fov: 60 }}
+                    gl={{ preserveDrawingBuffer: true }}
+                >
+                    <ambientLight intensity={1.2} />
+                    <directionalLight
+                        position={[5, 5, 5]}
+                        intensity={1.5}
+                        castShadow
+                        shadow-mapSize-width={1024}
+                        shadow-mapSize-height={1024}
+                    />
+                    <pointLight position={[-5, 5, -5]} intensity={1} />
+                    <pointLight position={[0, -2, 3]} intensity={0.8} /> {/* Luz de relleno */}
+                    <hemisphereLight intensity={0.5} /> {/* Luz hemisférica para brillo uniforme */}
+
+                    <Mug mugColor={mugColor} designTexture={designTexture} />
+
+                    <OrbitControls
+                        enablePan={false}
+                        minDistance={4}
+                        maxDistance={10}
+                        minPolarAngle={Math.PI / 4}
+                        maxPolarAngle={Math.PI / 1.5}
+                    />
+
+                    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]} receiveShadow>
+                        <planeGeometry args={[10, 10]} />
+                        <meshStandardMaterial color="#ffff" roughness={0.8} />
+                    </mesh>
+                </Canvas>
             </div>
         </div>
     );
