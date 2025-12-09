@@ -296,13 +296,13 @@ export default function CustomizerPage() {
     };
 
     return (
-        <main className="w-full min-h-screen bg-[var(--background)] py-8">
-            <div className="max-w-7xl mx-auto px-4">
-                <h1 className="text-3xl font-title font-bold text-[var(--foreground)] mb-8">
+        <main className="w-full min-h-screen bg-[var(--background)] py-8 overflow-x-hidden">
+            <div className="max-w-full mx-auto px-2 lg:px-4">
+                <h1 className="text-2xl lg:text-3xl font-title font-bold text-[var(--foreground)] mb-4 lg:mb-8">
                     Diseñá tu Taza Personalizada
                 </h1>
 
-                <div className="flex gap-6">
+                <div className="flex gap-2 lg:gap-4 overflow-x-hidden">
 
                     {/* Panel de herramientas - Izquierda (ancho flexible) */}
                     <Toolbar
