@@ -242,8 +242,8 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
     const konvaStageRef = useRef<any>(null);
     const [designTexture, setDesignTexture] = useState<THREE.Texture | null>(null);
 
-    const designWidth = 500;
-    const designHeight = 450;
+    const designWidth = 350;
+    const designHeight = 400;
 
     // Actualizar textura cuando cambian los elementos
     useEffect(() => {
@@ -286,11 +286,11 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
     }));
 
     return (
-        <div className="flex flex-col lg:flex-row gap-6 items-center justify-center w-full">
+        <div className="flex flex-col lg:flex-row gap-3 lg:gap-4 items-center justify-center w-full max-w-full">
             {/* Canvas 2D para el diseño */}
             <div
-                className="bg-white rounded-lg shadow-lg border-2 border-dashed border-gray-300 relative"
-                style={{ width: designWidth, height: designHeight }}
+                className="bg-white rounded-lg shadow-lg border-2 border-dashed border-gray-300 relative flex-shrink-0"
+                style={{ width: Math.min(designWidth, typeof window !== 'undefined' ? window.innerWidth - 100 : designWidth), height: designHeight }}
             >
                 <div className="absolute top-2 left-2 text-xs text-gray-500 font-semibold z-20">
                     ✏️ Área de diseño
@@ -340,8 +340,8 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
 
             {/* Canvas 3D de la taza */}
             <div
-                className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-inner"
-                style={{ width: 600, height: 450 }}
+                className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-inner flex-shrink-0"
+                style={{ width: Math.min(500, typeof window !== 'undefined' ? window.innerWidth - 100 : 500), height: 400 }}
             >
                 <Canvas
                     shadows
