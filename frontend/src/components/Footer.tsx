@@ -30,7 +30,6 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-[var(--foreground)] opacity-60 font-text">
               <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Instagram</a></li>
               <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Tik Tok</a></li>
-              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Facebook</a></li>
             </ul>
           </div>
 
