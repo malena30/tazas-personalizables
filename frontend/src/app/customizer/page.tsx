@@ -28,7 +28,6 @@ export default function CustomizerPage() {
     const [shadowOffsetX, setShadowOffsetX] = useState<number>(3);
     const [shadowOffsetY, setShadowOffsetY] = useState<number>(3);
     const [curvature, setCurvature] = useState<number>(0);
-    const [mugCoverage, setMugCoverage] = useState<MugCoverage>('front');
 
     // Estado para la pestaña activa del toolbar
     const [activeTab, setActiveTab] = useState<'producto' | 'capas' | 'imagen' | 'texto' | null>(null);
@@ -50,7 +49,8 @@ export default function CustomizerPage() {
             size: { width: 150, height: 150 },
             rotation: 0,
             zIndex: elements.length,
-            opacity: 1
+            opacity: 1,
+            coverage: 'front'
         };
         setElements([...elements, newImage]);
         setSelectedId(newImage.id);
@@ -71,7 +71,9 @@ export default function CustomizerPage() {
             zIndex: elements.length,
             isBold: false,
             isItalic: false,
-            curvature: 0
+
+            curvature: 0,
+            coverage: 'front'
         };
         setElements([...elements, newText]);
         setSelectedId(newText.id);
@@ -341,8 +343,13 @@ export default function CustomizerPage() {
                         onTabChange={setActiveTab}
                         curvature={curvature}
                         onCurvatureChange={setCurvature}
-                        mugCoverage={mugCoverage}
-                        onMugCoverageChange={setMugCoverage}
+                        mugCoverage={selectedId ? elements.find(el => el.id === selectedId)?.coverage || 'front' : 'front'}
+                        onMugCoverageChange={(coverage) => {
+                            if (selectedId) {
+                                const el = elements.find(e => e.id === selectedId);
+                                if (el) handleUpdateElement({ ...el, coverage });
+                            }
+                        }}
                     />
 
                     {/* Visor 3D de la Taza - Centro */}
@@ -354,7 +361,8 @@ export default function CustomizerPage() {
                             onSelect={setSelectedId}
                             onUpdateElement={handleUpdateElement}
                             mugColor={mugColor}
-                            mugCoverage={mugCoverage}
+                        // mugCoverage ya no se pasa globalmente, se maneja internamente por elemento
+
                         />
 
                         {/* Información del diseño */}

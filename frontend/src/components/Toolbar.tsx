@@ -162,56 +162,33 @@ export default function Toolbar({
                                     <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
                                         Color del Producto
                                     </h3>
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="color"
-                                            value={mugColor}
-                                            onChange={(e) => onMugColorChange(e.target.value)}
-                                            className="w-12 h-12 rounded border-2 border-[var(--border)] cursor-pointer"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={mugColor}
-                                            onChange={(e) => onMugColorChange(e.target.value)}
-                                            className="flex-1 px-3 py-2 font-mono text-sm bg-[var(--background)] border border-[var(--border)] rounded text-[var(--foreground)]"
-                                        />
+                                    <div className="grid grid-cols-5 gap-2">
+                                        {[
+                                            { name: 'Blanco', value: '#FFFFFF' },
+                                            { name: 'Negro', value: '#000000' },
+                                            { name: 'Rojo', value: '#FF0000' },
+                                            { name: 'Azul', value: '#0000FF' },
+                                            { name: 'Verde', value: '#008000' },
+                                            { name: 'Amarillo', value: '#FFFF00' },
+                                            { name: 'Rosa', value: '#FFC0CB' },
+                                            { name: 'Naranja', value: '#FFA500' },
+                                            { name: 'Violeta', value: '#800080' },
+                                            { name: 'Marino', value: '#000080' },
+                                        ].map((color) => (
+                                            <button
+                                                key={color.value}
+                                                onClick={() => onMugColorChange(color.value)}
+                                                className={`w-8 h-8 rounded-full border-2 shadow-sm transition-transform hover:scale-110 ${mugColor === color.value ? 'border-blue-500 scale-110 ring-2 ring-blue-200' : 'border-gray-200'
+                                                    }`}
+                                                style={{ backgroundColor: color.value }}
+                                                title={color.name}
+                                                aria-label={`Seleccionar color ${color.name}`}
+                                            />
+                                        ))}
                                     </div>
                                 </div>
 
-                                <div className="mt-4">
-                                    <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
-                                        Cobertura del Diseño
-                                    </h3>
-                                    <div className="flex flex-col gap-2">
-                                        <button
-                                            onClick={() => onMugCoverageChange('front')}
-                                            className={`px-3 py-2 rounded border text-sm font-text transition-colors ${mugCoverage === 'front'
-                                                ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--foreground)]'
-                                                : 'bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover-bg)]'
-                                                }`}
-                                        >
-                                            Solo Frente (Sin estirar)
-                                        </button>
-                                        <button
-                                            onClick={() => onMugCoverageChange('front-back')}
-                                            className={`px-3 py-2 rounded border text-sm font-text transition-colors ${mugCoverage === 'front-back'
-                                                ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--foreground)]'
-                                                : 'bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover-bg)]'
-                                                }`}
-                                        >
-                                            Frente y Atrás (Sin estirar)
-                                        </button>
-                                        <button
-                                            onClick={() => onMugCoverageChange('full')}
-                                            className={`px-3 py-2 rounded border text-sm font-text transition-colors ${mugCoverage === 'full'
-                                                ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--foreground)]'
-                                                : 'bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover-bg)]'
-                                                }`}
-                                        >
-                                            Toda la Vuelta (Puede estirarse)
-                                        </button>
-                                    </div>
-                                </div>
+
 
                                 <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                                     <p className="text-sm text-blue-800">
@@ -306,6 +283,43 @@ export default function Toolbar({
                                         💡 Hacé click en la imagen para seleccionarla y moverla
                                     </p>
                                 </div>
+
+                                {hasSelection && (
+                                    <div className="mt-4">
+                                        <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
+                                            Cobertura
+                                        </h3>
+                                        <div className="flex flex-col gap-2">
+                                            <button
+                                                onClick={() => onMugCoverageChange('front')}
+                                                className={`px-3 py-2 rounded border text-sm font-text transition-colors ${mugCoverage === 'front'
+                                                    ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--foreground)]'
+                                                    : 'bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover-bg)]'
+                                                    }`}
+                                            >
+                                                Solo Frente
+                                            </button>
+                                            <button
+                                                onClick={() => onMugCoverageChange('front-back')}
+                                                className={`px-3 py-2 rounded border text-sm font-text transition-colors ${mugCoverage === 'front-back'
+                                                    ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--foreground)]'
+                                                    : 'bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover-bg)]'
+                                                    }`}
+                                            >
+                                                Frente y Atrás
+                                            </button>
+                                            <button
+                                                onClick={() => onMugCoverageChange('full')}
+                                                className={`px-3 py-2 rounded border text-sm font-text transition-colors ${mugCoverage === 'full'
+                                                    ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--foreground)]'
+                                                    : 'bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover-bg)]'
+                                                    }`}
+                                            >
+                                                Toda la Vuelta
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </>
                         )}
 
@@ -387,6 +401,45 @@ export default function Toolbar({
                                         <option value="Oswald" style={{ fontFamily: 'Oswald' }}>Oswald</option>
                                     </select>
                                 </div>
+
+                                <hr className="border-[var(--border)]" />
+
+                                {hasSelection && (
+                                    <div className="mt-4">
+                                        <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
+                                            Cobertura
+                                        </h3>
+                                        <div className="flex flex-col gap-2">
+                                            <button
+                                                onClick={() => onMugCoverageChange('front')}
+                                                className={`px-3 py-2 rounded border text-sm font-text transition-colors ${mugCoverage === 'front'
+                                                    ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--foreground)]'
+                                                    : 'bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover-bg)]'
+                                                    }`}
+                                            >
+                                                Solo Frente
+                                            </button>
+                                            <button
+                                                onClick={() => onMugCoverageChange('front-back')}
+                                                className={`px-3 py-2 rounded border text-sm font-text transition-colors ${mugCoverage === 'front-back'
+                                                    ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--foreground)]'
+                                                    : 'bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover-bg)]'
+                                                    }`}
+                                            >
+                                                Frente y Atrás
+                                            </button>
+                                            <button
+                                                onClick={() => onMugCoverageChange('full')}
+                                                className={`px-3 py-2 rounded border text-sm font-text transition-colors ${mugCoverage === 'full'
+                                                    ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--foreground)]'
+                                                    : 'bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover-bg)]'
+                                                    }`}
+                                            >
+                                                Toda la Vuelta
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
 
                                 <hr className="border-[var(--border)]" />
 
@@ -595,8 +648,7 @@ export default function Toolbar({
                         )}
                     </div>
                 </aside>
-            )
-            }
-        </div >
+            )}
+        </div>
     );
 }

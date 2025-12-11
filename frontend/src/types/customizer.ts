@@ -12,12 +12,15 @@ export interface Size {
 
 export type ElementType = 'image' | 'text';
 
+export type MugCoverage = 'front' | 'front-back' | 'full';
+
 export interface BaseElement {
     id: string;
     type: ElementType;
     position: Position;
     rotation: number;
     zIndex: number;
+    coverage: MugCoverage;
 }
 
 export interface ImageElement extends BaseElement {
@@ -62,5 +65,3 @@ export interface ExportOptions {
     quality: number;
     pixelRatio: number;
 }
-
-export type MugCoverage = 'front' | 'front-back' | 'full';
