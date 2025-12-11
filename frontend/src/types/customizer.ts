@@ -62,3 +62,5 @@ export interface ExportOptions {
     quality: number;
     pixelRatio: number;
 }
+
+export type MugCoverage = 'front' | 'front-back' | 'full';
