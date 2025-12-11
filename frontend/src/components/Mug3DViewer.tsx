@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { Stage, Layer, Rect, Text as KonvaText, TextPath, Image as KonvaImage, Transformer } from "react-konva";
-import { CanvasElement } from "@/types/customizer";
+import { CanvasElement, MugCoverage } from "@/types/customizer";
 
 interface Mug3DViewerProps {
     elements: CanvasElement[];
@@ -13,14 +13,15 @@ interface Mug3DViewerProps {
     onSelect: (id: string | null) => void;
     onUpdateElement: (element: CanvasElement) => void;
     mugColor: string;
+    mugCoverage: MugCoverage;
 }
 
 // Componente de la taza 3D
-function Mug({ mugColor, designTexture }: { mugColor: string; designTexture: THREE.Texture | null }) {
+function Mug({ mugColor, designTexture, mugCoverage }: { mugColor: string; designTexture: THREE.Texture | null; mugCoverage: MugCoverage }) {
     const color = useMemo(() => new THREE.Color(mugColor), [mugColor]);
 
     return (
-        <group rotation={[0, Math.PI, 0]}>
+        <group rotation={[0, 0, 0]}>
             {/* Cuerpo principal de la taza (cilindro) */}
             <mesh position={[0, 0, 0]} castShadow receiveShadow>
                 <cylinderGeometry args={[1.2, 1, 2.5, 64, 1, true]} />
@@ -54,23 +55,54 @@ function Mug({ mugColor, designTexture }: { mugColor: string; designTexture: THR
                 <meshStandardMaterial color={color} roughness={0.3} />
             </mesh>
 
-            {/* Asa de la taza */}
-            <mesh position={[1.05, 0, 0]} rotation={[0, 0, -Math.PI / 2]} castShadow>
+            {/* Asa de la taza - En X- (Izquierda) para coincidir con el hueco del diseño */}
+            <mesh position={[-1.05, 0, 0]} rotation={[0, Math.PI, -Math.PI / 2]} castShadow>
                 <torusGeometry args={[0.6, 0.12, 16, 32, Math.PI]} />
                 <meshStandardMaterial color={color} roughness={0.3} />
             </mesh>
 
             {/* Área del diseño */}
             {designTexture && (
-                <mesh position={[0, 0, 0]}>
-                    <cylinderGeometry args={[1.23, 1.03, 2.5, 64, 1, true, 0, Math.PI * 2]} />
-                    <meshStandardMaterial
-                        map={designTexture}
-                        transparent
-                        side={THREE.DoubleSide}
-                        roughness={0.4}
-                    />
-                </mesh>
+                <>
+                    {/* Frente (Centrado en Z+ / 0°) */}
+                    {(mugCoverage === 'front' || mugCoverage === 'front-back') && (
+                        <mesh position={[0, 0, 0]}>
+                            <cylinderGeometry args={[1.23, 1.03, 2.5, 64, 1, true, -Math.PI / 3, (Math.PI * 2) / 3]} />
+                            <meshStandardMaterial
+                                map={designTexture}
+                                transparent
+                                side={THREE.DoubleSide}
+                                roughness={0.4}
+                            />
+                        </mesh>
+                    )}
+
+                    {/* Atrás (Centrado en Z- / 180°) */}
+                    {mugCoverage === 'front-back' && (
+                        <mesh position={[0, 0, 0]}>
+                            <cylinderGeometry args={[1.23, 1.03, 2.5, 64, 1, true, Math.PI - Math.PI / 3, (Math.PI * 2) / 3]} />
+                            <meshStandardMaterial
+                                map={designTexture}
+                                transparent
+                                side={THREE.DoubleSide}
+                                roughness={0.4}
+                            />
+                        </mesh>
+                    )}
+
+                    {/* Completo (Hueco en la manija X+ / -90°) */}
+                    {mugCoverage === 'full' && (
+                        <mesh position={[0, 0, 0]}>
+                            <cylinderGeometry args={[1.23, 1.03, 2.5, 64, 1, true, -Math.PI / 3, 5 * Math.PI / 3]} />
+                            <meshStandardMaterial
+                                map={designTexture}
+                                transparent
+                                side={THREE.DoubleSide}
+                                roughness={0.4}
+                            />
+                        </mesh>
+                    )}
+                </>
             )}
         </group>
     );
@@ -236,7 +268,7 @@ function CanvasTextElement({ element, isSelected, onSelect, onChange }: any) {
 
 // Componente principal
 const Mug3DViewer = forwardRef(function Mug3DViewer(
-    { elements, selectedId, onSelect, onUpdateElement, mugColor }: Mug3DViewerProps,
+    { elements, selectedId, onSelect, onUpdateElement, mugColor, mugCoverage }: Mug3DViewerProps,
     ref: any
 ) {
     const konvaStageRef = useRef<any>(null);
@@ -360,7 +392,7 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
                     <pointLight position={[0, -2, 3]} intensity={0.8} /> {/* Luz de relleno */}
                     <hemisphereLight intensity={0.5} /> {/* Luz hemisférica para brillo uniforme */}
 
-                    <Mug mugColor={mugColor} designTexture={designTexture} />
+                    <Mug mugColor={mugColor} designTexture={designTexture} mugCoverage={mugCoverage} />
 
                     <OrbitControls
                         enablePan={false}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { MugCoverage } from "@/types/customizer";
 
 interface ToolbarProps {
     onAddImage: (imageUrl: string) => void;
@@ -38,6 +39,8 @@ interface ToolbarProps {
     onTabChange: (tab: 'producto' | 'capas' | 'imagen' | 'texto' | null) => void;
     curvature?: number;
     onCurvatureChange: (curvature: number) => void;
+    mugCoverage: MugCoverage;
+    onMugCoverageChange: (coverage: MugCoverage) => void;
 }
 
 type Tab = 'producto' | 'capas' | 'imagen' | 'texto' | null;
@@ -76,7 +79,9 @@ export default function Toolbar({
     activeTab,
     onTabChange,
     curvature,
-    onCurvatureChange
+    onCurvatureChange,
+    mugCoverage,
+    onMugCoverageChange
 }: ToolbarProps) {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -170,6 +175,41 @@ export default function Toolbar({
                                             onChange={(e) => onMugColorChange(e.target.value)}
                                             className="flex-1 px-3 py-2 font-mono text-sm bg-[var(--background)] border border-[var(--border)] rounded text-[var(--foreground)]"
                                         />
+                                    </div>
+                                </div>
+
+                                <div className="mt-4">
+                                    <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
+                                        Cobertura del Diseño
+                                    </h3>
+                                    <div className="flex flex-col gap-2">
+                                        <button
+                                            onClick={() => onMugCoverageChange('front')}
+                                            className={`px-3 py-2 rounded border text-sm font-text transition-colors ${mugCoverage === 'front'
+                                                ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--foreground)]'
+                                                : 'bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover-bg)]'
+                                                }`}
+                                        >
+                                            Solo Frente (Sin estirar)
+                                        </button>
+                                        <button
+                                            onClick={() => onMugCoverageChange('front-back')}
+                                            className={`px-3 py-2 rounded border text-sm font-text transition-colors ${mugCoverage === 'front-back'
+                                                ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--foreground)]'
+                                                : 'bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover-bg)]'
+                                                }`}
+                                        >
+                                            Frente y Atrás (Sin estirar)
+                                        </button>
+                                        <button
+                                            onClick={() => onMugCoverageChange('full')}
+                                            className={`px-3 py-2 rounded border text-sm font-text transition-colors ${mugCoverage === 'full'
+                                                ? 'bg-[var(--accent)] border-[var(--accent)] text-[var(--foreground)]'
+                                                : 'bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover-bg)]'
+                                                }`}
+                                        >
+                                            Toda la Vuelta (Puede estirarse)
+                                        </button>
                                     </div>
                                 </div>
 

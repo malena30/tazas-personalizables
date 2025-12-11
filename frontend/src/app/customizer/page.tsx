@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { CanvasElement, ImageElement, TextElement } from "@/types/customizer";
+import { CanvasElement, ImageElement, TextElement, MugCoverage } from "@/types/customizer";
 import Toolbar from "@/components/Toolbar";
 import { useCartStore } from "@/store/cartStore";
 
@@ -28,6 +28,7 @@ export default function CustomizerPage() {
     const [shadowOffsetX, setShadowOffsetX] = useState<number>(3);
     const [shadowOffsetY, setShadowOffsetY] = useState<number>(3);
     const [curvature, setCurvature] = useState<number>(0);
+    const [mugCoverage, setMugCoverage] = useState<MugCoverage>('front');
 
     // Estado para la pestaña activa del toolbar
     const [activeTab, setActiveTab] = useState<'producto' | 'capas' | 'imagen' | 'texto' | null>(null);
@@ -340,6 +341,8 @@ export default function CustomizerPage() {
                         onTabChange={setActiveTab}
                         curvature={curvature}
                         onCurvatureChange={setCurvature}
+                        mugCoverage={mugCoverage}
+                        onMugCoverageChange={setMugCoverage}
                     />
 
                     {/* Visor 3D de la Taza - Centro */}
@@ -351,6 +354,7 @@ export default function CustomizerPage() {
                             onSelect={setSelectedId}
                             onUpdateElement={handleUpdateElement}
                             mugColor={mugColor}
+                            mugCoverage={mugCoverage}
                         />
 
                         {/* Información del diseño */}
