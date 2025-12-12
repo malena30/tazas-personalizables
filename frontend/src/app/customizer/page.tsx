@@ -4,7 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { CanvasElement, ImageElement, TextElement, MugCoverage } from "@/types/customizer";
 import Toolbar from "@/components/Toolbar";
+import DesignLibrary from "@/components/DesignLibrary";
 import { useCartStore } from "@/store/cartStore";
+import { saveDesign, updateDesign, Design } from "@/lib/api";
 
 // Importación dinámica de Mug3DViewer para evitar errores de SSR con Three.js y Konva
 const Mug3DViewer = dynamic(() => import("@/components/Mug3DViewer"), {
@@ -28,12 +30,15 @@ export default function CustomizerPage() {
     const [shadowOffsetX, setShadowOffsetX] = useState<number>(3);
     const [shadowOffsetY, setShadowOffsetY] = useState<number>(3);
     const [curvature, setCurvature] = useState<number>(0);
-    const [mugCoverage, setMugCoverage] = useState<MugCoverage>('front');
 
     // Estado para la pestaña activa del toolbar
     const [activeTab, setActiveTab] = useState<'producto' | 'capas' | 'imagen' | 'texto' | null>(null);
 
     const [showTooltip, setShowTooltip] = useState(false);
+    const [showLibrary, setShowLibrary] = useState(false);
+    const [showSaveModal, setShowSaveModal] = useState(false);
+    const [designName, setDesignName] = useState("");
+    const [currentDesignId, setCurrentDesignId] = useState<string | null>(null);
     const canvasRef = useRef<any>(null);
     const addToCart = useCartStore((state) => state.addToCart);
 
@@ -50,7 +55,8 @@ export default function CustomizerPage() {
             size: { width: 150, height: 150 },
             rotation: 0,
             zIndex: elements.length,
-            opacity: 1
+            opacity: 1,
+            coverage: 'front'
         };
         setElements([...elements, newImage]);
         setSelectedId(newImage.id);
@@ -71,7 +77,9 @@ export default function CustomizerPage() {
             zIndex: elements.length,
             isBold: false,
             isItalic: false,
-            curvature: 0
+
+            curvature: 0,
+            coverage: 'front'
         };
         setElements([...elements, newText]);
         setSelectedId(newText.id);
@@ -296,6 +304,60 @@ export default function CustomizerPage() {
         }
     };
 
+    // Guardar diseño
+    const handleSaveDesign = async () => {
+        if (!designName.trim()) {
+            alert('Por favor ingresa un nombre para el diseño');
+            return;
+        }
+
+        try {
+            // Generar thumbnail (opcional)
+            let thumbnail = undefined;
+            try {
+                thumbnail = canvasRef.current?.toDataURL?.({
+                    pixelRatio: 1,
+                    mimeType: 'image/png',
+                });
+            } catch (err) {
+                console.warn('No se pudo generar thumbnail');
+            }
+
+            const designData = {
+                name: designName,
+                mug_color: mugColor,
+                elements: elements,
+                thumbnail: thumbnail,
+            };
+
+            if (currentDesignId) {
+                // Actualizar diseño existente
+                await updateDesign(currentDesignId, designData);
+                alert('Diseño actualizado exitosamente!');
+            } else {
+                // Crear nuevo diseño
+                const saved = await saveDesign(designData);
+                setCurrentDesignId(saved.id);
+                alert('Diseño guardado exitosamente!');
+            }
+
+            setShowSaveModal(false);
+            setDesignName('');
+        } catch (error) {
+            console.error('Error al guardar:', error);
+            alert('Error al guardar el diseño');
+        }
+    };
+
+    // Cargar diseño
+    const handleLoadDesign = (design: Design) => {
+        setElements(design.elements);
+        setMugColor(design.mug_color);
+        setCurrentDesignId(design.id);
+        setDesignName(design.name);
+        setSelectedId(null);
+    };
+
     return (
         <main className="w-full min-h-screen bg-[var(--background)] py-8 overflow-x-hidden">
             <div className="max-w-full mx-auto px-2 lg:px-4">
@@ -341,8 +403,13 @@ export default function CustomizerPage() {
                         onTabChange={setActiveTab}
                         curvature={curvature}
                         onCurvatureChange={setCurvature}
-                        mugCoverage={mugCoverage}
-                        onMugCoverageChange={setMugCoverage}
+                        mugCoverage={selectedId ? elements.find(el => el.id === selectedId)?.coverage || 'front' : 'front'}
+                        onMugCoverageChange={(coverage) => {
+                            if (selectedId) {
+                                const el = elements.find(e => e.id === selectedId);
+                                if (el) handleUpdateElement({ ...el, coverage });
+                            }
+                        }}
                     />
 
                     {/* Visor 3D de la Taza - Centro */}
@@ -354,7 +421,8 @@ export default function CustomizerPage() {
                             onSelect={setSelectedId}
                             onUpdateElement={handleUpdateElement}
                             mugColor={mugColor}
-                            mugCoverage={mugCoverage}
+                        // mugCoverage ya no se pasa globalmente, se maneja internamente por elemento
+
                         />
 
                         {/* Información del diseño */}
@@ -378,6 +446,22 @@ export default function CustomizerPage() {
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[var(--border)] shadow-lg z-50">
                 <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setShowLibrary(true)}
+                            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-text font-semibold transition-colors"
+                        >
+                            📁 Mis Diseños
+                        </button>
+                        <button
+                            onClick={() => setShowSaveModal(true)}
+                            disabled={elements.length === 0}
+                            className={`px-4 py-2 rounded-lg font-text font-semibold transition-colors ${elements.length > 0
+                                ? 'bg-green-500 text-white hover:bg-green-600'
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                }`}
+                        >
+                            💾 Guardar
+                        </button>
                         <div className="flex items-center gap-2">
                             <span className="text-2xl">🛒</span>
                             <div>
@@ -410,6 +494,45 @@ export default function CustomizerPage() {
                     ¡Taza agregada al carrito! ($3.500)
                 </div>
             )}
+
+            {/* Modal para guardar diseño */}
+            {showSaveModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl">
+                        <h2 className="text-xl font-title font-bold text-gray-900 mb-4">Guardar Diseño</h2>
+                        <input
+                            type="text"
+                            placeholder="Nombre del diseño"
+                            value={designName}
+                            onChange={(e) => setDesignName(e.target.value)}
+                            style={{ color: '#111827' }}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 font-text"
+                            onKeyPress={(e) => e.key === 'Enter' && handleSaveDesign()}
+                        />
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setShowSaveModal(false)}
+                                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-text font-semibold"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleSaveDesign}
+                                className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-text font-semibold"
+                            >
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de biblioteca de diseños */}
+            <DesignLibrary
+                isOpen={showLibrary}
+                onClose={() => setShowLibrary(false)}
+                onLoadDesign={handleLoadDesign}
+            />
         </main>
     );
 }

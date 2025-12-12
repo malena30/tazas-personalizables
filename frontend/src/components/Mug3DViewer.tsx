@@ -13,11 +13,15 @@ interface Mug3DViewerProps {
     onSelect: (id: string | null) => void;
     onUpdateElement: (element: CanvasElement) => void;
     mugColor: string;
-    mugCoverage: MugCoverage;
 }
 
 // Componente de la taza 3D
-function Mug({ mugColor, designTexture, mugCoverage }: { mugColor: string; designTexture: THREE.Texture | null; mugCoverage: MugCoverage }) {
+function Mug({ mugColor, frontTexture, frontBackTexture, fullTexture }: {
+    mugColor: string;
+    frontTexture: THREE.Texture | null;
+    frontBackTexture: THREE.Texture | null;
+    fullTexture: THREE.Texture | null;
+}) {
     const color = useMemo(() => new THREE.Color(mugColor), [mugColor]);
 
     return (
@@ -26,7 +30,7 @@ function Mug({ mugColor, designTexture, mugCoverage }: { mugColor: string; desig
             <mesh position={[0, 0, 0]} castShadow receiveShadow>
                 <cylinderGeometry args={[1.2, 1, 2.5, 64, 1, true]} />
                 <meshStandardMaterial
-                    color={color}
+                    color="#FFFFFF"
                     side={THREE.DoubleSide}
                     roughness={0.15}
                     metalness={0.05}
@@ -36,7 +40,7 @@ function Mug({ mugColor, designTexture, mugCoverage }: { mugColor: string; desig
             {/* Fondo de la taza */}
             <mesh position={[0, -1.25, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow>
                 <circleGeometry args={[1, 64]} />
-                <meshStandardMaterial color={color} roughness={0.4} />
+                <meshStandardMaterial color="#FFFFFF" roughness={0.4} />
             </mesh>
 
             {/* Interior de la taza (más oscuro) */}
@@ -61,48 +65,56 @@ function Mug({ mugColor, designTexture, mugCoverage }: { mugColor: string; desig
                 <meshStandardMaterial color={color} roughness={0.3} />
             </mesh>
 
-            {/* Área del diseño */}
-            {designTexture && (
-                <>
-                    {/* Frente (Centrado en Z+ / 0°) */}
-                    {(mugCoverage === 'front' || mugCoverage === 'front-back') && (
-                        <mesh position={[0, 0, 0]}>
-                            <cylinderGeometry args={[1.23, 1.03, 2.5, 64, 1, true, -Math.PI / 3, (Math.PI * 2) / 3]} />
-                            <meshStandardMaterial
-                                map={designTexture}
-                                transparent
-                                side={THREE.DoubleSide}
-                                roughness={0.4}
-                            />
-                        </mesh>
-                    )}
+            {/* Área del diseño - Capa Front */}
+            {frontTexture && (
+                <mesh position={[0, 0, 0]}>
+                    <cylinderGeometry args={[1.24, 1.04, 2.5, 64, 1, true, -Math.PI / 3, (Math.PI * 2) / 3]} />
+                    <meshStandardMaterial
+                        map={frontTexture}
+                        transparent
+                        side={THREE.DoubleSide}
+                        roughness={0.4}
+                    />
+                </mesh>
+            )}
 
-                    {/* Atrás (Centrado en Z- / 180°) */}
-                    {mugCoverage === 'front-back' && (
-                        <mesh position={[0, 0, 0]}>
-                            <cylinderGeometry args={[1.23, 1.03, 2.5, 64, 1, true, Math.PI - Math.PI / 3, (Math.PI * 2) / 3]} />
-                            <meshStandardMaterial
-                                map={designTexture}
-                                transparent
-                                side={THREE.DoubleSide}
-                                roughness={0.4}
-                            />
-                        </mesh>
-                    )}
+            {/* Área del diseño - Capa Front-Back */}
+            {frontBackTexture && (
+                <group>
+                    {/* Frente */}
+                    <mesh position={[0, 0, 0]}>
+                        <cylinderGeometry args={[1.24, 1.04, 2.5, 64, 1, true, -Math.PI / 3, (Math.PI * 2) / 3]} />
+                        <meshStandardMaterial
+                            map={frontBackTexture}
+                            transparent
+                            side={THREE.DoubleSide}
+                            roughness={0.4}
+                        />
+                    </mesh>
+                    {/* Atrás */}
+                    <mesh position={[0, 0, 0]}>
+                        <cylinderGeometry args={[1.24, 1.04, 2.5, 64, 1, true, Math.PI - Math.PI / 3, (Math.PI * 2) / 3]} />
+                        <meshStandardMaterial
+                            map={frontBackTexture}
+                            transparent
+                            side={THREE.DoubleSide}
+                            roughness={0.4}
+                        />
+                    </mesh>
+                </group>
+            )}
 
-                    {/* Completo (Hueco en la manija X+ / -90°) */}
-                    {mugCoverage === 'full' && (
-                        <mesh position={[0, 0, 0]}>
-                            <cylinderGeometry args={[1.23, 1.03, 2.5, 64, 1, true, -Math.PI / 3, 5 * Math.PI / 3]} />
-                            <meshStandardMaterial
-                                map={designTexture}
-                                transparent
-                                side={THREE.DoubleSide}
-                                roughness={0.4}
-                            />
-                        </mesh>
-                    )}
-                </>
+            {/* Área del diseño - Capa Full */}
+            {fullTexture && (
+                <mesh position={[0, 0, 0]}>
+                    <cylinderGeometry args={[1.22, 1.02, 2.5, 64, 1, true, -Math.PI / 3, 5 * Math.PI / 3]} />
+                    <meshStandardMaterial
+                        map={fullTexture}
+                        transparent
+                        side={THREE.DoubleSide}
+                        roughness={0.4}
+                    />
+                </mesh>
             )}
         </group>
     );
@@ -132,6 +144,7 @@ function CanvasImageElement({ element, isSelected, onSelect, onChange }: any) {
             {image && (
                 <KonvaImage
                     ref={imageRef}
+                    id={element.id} // ID para búsqueda
                     image={image}
                     x={element.position.x}
                     y={element.position.y}
@@ -202,6 +215,7 @@ function CanvasTextElement({ element, isSelected, onSelect, onChange }: any) {
 
     const commonProps = {
         ref: textRef,
+        id: element.id, // ID para búsqueda
         x: element.position.x,
         y: element.position.y,
         fontSize: element.fontSize,
@@ -268,43 +282,99 @@ function CanvasTextElement({ element, isSelected, onSelect, onChange }: any) {
 
 // Componente principal
 const Mug3DViewer = forwardRef(function Mug3DViewer(
-    { elements, selectedId, onSelect, onUpdateElement, mugColor, mugCoverage }: Mug3DViewerProps,
+    { elements, selectedId, onSelect, onUpdateElement, mugColor }: Mug3DViewerProps,
     ref: any
 ) {
     const konvaStageRef = useRef<any>(null);
-    const [designTexture, setDesignTexture] = useState<THREE.Texture | null>(null);
+    const [textures, setTextures] = useState<{
+        front: THREE.Texture | null;
+        frontBack: THREE.Texture | null;
+        full: THREE.Texture | null;
+    }>({ front: null, frontBack: null, full: null });
 
     const designWidth = 350;
     const designHeight = 400;
 
-    // Actualizar textura cuando cambian los elementos
+    // Actualizar texturas cuando cambian los elementos
     useEffect(() => {
-        const updateTexture = () => {
-            if (konvaStageRef.current) {
-                try {
-                    const stage = konvaStageRef.current;
-                    stage.batchDraw();
+        const updateTextures = async () => {
+            if (!konvaStageRef.current) return;
 
-                    const canvas = stage.toCanvas({ pixelRatio: 2 });
+            const stage = konvaStageRef.current;
+            const layer = stage.getLayers()[0];
 
-                    const texture = new THREE.CanvasTexture(canvas);
-                    texture.flipY = true;
-                    texture.needsUpdate = true;
-                    texture.colorSpace = THREE.SRGBColorSpace;
+            // Función auxiliar para capturar textura
+            const captureTexture = (filterFn: (el: CanvasElement) => boolean) => {
+                // Ocultamos el fondo blanco para la captura
+                // Asumimos que el primer hijo es el Rect de fondo
+                const children = layer.getChildren();
+                const bgRect = children[0];
+                // Verificación de seguridad
+                if (!bgRect) return null;
 
-                    setDesignTexture(texture);
-                } catch (error) {
-                    console.error('Error updating texture:', error);
-                }
-            }
+                const originalBgVisible = bgRect.visible();
+                bgRect.visible(false); // Fondo transparente para las texturas
+
+                // Filtrar elementos usando ID para robustez
+                elements.forEach((el) => {
+                    // Buscar nodo por ID iterando directamente
+                    const node = children.find((c: any) => c.id() === el.id);
+                    if (node) {
+                        if (filterFn(el)) {
+                            node.visible(true);
+                        } else {
+                            node.visible(false);
+                        }
+                    }
+                });
+
+                // Renderizar y crear textura
+                stage.batchDraw();
+                const canvas = stage.toCanvas({ pixelRatio: 2 });
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.flipY = true;
+                texture.needsUpdate = true;
+                texture.colorSpace = THREE.SRGBColorSpace;
+
+                // Restaurar visibilidad
+                bgRect.visible(originalBgVisible);
+                elements.forEach((el) => {
+                    const node = children.find((c: any) => c.id() === el.id);
+                    if (node) node.visible(true);
+                });
+
+                return texture;
+            };
+
+            // Capturar Front
+            const frontTex = elements.some(e => e.coverage === 'front' || !e.coverage)
+                ? captureTexture(e => e.coverage === 'front' || !e.coverage)
+                : null;
+
+            // Capturar Front-Back
+            const frontBackTex = elements.some(e => e.coverage === 'front-back')
+                ? captureTexture(e => e.coverage === 'front-back')
+                : null;
+
+            // Capturar Full
+            const fullTex = elements.some(e => e.coverage === 'full')
+                ? captureTexture(e => e.coverage === 'full')
+                : null;
+
+            // Restaurar todo visible
+            stage.batchDraw();
+
+            setTextures({
+                front: frontTex,
+                frontBack: frontBackTex,
+                full: fullTex
+            });
         };
 
-        const frame = requestAnimationFrame(() => {
-            setTimeout(updateTexture, 50);
-        });
-
-        return () => cancelAnimationFrame(frame);
-    }, [elements, selectedId]);
+        // Debounce pequeño para evitar bloqueos
+        const timeout = setTimeout(updateTextures, 50);
+        return () => clearTimeout(timeout);
+    }, [elements, selectedId]); // selectedId incluído para quitar transformadores si es necesario (aunque Transformer es otro nodo)
 
     useImperativeHandle(ref, () => ({
         toDataURL: (options: any) => {
@@ -380,6 +450,7 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
                     camera={{ position: [0, 1, 6], fov: 60 }}
                     gl={{ preserveDrawingBuffer: true }}
                 >
+                    {/* Luces ... */}
                     <ambientLight intensity={1.2} />
                     <directionalLight
                         position={[5, 5, 5]}
@@ -389,10 +460,15 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
                         shadow-mapSize-height={1024}
                     />
                     <pointLight position={[-5, 5, -5]} intensity={1} />
-                    <pointLight position={[0, -2, 3]} intensity={0.8} /> {/* Luz de relleno */}
-                    <hemisphereLight intensity={0.5} /> {/* Luz hemisférica para brillo uniforme */}
+                    <pointLight position={[0, -2, 3]} intensity={0.8} />
+                    <hemisphereLight intensity={0.5} />
 
-                    <Mug mugColor={mugColor} designTexture={designTexture} mugCoverage={mugCoverage} />
+                    <Mug
+                        mugColor={mugColor}
+                        frontTexture={textures.front}
+                        frontBackTexture={textures.frontBack}
+                        fullTexture={textures.full}
+                    />
 
                     <OrbitControls
                         enablePan={false}
