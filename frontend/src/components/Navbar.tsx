@@ -3,12 +3,17 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const cart = useCartStore((state) => state.cart);
   const totalItems = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
+
+  const { user, logout } = useAuth();
+  const router = useRouter();
 
   // Cargar preferencia de tema al montar el componente
   useEffect(() => {
@@ -53,6 +58,11 @@ export default function Navbar() {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+  };
+
   return (
     <nav className="w-full bg-[var(--accent)] shadow-sm fixed top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
@@ -90,13 +100,25 @@ export default function Navbar() {
             {isDark ? "☀️" : "🌙"}
           </button>
 
-          {/* Botón Sign In */}
-          <Link
-            href="/login"
-            className="px-4 py-2 bg-[var(--foreground)] text-[var(--background)] rounded-lg font-text font-semibold hover:opacity-90 transition-opacity"
-          >
-            Iniciar Sesión
-          </Link>
+          {/* User / Auth */}
+          {user ? (
+            <div className="flex items-center gap-3">
+              <span className="text-sm">👤 {user.username}</span>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg font-text font-semibold hover:bg-red-600 transition-opacity"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="px-4 py-2 bg-[var(--foreground)] text-[var(--background)] rounded-lg font-text font-semibold hover:opacity-90 transition-opacity"
+            >
+              Iniciar Sesión
+            </Link>
+          )}
         </div>
 
         {/* Botón menú móvil */}
@@ -128,14 +150,31 @@ export default function Navbar() {
             {isDark ? "Modo Claro" : "Modo Oscuro"}
           </button>
 
-          {/* Botón Sign In en móvil */}
-          <Link
-            href="/login"
-            onClick={() => setOpen(false)}
-            className="px-4 py-2 bg-[var(--foreground)] text-[var(--background)] rounded-lg font-text font-semibold text-center hover:opacity-90 transition-opacity"
-          >
-            Iniciar Sesión
-          </Link>
+          {/* User / Auth en móvil */}
+          {user ? (
+            <>
+              <div className="text-[var(--foreground)] font-text">
+                👤 {user.username}
+              </div>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setOpen(false);
+                }}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg font-text font-semibold text-center hover:bg-red-600 transition-opacity"
+              >
+                Cerrar Sesión
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="px-4 py-2 bg-[var(--foreground)] text-[var(--background)] rounded-lg font-text font-semibold text-center hover:opacity-90 transition-opacity"
+            >
+              Iniciar Sesión
+            </Link>
+          )}
         </div>
       )}
     </nav>
