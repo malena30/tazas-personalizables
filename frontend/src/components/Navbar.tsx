@@ -89,6 +89,14 @@ export default function Navbar() {
           >
             {isDark ? "☀️" : "🌙"}
           </button>
+
+          {/* Botón Sign In */}
+          <Link
+            href="/login"
+            className="px-4 py-2 bg-[var(--foreground)] text-[var(--background)] rounded-lg font-text font-semibold hover:opacity-90 transition-opacity"
+          >
+            Iniciar Sesión
+          </Link>
         </div>
 
         {/* Botón menú móvil */}
@@ -119,6 +127,15 @@ export default function Navbar() {
             <span className="text-xl">{isDark ? "☀️" : "🌙"}</span>
             {isDark ? "Modo Claro" : "Modo Oscuro"}
           </button>
+
+          {/* Botón Sign In en móvil */}
+          <Link
+            href="/login"
+            onClick={() => setOpen(false)}
+            className="px-4 py-2 bg-[var(--foreground)] text-[var(--background)] rounded-lg font-text font-semibold text-center hover:opacity-90 transition-opacity"
+          >
+            Iniciar Sesión
+          </Link>
         </div>
       )}
     </nav>
