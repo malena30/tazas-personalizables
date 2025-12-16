@@ -79,27 +79,51 @@ Este backend está en su fase inicial con:
 - ⚠️ Sin middleware de autenticación
 - ⚠️ Sin integración con base de datos
 
-## Endpoints Pendientes
+## Endpoints Implementados
 
-Para una aplicación completa de tazas personalizables, se necesitarían endpoints como:
+### Autenticación
 
-### Productos
-- `GET /api/products` - Listar productos
-- `GET /api/products/{id}` - Detalle de producto
-- `POST /api/products` - Crear producto (admin)
+#### POST `/auth/register`
+- **Descripción**: Registra un nuevo usuario.
+- **Body**: `UserRegister` (username, email, password)
+- **Respuesta**: `UserResponse` (id, username, email)
 
-### Órdenes
-- `POST /api/orders` - Crear orden
-- `GET /api/orders/{id}` - Detalle de orden
-- `GET /api/orders` - Listar órdenes (admin)
+#### POST `/auth/login`
+- **Descripción**: Inicia sesión y devuelve un token JWT.
+- **Body**: `UserLogin` (username, password)
+- **Respuesta**: `Token` (access_token, token_type)
 
-### Diseños Personalizados
-- `POST /api/designs/upload` - Subir imagen de diseño
-- `GET /api/designs/{id}` - Obtener diseño
+#### GET `/auth/me`
+- **Descripción**: Obtiene la información del usuario actual.
+- **Headers**: `Authorization: Bearer <token>`
+- **Respuesta**: `UserResponse`
 
-### Envío
-- `POST /api/shipping/calculate` - Calcular costo de envío
-- `GET /api/shipping/options` - Opciones de envío disponibles
+### Diseños (Protegidos)
+
+Todos los endpoints de diseños requieren autenticación JWT.
+
+#### POST `/api/designs`
+- **Descripción**: Crea un nuevo diseño asociado al usuario.
+- **Body**: `DesignCreate` (name, mug_color, elements, thumbnail)
+- **Respuesta**: `DesignResponse`
+
+#### GET `/api/designs`
+- **Descripción**: Lista los diseños del usuario autenticado (paginado).
+- **Query Params**: `skip`, `limit`
+- **Respuesta**: `List[DesignResponse]`
+
+#### GET `/api/designs/{id}`
+- **Descripción**: Obtiene un diseño específico por ID.
+- **Respuesta**: `DesignResponse`
+
+#### PUT `/api/designs/{id}`
+- **Descripción**: Actualiza un diseño existente.
+- **Body**: `DesignUpdate`
+- **Respuesta**: `DesignResponse`
+
+#### DELETE `/api/designs/{id}`
+- **Descripción**: Elimina un diseño.
+- **Respuesta**: 204 No Content
 
 ## Configuraciones Necesarias
 

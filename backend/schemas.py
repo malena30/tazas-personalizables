@@ -29,3 +29,29 @@ class DesignResponse(BaseModel):
 
     class Config:
         from_attributes = True  # Para compatibilidad con SQLAlchemy
+
+# Schema para registro de usuario
+class UserRegister(BaseModel):
+    username: str = Field(..., min_length=3, max_length=50)
+    email: str = Field(..., pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$') # Regex simple para email
+    password: str = Field(..., min_length=6)
+
+# Schema para login
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
+# Schema para respuesta de usuario
+class UserResponse(BaseModel):
+    id: str
+    username: str
+    email: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+# Schema para Token
+class Token(BaseModel):
+    access_token: str
+    token_type: str

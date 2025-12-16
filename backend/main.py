@@ -1,10 +1,12 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
+from datetime import timedelta
 import database
-from database import get_db, Design
-from schemas import DesignCreate, DesignUpdate, DesignResponse
+from database import get_db, Design, User
+from schemas import DesignCreate, DesignUpdate, DesignResponse, UserRegister, UserLogin, UserResponse, Token
+from auth import get_password_hash, verify_password, create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
 
 app = FastAPI(title="Tazas Personalizables API")
 
@@ -21,34 +23,88 @@ app.add_middleware(
 async def root():
     return {'message': 'Backend iniciado correctamente 🚀'}
 
+# --- AUTH ENDPOINTS ---
+
+@app.post("/auth/register", response_model=UserResponse, status_code=201)
+async def register(user: UserRegister, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.username == user.username).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="El usuario ya existe")
+    db_email = db.query(User).filter(User.email == user.email).first()
+    if db_email:
+        raise HTTPException(status_code=400, detail="El email ya está registrado")
+    
+    hashed_password = get_password_hash(user.password)
+    new_user = User(
+        username=user.username,
+        email=user.email,
+        hashed_password=hashed_password
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+@app.post("/auth/login", response_model=Token)
+async def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == user_credentials.username).first()
+    if not user or not verify_password(user_credentials.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Credenciales incorrectas",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/auth/me", response_model=UserResponse)
+async def read_users_me(current_user: User = Depends(get_current_user)):
+    return current_user
+
+# --- DESIGN ENDPOINTS (PROTECTED) ---
+
 # CREATE - Crear nuevo diseño
 @app.post('/api/designs', response_model=DesignResponse, status_code=201)
-async def create_design(design: DesignCreate, db: Session = Depends(get_db)):
+async def create_design(
+    design: DesignCreate, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     db_design = Design(
         name=design.name,
         mug_color=design.mug_color,
         elements=design.elements,
-        thumbnail=design.thumbnail
+        thumbnail=design.thumbnail,
+        user_id=current_user.id
     )
     db.add(db_design)
     db.commit()
     db.refresh(db_design)
     return db_design
 
-# READ - Listar todos los diseños (con paginación)
+# READ - Listar todos los diseños del usuario
 @app.get('/api/designs', response_model=List[DesignResponse])
 async def list_designs(
     skip: int = 0,
     limit: int = 20,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    designs = db.query(Design).order_by(Design.updated_at.desc()).offset(skip).limit(limit).all()
+    designs = db.query(Design).filter(Design.user_id == current_user.id).order_by(Design.updated_at.desc()).offset(skip).limit(limit).all()
     return designs
 
 # READ - Obtener un diseño específico
 @app.get('/api/designs/{design_id}', response_model=DesignResponse)
-async def get_design(design_id: str, db: Session = Depends(get_db)):
-    design = db.query(Design).filter(Design.id == design_id).first()
+async def get_design(
+    design_id: str, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    design = db.query(Design).filter(Design.id == design_id, Design.user_id == current_user.id).first()
     if not design:
         raise HTTPException(status_code=404, detail="Diseño no encontrado")
     return design
@@ -58,9 +114,10 @@ async def get_design(design_id: str, db: Session = Depends(get_db)):
 async def update_design(
     design_id: str,
     design_update: DesignUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    db_design = db.query(Design).filter(Design.id == design_id).first()
+    db_design = db.query(Design).filter(Design.id == design_id, Design.user_id == current_user.id).first()
     if not db_design:
         raise HTTPException(status_code=404, detail="Diseño no encontrado")
     
@@ -75,8 +132,12 @@ async def update_design(
 
 # DELETE - Eliminar diseño
 @app.delete('/api/designs/{design_id}', status_code=204)
-async def delete_design(design_id: str, db: Session = Depends(get_db)):
-    db_design = db.query(Design).filter(Design.id == design_id).first()
+async def delete_design(
+    design_id: str, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    db_design = db.query(Design).filter(Design.id == design_id, Design.user_id == current_user.id).first()
     if not db_design:
         raise HTTPException(status_code=404, detail="Diseño no encontrado")
     
