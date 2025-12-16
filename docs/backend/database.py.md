@@ -54,16 +54,38 @@ def get_db():
         db.close()
 ```
 
-## Modelos Esperados
+## Modelos Implementados
 
-Para una aplicación de tazas personalizables, se esperarían modelos como:
+### User
+Tabla: `users`
 
-- **Product**: Productos (tazas)
-- **Order**: Órdenes de compra
-- **OrderItem**: Items individuales en una orden
-- **Customer**: Datos del cliente
-- **ShippingAddress**: Direcciones de envío
-- **CustomDesign**: Diseños personalizados subidos por usuarios
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id` | String (UUID) | Identificador único (PK) |
+| `username` | String | Nombre de usuario único |
+| `email` | String | Correo electrónico único |
+| `hashed_password` | String | Contraseña hasheada (bcrypt) |
+| `created_at` | DateTime | Fecha de creación |
+
+**Relaciones**:
+- `designs`: One-to-Many con `Design`
+
+### Design
+Tabla: `designs`
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id` | String (UUID) | Identificador único (PK) |
+| `user_id` | String (FK) | ID del usuario propietario |
+| `name` | String | Nombre del diseño |
+| `mug_color` | String | Color base de la taza (hex) |
+| `elements` | JSON | Array de elementos del diseño (imágenes, texto) |
+| `thumbnail` | String | URL o Base64 de la vista previa |
+| `created_at` | DateTime | Fecha de creación |
+| `updated_at` | DateTime | Fecha de última actualización |
+
+**Relaciones**:
+- `owner`: Many-to-One con `User`
 
 ## Consideraciones de Seguridad
 

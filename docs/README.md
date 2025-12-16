@@ -14,7 +14,8 @@
 
 #### Backend
 - **Framework**: FastAPI 
-- **Base de Datos**: Pendiente de implementación (preparado para SQLAlchemy)
+- **Base de Datos**: SQLite (SQLAlchemy)
+- **Autenticación**: JWT + OAuth2 (bcrypt)
 - **Cloud Storage**: Cloudinary (configurado en venv)
 
 #### Frontend
@@ -22,26 +23,24 @@
 - **UI Library**: React 19.2.0
 - **Lenguaje**: TypeScript 5.9.3
 - **Estilización**: Tailwind CSS v4 (Beta)
-- **Estado Global**: Zustand 5.0.8
+- **Estado Global**: Zustand 5.0.8 (Carrito), Context API (Auth)
 - **Iconos**: React Icons 5.5.0
 
 ### Flujos Principales
 
 ```mermaid
 graph TD
-    A[Usuario] --> B[Landing Page]
-    B --> C[Catálogo/products]
-    C --> D[Agregar al Carrito]
-    D --> E[/cart]
-    E --> F{¿Comprar?}
-    F -->|Sí| G[/checkout]
-    G --> H[BuyerForm]
-    H --> I[ShippingOptions]
-    I --> J[PaymentMethods]
-    J--> K[OrderSummary]
-    K --> L[Confirmar Orden]
-    L --> M[Backend API]
-    M --> N[Confirmación/Pago]
+    A[Usuario] --> B{¿Logueado?}
+    B -->|No| C[Login/Register]
+    C --> B
+    B -->|Sí| D[Customizer]
+    D --> E[Guardar Diseño]
+    E --> F[Base de Datos]
+    D --> G[Agregar al Carrito]
+    G --> H[/cart]
+    H --> I{¿Comprar?}
+    I -->|Sí| J[/checkout]
+    J --> K[Backend API]
 ```
 
 ### Gestión de Estado
@@ -53,13 +52,15 @@ graph TD
   - Costo de envío
   - Persistencia en localStorage
 
-#### React Context (Checkout)
+#### React Context
+- **AuthContext**: Estado de autenticación
+  - Usuario actual
+  - Token JWT
+  - Login/Register/Logout
 - **CheckoutContext**: Estado del flujo de checkout
   - Datos del comprador
-  - Método de envío seleccionado
+  - Método de envío
   - Método de pago
-  - Cálculos de totales
-  - Persistencia en localStorage
 
 ---
 
@@ -69,185 +70,74 @@ graph TD
 tazas-personalizables/
 ├── backend/
 │   ├── main.py                    # Aplicación FastAPI
-│   ├── database.py                # Configuración DB (vacío)
+│   ├── database.py                # Modelos SQLAlchemy (User, Design)
+│   ├── auth.py                    # Lógica de autenticación (JWT, Hashing)
+│   ├── schemas.py                 # Schemas Pydantic
 │   └── venv/                      # Entorno virtual Python
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── app/                   # App Router (Next.js 13+)
-│   │   │   ├── page.tsx           # Landing page
-│   │   │   ├── layout.tsx         # Layout raíz
-│   │   │   ├── globals.css        # Estilos globales
-│   │   │   ├── products/
-│   │   │   │   └── page.tsx       # Catálogo
+│   │   │   ├── login/
+│   │   │   │   └── page.tsx       # Login/Registro
 │   │   │   ├── customizer/
 │   │   │   │   └── page.tsx       # Personalizador de tazas
-│   │   │   ├── cart/
-│   │   │   │   └── page.tsx       # Carrito
-│   │   │   └── checkout/
-│   │   │       ├── layout.jsx     # Provider de contexto
-│   │   │       ├── page.jsx       # Página checkout
-│   │   │       └── components/
-│   │   │           ├── BuyerForm.jsx
-│ │   │           ├── ShippingOptions.jsx
-│   │   │           ├── PaymentMethods.jsx
-│   │   │           ├── OrderSummary.jsx
-│   │   │           └── CheckoutSuccess.jsx
-│   │   ├── components/            # Componentes compartidos
-│   │   │   ├── Navbar.tsx
-│   │   │   ├── Footer.tsx
-│   │   │   ├── Cart.tsx
-│   │   │   ├── Toolbar.tsx          # Editor del customizer
-│   │   │   ├── MugCanvas.tsx        # Canvas 3D de la taza
-│   │   │   ├── ShippingCalculator.tsx
-│   │   │   └── CheckoutForm.tsx
+...
 │   │   ├── context/
+│   │   │   ├── AuthContext.tsx    # Contexto de autenticación
 │   │   │   └── CheckoutContext.jsx
-│   │   ├── store/
-│   │   │   └── cartStore.ts       # Zustand store
-│   │   └── hooks/
-│   │       └── useCheckout.js
-│   ├── public/
-│   │   └── sounds/
-│   │       └── click.wav
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── next.config.ts
-│   ├── postcss.config.js
-│   └── eslint.config.mjs
-│
-└── docs/                          # ← Esta documentación
-    ├── README.md                  # ← Estás aquí
-    ├── backend/
-    └── frontend/
+│   │   ├── lib/
+│   │   │   └── api.ts             # Cliente API (Auth + Designs)
+...
 ```
 
 ---
 
 ## 📚 Índice Completo de Documentación
 
-### Backend (2 archivos)
+### Backend (4 archivos)
 
 | Archivo | Descripción | Enlace |
 |---------|-------------|--------|
-| `main.py` | Aplicación FastAPI principal con endpoint de health check | [Documentación](./backend/main.py.md) |
-| `database.py` | Configuración de base de datos ⚠️ Vacío | [Documentación](./backend/database.py.md) |
+| `main.py` | API REST con endpoints de Auth y Diseños | [Documentación](./backend/main.py.md) |
+| `database.py` | Modelos SQLAlchemy (User, Design) | [Documentación](./backend/database.py.md) |
+| `auth.py` | Lógica de seguridad (JWT, Password Hashing) | [Documentación](./backend/auth.py.md) |
+| `schemas.py` | Schemas de validación Pydantic | [Documentación](./backend/schemas.py.md) |
 
 ---
 
-### Frontend - Páginas (8 archivos)
+### Frontend - Páginas (9 archivos)
 
 #### App Router
 
 | Archivo | Ruta | Descripción | Enlace |
 |---------|------|-------------|--------|
-| `app/page.tsx` | `/` | Landing page con hero banner y productos destacados | [Documentación](./frontend/app/page.tsx.md) |
-| `app/layout.tsx` | - | Layout raíz con Navbar, Footer y metadata SEO | [Documentación](./frontend/app/layout.tsx.md) |
-| `app/products/page.tsx` | `/products` | Catálogo completo con filtros y agregar al carrito | [Documentación](./frontend/app/products/page.tsx.md) |
-| `app/customizer/page.tsx` | `/customizer` | Personalizador de tazas con rotación 3D y edición | [Documentación](./frontend/app/customizer/page.tsx.md) |
-| `app/cart/page.tsx` | `/cart` | Carrito con edición de cantidades y cálculo de envío | [Documentación](./frontend/app/cart/page.tsx.md) |
-
-#### Checkout Flow
-
-| Archivo | Ruta | Descripción | Enlace |
-|---------|------|-------------|--------|
-| `app/checkout/layout.jsx` | - | Layout que provee CheckoutContext | [Documentación](./frontend/app/checkout/layout.jsx.md) |
-| `app/checkout/page.jsx` | `/checkout` | Orquestador del flujo de checkout | [Documentación](./frontend/app/checkout/page.jsx.md) |
-
----
-
-### Frontend - Componentes de Checkout (5 archivos)
-
-| Archivo | Propósito | Enlace |
-|---------|-----------|--------|
-| `BuyerForm.jsx` | Formulario de datos del comprador | [Documentación](./frontend/app/checkout/components/BuyerForm.jsx.md) |
-| `ShippingOptions.jsx` | Selección de método de envío | [Documentación](./frontend/app/checkout/components/ShippingOptions.jsx.md) |
-| `PaymentMethods.jsx` | Selección de método de pago | [Documentación](./frontend/app/checkout/components/PaymentMethods.jsx.md) |
-| `OrderSummary.jsx` | Resumen final y botón de confirmación | [Documentación](./frontend/app/checkout/components/OrderSummary.jsx.md) |
-| `CheckoutSuccess.jsx` | Pantalla de confirmación ⚠️ Vacío | [Documentación](./frontend/app/checkout/components/CheckoutSuccess.jsx.md) |
-
----
-
-### Frontend - Componentes Compartidos (7 archivos)
-
-| Archivo | Propósito | Enlace |
-|---------|-----------|--------|
-| `Navbar.tsx` | Barra de navegación superior fija | [Documentación](./frontend/components/Navbar.tsx.md) |
-| `Footer.tsx` | Pie de página con enlaces y copyright | [Documentación](./frontend/components/Footer.tsx.md) |
-| `Cart.tsx` | Widget de carrito (versión simplificada) | [Documentación](./frontend/components/Cart.tsx.md) |
-| `Toolbar.tsx` | Panel de herramientas del customizer con controles | [Documentación](./frontend/components/Toolbar.tsx.md) |
-| `MugCanvas.tsx` | Canvas Konva con visualización 3D de la taza | [Documentación](./frontend/components/MugCanvas.tsx.md) |
-| `ShippingCalculator.tsx` | Calculadora de opciones/costos de envío | [Documentación](./frontend/components/ShippingCalculator.tsx.md) |
-| `CheckoutForm.tsx` | Formulario unificado ⚠️ Vacío | [Documentación](./frontend/components/CheckoutForm.tsx.md) |
-
----
-
-### Frontend - Estado y Contexto (3 archivos)
-
-| Archivo | Tipo | Descripción | Enlace |
-|---------|------|-------------|--------|
-| `context/CheckoutContext.jsx` | Context API | Gestión de estado del checkout con localStorage | [Documentación](./frontend/context/CheckoutContext.jsx.md) |
-| `store/cartStore.ts` | Zustand Store | Estado global del carrito con persistencia | [Documentación](./frontend/store/cartStore.ts.md) |
-| `hooks/useCheckout.js` | Custom Hook | Re-exporta useCheckout ⚠️ Redundante | [Documentación](./frontend/hooks/useCheckout.js.md) |
-
----
-
-### Frontend - Estilos (1 archivo)
-
-| Archivo | Descripción | Enlace |
-|---------|-------------|--------|
-| `app/globals.css` | Estilos globales, variables CSS y configuración Tailwind | [Documentación](./frontend/app/globals.css.md) |
-
----
-
-### Frontend - Configuración (5 archivos)
-
-| Archivo | Propósito | Enlace |
-|---------|-----------|--------|
-| `package.json` | Dependencias y scripts del proyecto | [Documentación](./frontend/config/package.json.md) |
-| `next.config.ts` | Configuración de Next.js (imágenes, strict mode) | [Documentación](./frontend/config/next.config.ts.md) |
-| `tsconfig.json` | Configuración de TypeScript | [Documentación](./frontend/config/tsconfig.json.md) |
-| `postcss.config.js` | Configuración de PostCSS y Tailwind | [Documentación](./frontend/config/postcss.config.js.md) |
-| `eslint.config.mjs` | Reglas de linting y Web Vitals | [Documentación](./frontend/config/eslint.config.mjs.md) |
-
----
+| `app/login/page.tsx` | `/login` | Formulario unificado de Login y Registro | [Documentación](./frontend/app/login/page.tsx.md) |
+...
 
 ## 🎯 Funcionalidades Implementadas
 
 ### ✅ Completas
 
-- [x] Landing page con diseño ML
-- [x] Catálogo de productos con agregar al carrito
+- [x] **Backend Completo**
+  - [x] API REST con FastAPI
+  - [x] Base de datos SQLite con SQLAlchemy
+  - [x] Autenticación JWT (Login/Register)
+  - [x] CRUD de Diseños (protegido por usuario)
+- [x] **Frontend Auth**
+  - [x] Página de Login/Registro
+  - [x] Manejo de sesión global (AuthContext)
+  - [x] Protección de rutas y API calls
 - [x] **Personalizador de Tazas (/customizer)**
-  - [x] Canvas interactivo con Konva.js
-  - [x] Agregar y editar imágenes
-  - [x] Agregar y editar texto
-  - [x] Edición inline de texto (doble clic)
-  - [x] Selector de fuentes (8 Google Fonts)
-  - [x] Control de color y tamaño de texto
-  - [x] Rotación 3D de la taza (0°, 90°, 180°, 270°)
-  - [x] Visualización realista con forma cilíndrica
-  - [x] Iluminación y sombras para efecto 3D
-  - [x] Asa de taza que rota con el modelo
-  - [x] Control de capas (traer al frente/enviar atrás)
-  - [x] Exportar diseño a imagen
-  - [x] Agregar al carrito con diseño personalizado
-- [x] Carrito con edición de cantidades
-- [x] Cálculo de envío por provincia
-- [x] Persistencia de carrito en localStorage
-- [x] Navbar responsive con contador
-- [x] Footer con enlaces
-- [x] Formularios de checkout (buyer, shipping, payment)
-- [x] Cálculo de total dinámico
-- [x] Optimización de imágenes con Next.js Image
+  - [x] Guardar/Cargar diseños en backend
+  - [x] Canvas interactivo 3D
+...
 
 ### ⚠️ Parciales/Incompletas
 
-- [ ] Backend con solo endpoint de health check
 - [ ] Integración de pago real (Mercado Pago deshabilitado)
 - [ ] Confirmación de orden (sin handler de submit)
-- [ ] Base de datos (archivo vacío)
-- [ ] Dark mode (variables definidas pero no usadas)
+- [ ] Dark mode (parcialmente implementado en Navbar/Login)
 
 ---
 
@@ -255,11 +145,13 @@ tazas-personalizables/
 
 ### Backend
 
-- **Sin implementación funcional**: Solo health check endpoint
-- **Sin base de datos**: Archivo `database.py` vacío
-- **Sin modelos**: No hay schemas de datos
-- **Sin autenticación**: No implementada
-- **Sin endpoints de negocio**: Productos, órdenes, pagos pendientes
+- **Cloud Storage**: Thumbnails se guardan como Base64 o URL, falta integración robusta con Cloudinary.
+- **Emails**: No hay envío de emails de confirmación.
+
+### Frontend
+
+- **Checkout**: Falta conectar con backend real de órdenes.
+
 
 ### Frontend
 
