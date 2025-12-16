@@ -25,6 +25,7 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     
     designs = relationship("Design", back_populates="owner")
+    orders = relationship("Order", back_populates="user")
 
 # Modelo de Diseño
 class Design(Base):
@@ -40,6 +41,35 @@ class Design(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     owner = relationship("User", back_populates="designs")
+
+# Modelo de Orden
+class Order(Base):
+    __tablename__ = "orders"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=True)
+    total_amount = Column(JSON, nullable=False) # Guardamos como float pero SQLAlchemy lo maneja
+    status = Column(String, default="pending") # pending, paid, shipped
+    shipping_address = Column(JSON, nullable=False)
+    payment_method = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    items = relationship("OrderItem", back_populates="order")
+    user = relationship("User", back_populates="orders")
+
+# Modelo de Item de Orden
+class OrderItem(Base):
+    __tablename__ = "order_items"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    order_id = Column(String, ForeignKey("orders.id"), nullable=False)
+    design_id = Column(String, ForeignKey("designs.id"), nullable=True)
+    product_id = Column(String, nullable=True) # ID de producto de catálogo
+    quantity = Column(JSON, nullable=False) # Integer
+    price = Column(JSON, nullable=False) # Float
+
+    order = relationship("Order", back_populates="items")
+    design = relationship("Design")
 
 # Crear todas las tablas
 Base.metadata.create_all(bind=engine)

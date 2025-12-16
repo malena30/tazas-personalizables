@@ -176,3 +176,58 @@ export async function deleteDesign(id: string): Promise<void> {
         throw new Error('Error al eliminar el diseño');
     }
 }
+// --- ORDER FUNCTIONS ---
+
+export interface OrderItemCreate {
+    design_id?: string;
+    product_id?: string;
+    quantity: number;
+    price: number;
+}
+
+export interface OrderCreate {
+    items: OrderItemCreate[];
+    shipping_address: any;
+    payment_method: string;
+    total_amount: number;
+}
+
+export interface OrderResponse {
+    id: string;
+    total_amount: number;
+    status: string;
+    created_at: string;
+}
+
+export async function createOrder(data: OrderCreate): Promise<OrderResponse> {
+    const response = await fetch(`${API_URL}/api/orders`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders(),
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        if (response.status === 401) throw new Error('Debes iniciar sesión para comprar');
+        throw new Error('Error al crear la orden');
+    }
+
+    return response.json();
+}
+
+export async function getOrders(): Promise<OrderResponse[]> {
+    const headers = getAuthHeaders();
+    if (!headers.Authorization) return [];
+
+    const response = await fetch(`${API_URL}/api/orders`, {
+        headers
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al obtener historial de órdenes');
+    }
+
+    return response.json();
+}
