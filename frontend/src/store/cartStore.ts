@@ -12,12 +12,13 @@ export interface Product {
 
 export interface CartItem extends Product {
   quantity: number;
+  designId?: string;
 }
 
 interface CartState {
   cart: CartItem[];
   shippingCost: number;
-  addToCart: (product: Product & { quantity?: number }) => void;
+  addToCart: (product: Product & { quantity?: number; designId?: string }) => void;
   removeFromCart: (id: number) => void;
   updateQuantity: (id: number, quantity: number) => void;
   clearCart: () => void;

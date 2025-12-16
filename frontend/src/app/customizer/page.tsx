@@ -295,7 +295,8 @@ export default function CustomizerPage() {
                 name: "Taza Personalizada",
                 price: 3500, // Precio de la taza personalizada
                 image: uri, // Imagen del diseño
-                description: `Taza personalizada con ${elements.length} elemento(s)`
+                description: `Taza personalizada con ${elements.length} elemento(s)`,
+                designId: currentDesignId || undefined
             });
 
             // Mostrar tooltip de confirmación

@@ -144,3 +144,49 @@ async def delete_design(
     db.delete(db_design)
     db.commit()
     return None
+
+# --- ORDER ENDPOINTS ---
+
+from database import Order, OrderItem
+from schemas import OrderCreate, OrderResponse
+
+@app.post('/api/orders', response_model=OrderResponse, status_code=201)
+async def create_order(
+    order: OrderCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Crear la orden
+    db_order = Order(
+        user_id=current_user.id,
+        total_amount=order.total_amount,
+        shipping_address=order.shipping_address,
+        payment_method=order.payment_method
+    )
+    db.add(db_order)
+    db.flush() # Para obtener el ID de la orden
+
+    # Crear los items
+    for item in order.items:
+        db_item = OrderItem(
+            order_id=db_order.id,
+            design_id=item.design_id,
+            product_id=item.product_id,
+            quantity=item.quantity,
+            price=item.price
+        )
+        db.add(db_item)
+    
+    db.commit()
+    db.refresh(db_order)
+    return db_order
+
+@app.get('/api/orders', response_model=List[OrderResponse])
+async def list_orders(
+    skip: int = 0,
+    limit: int = 20,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    orders = db.query(Order).filter(Order.user_id == current_user.id).order_by(Order.created_at.desc()).offset(skip).limit(limit).all()
+    return orders

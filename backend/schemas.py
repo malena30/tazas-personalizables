@@ -55,3 +55,41 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+# --- Order Schemas ---
+
+class OrderItemCreate(BaseModel):
+    design_id: Optional[str] = None
+    product_id: Optional[str] = None
+    quantity: int
+    price: float
+
+class OrderCreate(BaseModel):
+    items: List[OrderItemCreate]
+    shipping_address: Any # JSON con datos del comprador
+    payment_method: str
+    total_amount: float
+
+class OrderItemResponse(BaseModel):
+    id: str
+    design_id: Optional[str]
+    product_id: Optional[str]
+    quantity: int
+    price: float
+    design: Optional[DesignResponse] = None
+
+    class Config:
+        from_attributes = True
+
+class OrderResponse(BaseModel):
+    id: str
+    user_id: Optional[str]
+    total_amount: float
+    status: str
+    shipping_address: Any
+    payment_method: str
+    created_at: datetime
+    items: List[OrderItemResponse]
+
+    class Config:
+        from_attributes = True
