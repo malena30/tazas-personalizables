@@ -52,6 +52,7 @@ class Order(Base):
     status = Column(String, default="pending") # pending, paid, shipped
     shipping_address = Column(JSON, nullable=False)
     payment_method = Column(String, nullable=False)
+    checkout_url = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     items = relationship("OrderItem", back_populates="order")

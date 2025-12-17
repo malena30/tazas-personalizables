@@ -196,6 +196,7 @@ export interface OrderResponse {
     id: string;
     total_amount: number;
     status: string;
+    checkout_url?: string;
     created_at: string;
 }
 

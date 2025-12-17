@@ -41,7 +41,14 @@ export default function OrderSummary() {
       };
 
       const order = await createOrder(orderData);
-      router.push(`/checkout/success?orderId=${order.id}`);
+
+      if (order.checkout_url) {
+        // Redirigir a Mercado Pago
+        window.location.href = order.checkout_url;
+      } else {
+        // Si no hay URL de pago (ej: transferencia), ir a página de éxito
+        router.push(`/checkout/success?orderId=${order.id}`);
+      }
     } catch (error) {
       console.error("Error al crear la orden:", error);
       alert(error.message || "Hubo un error al procesar tu pedido");

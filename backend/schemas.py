@@ -88,6 +88,7 @@ class OrderResponse(BaseModel):
     status: str
     shipping_address: Any
     payment_method: str
+    checkout_url: Optional[str] = None
     created_at: datetime
     items: List[OrderItemResponse]
 

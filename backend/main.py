@@ -149,6 +149,8 @@ async def delete_design(
 
 from database import Order, OrderItem
 from schemas import OrderCreate, OrderResponse
+from payments import create_preference
+from fastapi import Request
 
 @app.post('/api/orders', response_model=OrderResponse, status_code=201)
 async def create_order(
@@ -166,7 +168,8 @@ async def create_order(
     db.add(db_order)
     db.flush() # Para obtener el ID de la orden
 
-    # Crear los items
+    # Crear los items y prepararlos para MP
+    order_items = []
     for item in order.items:
         db_item = OrderItem(
             order_id=db_order.id,
@@ -176,6 +179,16 @@ async def create_order(
             price=item.price
         )
         db.add(db_item)
+        order_items.append(db_item)
+    
+    # Generar link de Mercado Pago si el método es Mercado Pago
+    if order.payment_method == "mercadopago":
+        try:
+            checkout_url = create_preference(db_order, order_items)
+            db_order.checkout_url = checkout_url
+        except Exception as e:
+            print(f"Error creando preferencia de MP: {e}")
+            # No fallamos la orden si MP falla, pero el usuario no tendrá link
     
     db.commit()
     db.refresh(db_order)
@@ -190,3 +203,18 @@ async def list_orders(
 ):
     orders = db.query(Order).filter(Order.user_id == current_user.id).order_by(Order.created_at.desc()).offset(skip).limit(limit).all()
     return orders
+
+# --- PAYMENT WEBHOOK ---
+
+@app.post("/api/payments/webhook")
+async def mercadopago_webhook(request: Request, db: Session = Depends(get_db)):
+    # Mercado Pago envía notificaciones de diferentes tipos
+    # Aquí procesamos las de 'payment'
+    data = await request.json()
+    print(f"Webhook recibido: {data}")
+    
+    # En una implementación real, aquí consultaríamos el estado del pago a MP
+    # usando el ID que viene en data['data']['id']
+    # y actualizaríamos la orden correspondiente (external_reference)
+    
+    return {"status": "ok"}
