@@ -7,6 +7,8 @@ import Toolbar from "@/components/Toolbar";
 import DesignLibrary from "@/components/DesignLibrary";
 import { useCartStore } from "@/store/cartStore";
 import { saveDesign, updateDesign, Design } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 // Importación dinámica de Mug3DViewer para evitar errores de SSR con Three.js y Konva
 const Mug3DViewer = dynamic(() => import("@/components/Mug3DViewer"), {
@@ -41,6 +43,8 @@ export default function CustomizerPage() {
     const [currentDesignId, setCurrentDesignId] = useState<string | null>(null);
     const canvasRef = useRef<any>(null);
     const addToCart = useCartStore((state) => state.addToCart);
+    const { user } = useAuth();
+    const router = useRouter();
 
     // Generar ID único
     const generateId = () => `element-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -307,6 +311,18 @@ export default function CustomizerPage() {
 
     // Guardar diseño
     const handleSaveDesign = async () => {
+        if (!user) {
+            // Si no está logueado, guardar temporalmente y redirigir
+            const pendingDesign = {
+                mug_color: mugColor,
+                elements: elements,
+                name: designName || "Mi Diseño"
+            };
+            localStorage.setItem('pending_design', JSON.stringify(pendingDesign));
+            router.push('/login?redirect=/customizer');
+            return;
+        }
+
         if (!designName.trim()) {
             alert('Por favor ingresa un nombre para el diseño');
             return;
@@ -358,6 +374,28 @@ export default function CustomizerPage() {
         setDesignName(design.name);
         setSelectedId(null);
     };
+
+    // Restaurar diseño pendiente tras login
+    useEffect(() => {
+        const pending = localStorage.getItem('pending_design');
+        if (pending) {
+            try {
+                const design = JSON.parse(pending);
+                setElements(design.elements || []);
+                setMugColor(design.mug_color || "#FFFFFF");
+                setDesignName(design.name || "");
+                // Limpiar para que no se restaure cada vez que refresca
+                localStorage.removeItem('pending_design');
+
+                // Si ahora está logueado, abrir el modal de guardado automáticamente
+                if (user) {
+                    setShowSaveModal(true);
+                }
+            } catch (e) {
+                console.error("Error restaurando diseño pendiente:", e);
+            }
+        }
+    }, [user]); // Re-ejecutar cuando el usuario se loguea
 
     return (
         <main className="w-full min-h-screen bg-[var(--background)] py-8 overflow-x-hidden">

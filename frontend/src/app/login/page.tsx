@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -15,6 +16,8 @@ export default function LoginPage() {
 
     const { login, register } = useAuth();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirectPath = searchParams.get('redirect') || '/customizer';
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,7 +35,7 @@ export default function LoginPage() {
                 }
                 await register(username, email, password);
             }
-            router.push('/customizer');
+            router.push(redirectPath);
         } catch (err: any) {
             setError(err.message || 'Error al procesar la solicitud');
         } finally {
@@ -120,8 +123,8 @@ export default function LoginPage() {
                             type="submit"
                             disabled={loading}
                             className={`w-full py-3 rounded-lg font-semibold font-text transition-all ${loading
-                                    ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
-                                    : 'bg-[var(--foreground)] text-[var(--background)] hover:opacity-90'
+                                ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                                : 'bg-[var(--foreground)] text-[var(--background)] hover:opacity-90'
                                 }`}
                         >
                             {loading ? 'Procesando...' : isLogin ? 'Iniciar Sesión' : 'Registrarse'}
