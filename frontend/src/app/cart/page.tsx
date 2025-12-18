@@ -3,9 +3,13 @@
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useCartStore } from "@/store/cartStore";
 import { useState } from "react";
-import Link from "next/link"; // <-- IMPORTANTE
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function CartPage() {
+  const { user } = useAuth();
+  const router = useRouter();
   const {
     cart,
     updateQuantity,
@@ -47,6 +51,14 @@ export default function CartPage() {
 
   const subtotal = calculateSubtotal();
   const total = subtotal + shippingCost;
+
+  const handleCheckout = () => {
+    if (!user) {
+      router.push("/login?redirect=/checkout");
+    } else {
+      router.push("/checkout");
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-6 mt-20 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -172,13 +184,13 @@ export default function CartPage() {
               <span className="font-mono">${total}</span>
             </p>
 
-            {/* BOTÓN COMPRAR → LLEVA A /checkout */}
-            <Link
-              href="/checkout"
-              className="w-full mt-6 bg-[var(--accent)] text-[var(--foreground)] py-3 text-lg font-text font-semibold rounded-lg shadow hover:opacity-90 transition-opacity block text-center"
+            {/* BOTÓN COMPRAR → LLEVA A /checkout (con check de auth) */}
+            <button
+              onClick={handleCheckout}
+              className="w-full mt-6 bg-[var(--accent)] text-[var(--foreground)] py-3 text-lg font-text font-semibold rounded-lg shadow hover:opacity-90 transition-opacity block text-center cursor-pointer"
             >
               Comprar
-            </Link>
+            </button>
           </div>
         </div>
       )}

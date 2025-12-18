@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { useCheckout } from "@/context/CheckoutContext";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 import BuyerForm from './components/BuyerForm'
 import ShippingOptions from './components/ShippingOptions'
@@ -12,7 +14,14 @@ import OrderSummary from './components/OrderSummary'
 export default function CheckoutPage() {
   const { cart } = useCartStore();
   const { setSubtotal } = useCheckout();
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login?redirect=/checkout");
+    }
+  }, [user, loading, router]);
   useEffect(() => {
     if (!cart) return;
 
