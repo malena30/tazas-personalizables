@@ -45,3 +45,16 @@ def create_preference(order, items):
     preference = preference_response["response"]
     
     return preference.get("init_point") # URL para el checkout de Mercado Pago
+
+def get_payment_info(payment_id):
+    """
+    Obtiene los detalles de un pago desde Mercado Pago.
+    """
+    payment_response = sdk.payment().get(payment_id)
+    payment = payment_response["response"]
+    
+    return {
+        "status": payment.get("status"),
+        "external_reference": payment.get("external_reference"),
+        "status_detail": payment.get("status_detail")
+    }

@@ -210,11 +210,37 @@ async def list_orders(
 async def mercadopago_webhook(request: Request, db: Session = Depends(get_db)):
     # Mercado Pago envía notificaciones de diferentes tipos
     # Aquí procesamos las de 'payment'
-    data = await request.json()
-    print(f"Webhook recibido: {data}")
-    
-    # En una implementación real, aquí consultaríamos el estado del pago a MP
-    # usando el ID que viene en data['data']['id']
-    # y actualizaríamos la orden correspondiente (external_reference)
-    
-    return {"status": "ok"}
+    try:
+        data = await request.json()
+        print(f"Webhook recibido: {data}")
+        
+        # El tipo de notificación viene en 'type' o 'topic'
+        topic = data.get("type") or data.get("topic")
+        
+        if topic == "payment":
+            # El ID del pago está en data['data']['id'] o data['id']
+            payment_id = data.get("data", {}).get("id") or data.get("id")
+            
+            if payment_id:
+                from payments import get_payment_info
+                payment_info = get_payment_info(payment_id)
+                
+                order_id = payment_info.get("external_reference")
+                status = payment_info.get("status")
+                
+                if order_id:
+                    # Buscar la orden en la base de datos
+                    order = db.query(Order).filter(Order.id == order_id).first()
+                    if order:
+                        if status == "approved":
+                            order.status = "paid"
+                        elif status in ["rejected", "cancelled", "refunded"]:
+                            order.status = "failed"
+                        
+                        db.commit()
+                        print(f"Orden {order_id} actualizada a estado: {order.status}")
+        
+        return {"status": "ok"}
+    except Exception as e:
+        print(f"Error procesando webhook: {e}")
+        return {"status": "error", "message": str(e)}
