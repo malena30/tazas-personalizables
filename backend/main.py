@@ -1,12 +1,21 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import timedelta
 import database
-from database import get_db, Design, User
-from schemas import DesignCreate, DesignUpdate, DesignResponse, UserRegister, UserLogin, UserResponse, Token
-from auth import get_password_hash, verify_password, create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
+from database import get_db, Design, User, Order, OrderItem
+from schemas import (
+    DesignCreate, DesignUpdate, DesignResponse, 
+    UserRegister, UserLogin, UserResponse, Token,
+    OrderCreate, OrderResponse
+)
+from auth import (
+    get_password_hash, verify_password, create_access_token, 
+    get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
+)
+from payments import create_preference, get_payment_info
+from cloudinary_utils import upload_base64_image
 
 app = FastAPI(title="Tazas Personalizables API")
 
@@ -67,18 +76,22 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
 
 # --- DESIGN ENDPOINTS (PROTECTED) ---
 
-# CREATE - Crear nuevo diseño
 @app.post('/api/designs', response_model=DesignResponse, status_code=201)
 async def create_design(
-    design: DesignCreate, 
+    design: DesignCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Subir thumbnail a Cloudinary si existe
+    thumbnail_url = design.thumbnail
+    if design.thumbnail and design.thumbnail.startswith("data:image"):
+        thumbnail_url = upload_base64_image(design.thumbnail)
+
     db_design = Design(
         name=design.name,
         mug_color=design.mug_color,
         elements=design.elements,
-        thumbnail=design.thumbnail,
+        thumbnail=thumbnail_url,
         user_id=current_user.id
     )
     db.add(db_design)
@@ -86,7 +99,6 @@ async def create_design(
     db.refresh(db_design)
     return db_design
 
-# READ - Listar todos los diseños del usuario
 @app.get('/api/designs', response_model=List[DesignResponse])
 async def list_designs(
     skip: int = 0,
@@ -97,10 +109,9 @@ async def list_designs(
     designs = db.query(Design).filter(Design.user_id == current_user.id).order_by(Design.updated_at.desc()).offset(skip).limit(limit).all()
     return designs
 
-# READ - Obtener un diseño específico
 @app.get('/api/designs/{design_id}', response_model=DesignResponse)
 async def get_design(
-    design_id: str, 
+    design_id: str,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -109,7 +120,6 @@ async def get_design(
         raise HTTPException(status_code=404, detail="Diseño no encontrado")
     return design
 
-# UPDATE - Actualizar diseño existente
 @app.put('/api/designs/{design_id}', response_model=DesignResponse)
 async def update_design(
     design_id: str,
@@ -121,16 +131,23 @@ async def update_design(
     if not db_design:
         raise HTTPException(status_code=404, detail="Diseño no encontrado")
     
+    # Subir nuevo thumbnail a Cloudinary si cambió y es base64
+    thumbnail_url = db_design.thumbnail
+    if design_update.thumbnail and design_update.thumbnail.startswith("data:image"):
+        thumbnail_url = upload_base64_image(design_update.thumbnail)
+
     # Actualizar solo los campos proporcionados
     update_data = design_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
-        setattr(db_design, field, value)
+        if field == "thumbnail":
+            setattr(db_design, field, thumbnail_url)
+        else:
+            setattr(db_design, field, value)
     
     db.commit()
     db.refresh(db_design)
     return db_design
 
-# DELETE - Eliminar diseño
 @app.delete('/api/designs/{design_id}', status_code=204)
 async def delete_design(
     design_id: str, 
@@ -146,11 +163,6 @@ async def delete_design(
     return None
 
 # --- ORDER ENDPOINTS ---
-
-from database import Order, OrderItem
-from schemas import OrderCreate, OrderResponse
-from payments import create_preference
-from fastapi import Request
 
 @app.post('/api/orders', response_model=OrderResponse, status_code=201)
 async def create_order(
@@ -208,28 +220,22 @@ async def list_orders(
 
 @app.post("/api/payments/webhook")
 async def mercadopago_webhook(request: Request, db: Session = Depends(get_db)):
-    # Mercado Pago envía notificaciones de diferentes tipos
-    # Aquí procesamos las de 'payment'
     try:
         data = await request.json()
         print(f"Webhook recibido: {data}")
         
-        # El tipo de notificación viene en 'type' o 'topic'
         topic = data.get("type") or data.get("topic")
         
         if topic == "payment":
-            # El ID del pago está en data['data']['id'] o data['id']
             payment_id = data.get("data", {}).get("id") or data.get("id")
             
             if payment_id:
-                from payments import get_payment_info
                 payment_info = get_payment_info(payment_id)
                 
                 order_id = payment_info.get("external_reference")
                 status = payment_info.get("status")
                 
                 if order_id:
-                    # Buscar la orden en la base de datos
                     order = db.query(Order).filter(Order.id == order_id).first()
                     if order:
                         if status == "approved":

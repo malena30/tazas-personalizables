@@ -87,6 +87,39 @@ Tabla: `designs`
 **Relaciones**:
 - `owner`: Many-to-One con `User`
 
+### Order
+Tabla: `orders`
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id` | String (UUID) | Identificador único (PK) |
+| `user_id` | String (FK) | ID del usuario (opcional para invitados) |
+| `total_amount` | Float | Monto total de la orden |
+| `status` | String | Estado (`pending`, `paid`, `shipped`, `failed`) |
+| `shipping_address` | JSON | Datos de envío |
+| `payment_method` | String | Método (`mercadopago`, `cash`) |
+| `checkout_url` | String | URL de pago de Mercado Pago |
+| `created_at` | DateTime | Fecha de creación |
+
+**Relaciones**:
+- `items`: One-to-Many con `OrderItem`
+- `user`: Many-to-One con `User`
+
+### OrderItem
+Tabla: `order_items`
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id` | String (UUID) | Identificador único (PK) |
+| `order_id` | String (FK) | ID de la orden padre |
+| `design_id` | String (FK) | ID del diseño (si aplica) |
+| `product_id` | String | ID del producto de catálogo |
+| `quantity` | Integer | Cantidad |
+| `price` | Float | Precio unitario al momento de compra |
+
+**Relaciones**:
+- `order`: Many-to-One con `Order`
+
 ## Consideraciones de Seguridad
 
 - [ ] Usar variables de entorno para credenciales de base de datos

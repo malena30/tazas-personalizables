@@ -125,6 +125,23 @@ Todos los endpoints de diseños requieren autenticación JWT.
 - **Descripción**: Elimina un diseño.
 - **Respuesta**: 204 No Content
 
+### Órdenes
+
+#### POST `/api/orders`
+- **Descripción**: Crea una nueva orden y genera el link de pago si aplica.
+- **Body**: `OrderCreate`
+- **Respuesta**: `OrderResponse`
+
+#### GET `/api/orders`
+- **Descripción**: Lista las órdenes del usuario autenticado.
+- **Respuesta**: `List[OrderResponse]`
+
+### Pagos
+
+#### POST `/api/payments/webhook`
+- **Descripción**: Recibe notificaciones de Mercado Pago y actualiza el estado de las órdenes.
+- **Respuesta**: `{"status": "ok"}`
+
 ## Configuraciones Necesarias
 
 ### CORS (Cross-Origin Resource Sharing)

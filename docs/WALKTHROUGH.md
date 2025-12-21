@@ -12,8 +12,8 @@ Se generó documentación exhaustiva y estructurada para **todo el repositorio**
 
 | Categoría | Cantidad | Ubicación |
 |-----------|----------|-----------|
-| **Backend** | 2 | `docs/backend/` |
-| **Frontend - Páginas** | 9 | `docs/frontend/app/` |
+| **Backend** | 6 | `docs/backend/` |
+| **Frontend - Páginas** | 10 | `docs/frontend/app/` |
 | **Frontend - Componentes** | 12 | `docs/frontend/components/` & `app/checkout/components/` |
 | **Frontend - Estado** | 3 | `docs/frontend/context/`, `store/`, `hooks/` |
 | **Frontend - Estilos** | 1 | `docs/frontend/app/` |
@@ -183,37 +183,6 @@ Para entender la aplicación paso a paso, se recomienda leer la documentación e
 
 ## 🗂️ Estructura Creada
 
-```
-docs/
-├── README.md ⭐ Índice global con arquitectura completa
-│
-├── backend/
-│   ├── database.py.md
-│   └── main.py.md
-│
-└── frontend/
-    ├── app/
-    │   ├── page.tsx.md
-    │   ├── layout.tsx.md
-    │   ├── globals.css.md
-    │   ├── products/
-    │   │   └── page.tsx.md
-    │   ├── cart/
-    │   │   └── page.tsx.md
-    │   └── checkout/
-    │       ├── layout.jsx.md
-    │       ├── page.jsx.md
-    │       └── components/
-    │           ├── BuyerForm.jsx.md
-    │           ├── CheckoutSuccess.jsx.md
-    │           ├── OrderSummary.jsx.md
-    │           ├── PaymentMethods.jsx.md
-    │           └── ShippingOptions.jsx.md
-    │
-    ├── components/
-    │   ├── Cart.tsx.md
-    │   ├── CheckoutForm.tsx.md
-    │   ├── Footer.tsx.md
     │   ├── Navbar.tsx.md
     │   └── ShippingCalculator.tsx.md
     │

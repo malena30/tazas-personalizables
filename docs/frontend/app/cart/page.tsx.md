@@ -19,7 +19,8 @@ Página del carrito de compras que permite visualizar productos agregados, modif
 
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useCartStore } from "@/store/cartStore";
-import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 ```
 
@@ -326,13 +327,13 @@ graph LR
 
 **Trigger**: Click en botón "Comprar"
 
-**Navegación**: `Link` a `/checkout`
+**Lógica**:
+1. Si el usuario no está logueado:
+   - Redirige a `/login?redirect=/checkout`.
+2. Si está logueado:
+   - Navega a `/checkout`.
 
-**Datos llevados**: El carrito persiste en Zustand (global)
-
-```typescript
-<Link href="/checkout">Comprar</Link>
-```
+**Datos llevados**: El carrito persiste en Zustand (global).
 
 ## Estilos y Diseño
 

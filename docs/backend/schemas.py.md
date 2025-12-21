@@ -47,3 +47,20 @@ Datos para actualizar (todos opcionales).
 #### `DesignResponse`
 Datos completos del diseño.
 - Incluye `id`, `user_id`, `created_at`, `updated_at`.
+
+### Órdenes
+
+#### `OrderItemCreate`
+- `design_id`: UUID (opcional)
+- `product_id`: String (opcional)
+- `quantity`: Integer
+- `price`: Float
+
+#### `OrderCreate`
+- `items`: List[OrderItemCreate]
+- `total_amount`: Float
+- `shipping_address`: JSON
+- `payment_method`: String ("mercadopago" | "cash")
+
+#### `OrderResponse`
+- Incluye `id`, `user_id`, `status`, `checkout_url`, `created_at` y la lista de `items`.

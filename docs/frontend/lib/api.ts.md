@@ -24,6 +24,10 @@ Todas las funciones de diseño inyectan automáticamente el header `Authorizatio
 - `updateDesign(id, data)`: PUT /api/designs/{id}
 - `deleteDesign(id)`: DELETE /api/designs/{id}
 
+### Órdenes
+- `createOrder(data)`: POST /api/orders
+- `getOrders()`: GET /api/orders
+
 ## Tipos Exportados
 - `Design`, `DesignCreate`, `DesignUpdate`
 - `User`, `UserRegister`, `UserLogin`, `AuthResponse`
