@@ -12,6 +12,8 @@ Página principal del flujo de checkout. Orquesta el proceso de compra completo 
 import { useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { useCheckout } from "@/context/CheckoutContext";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 import BuyerForm from './components/BuyerForm'
 import ShippingOptions from './components/ShippingOptions'
@@ -68,7 +70,19 @@ useEffect(() => {
   );
 
   setSubtotal(newSubtotal);
-}, [cart, setSubtotal]);
+**Trigger**: Ejecuta cuando `cart` o `setSubtotal` cambian
+
+### Protección de Autenticación
+
+```jsx
+useEffect(() => {
+  if (!loading && !user) {
+    router.push("/login?redirect=/checkout");
+  }
+}, [user, loading, router]);
+```
+
+**Propósito**: Asegurar que solo usuarios autenticados accedan al checkout. Si no hay sesión, redirige al login preservando el destino.
 ```
 
 **Propósito**: Mantener el subtotal actualizado en el contexto de checkout

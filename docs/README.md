@@ -16,7 +16,8 @@
 - **Framework**: FastAPI 
 - **Base de Datos**: SQLite (SQLAlchemy)
 - **Autenticación**: JWT + OAuth2 (bcrypt)
-- **Cloud Storage**: Cloudinary (configurado en venv)
+- **Cloud Storage**: Cloudinary (Integrado para thumbnails)
+- **Pagos**: Mercado Pago SDK (Preferencias y Webhooks)
 
 #### Frontend
 - **Framework**: Next.js 16.0.3 (App Router)
@@ -35,12 +36,15 @@ graph TD
     C --> B
     B -->|Sí| D[Customizer]
     D --> E[Guardar Diseño]
-    E --> F[Base de Datos]
+    E --> F[Cloudinary + DB]
     D --> G[Agregar al Carrito]
     G --> H[/cart]
     H --> I{¿Comprar?}
     I -->|Sí| J[/checkout]
-    J --> K[Backend API]
+    J --> K[Backend API (Order)]
+    K --> L[Mercado Pago]
+    L --> M[Webhook Notification]
+    M --> N[Actualizar Orden DB]
 ```
 
 ### Gestión de Estado
@@ -115,8 +119,6 @@ tazas-personalizables/
 | `app/login/page.tsx` | `/login` | Formulario unificado de Login y Registro | [Documentación](./frontend/app/login/page.tsx.md) |
 ...
 
-## 🎯 Funcionalidades Implementadas
-
 ### ✅ Completas
 
 - [x] **Backend Completo**
@@ -124,19 +126,25 @@ tazas-personalizables/
   - [x] Base de datos SQLite con SQLAlchemy
   - [x] Autenticación JWT (Login/Register)
   - [x] CRUD de Diseños (protegido por usuario)
+  - [x] Integración con Cloudinary para imágenes
+  - [x] Sistema de Órdenes y Pagos
 - [x] **Frontend Auth**
   - [x] Página de Login/Registro
   - [x] Manejo de sesión global (AuthContext)
   - [x] Protección de rutas y API calls
+  - [x] Flujo de guardado-y-restauración post-login
 - [x] **Personalizador de Tazas (/customizer)**
   - [x] Guardar/Cargar diseños en backend
   - [x] Canvas interactivo 3D
-...
+  - [x] Integración con Cloudinary
+- [x] **Checkout & Pagos**
+  - [x] Integración real con Mercado Pago
+  - [x] Procesamiento de Webhooks
+  - [x] Redirección inteligente al login desde el carrito
 
 ### ⚠️ Parciales/Incompletas
 
-- [ ] Integración de pago real (Mercado Pago deshabilitado)
-- [ ] Confirmación de orden (sin handler de submit)
+- [ ] Panel de "Mis Pedidos" para el usuario
 - [ ] Dark mode (parcialmente implementado en Navbar/Login)
 
 ---

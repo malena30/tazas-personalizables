@@ -55,11 +55,24 @@ import { useCartStore } from "@/store/cartStore";
 
 - **`useEffect` (Color/Fuente/Tamaño)**: Observan cambios en los controles del toolbar y actualizan el elemento de texto seleccionado en tiempo real.
 
+### Guardado y Restauración
+
+- **`handleSaveDesign()`**:
+  1. Si el usuario no está logueado:
+     - Guarda el diseño actual en `localStorage` (`pending_design`).
+     - Redirige a `/login?redirect=/customizer`.
+  2. Si está logueado:
+     - Abre el modal de guardado.
+
+- **`useEffect` (Restauración)**:
+  - Al cargar la página, verifica si existe un `pending_design` en `localStorage`.
+  - Si existe y el usuario está logueado, restaura el diseño y abre el modal de guardado automáticamente.
+
 ### Carrito
 
 - **`handleAddToCart()`**: 
   1. Captura una imagen del diseño actual usando `canvasRef`.
-  2. Crea un objeto `Product` con la imagen generada.
+  2. Crea un objeto `Product` con la imagen generada y el `designId` si el diseño ya fue guardado.
   3. Usa `cartStore.addToCart` para agregarlo al estado global.
   4. Muestra un tooltip de confirmación.
 
@@ -97,6 +110,7 @@ import { useCartStore } from "@/store/cartStore";
 
 ## ⚠️ Consideraciones
 
-- **Persistencia**: Actualmente el diseño se pierde al recargar la página (TODO: implementar localStorage).
+- **Persistencia**: El diseño se guarda temporalmente en `localStorage` durante el flujo de login para evitar pérdida de trabajo.
+- **Cloudinary**: Las miniaturas generadas se suben a Cloudinary al guardar el diseño en el backend.
 - **Performance**: La generación de la imagen para el carrito (`toDataURL`) puede ser costosa en dispositivos móviles.
 - **SSR**: Es crítico mantener la importación dinámica de `MugCanvas` para evitar errores de hidratación.
