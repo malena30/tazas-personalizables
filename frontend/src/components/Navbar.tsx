@@ -77,6 +77,9 @@ export default function Navbar() {
           <Link href="/" className="hover:opacity-70 transition-opacity">Inicio</Link>
           <Link href="/products" className="hover:opacity-70 transition-opacity">Productos</Link>
           <Link href="/customizer" className="hover:opacity-70 transition-opacity">Personalizar</Link>
+          {user && (
+            <Link href="/orders" className="hover:opacity-70 transition-opacity">Mis Pedidos</Link>
+          )}
 
           {/* Carrito */}
           <div className="relative">
@@ -136,6 +139,9 @@ export default function Navbar() {
           <Link href="/" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text">Inicio</Link>
           <Link href="/products" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text">Productos</Link>
           <Link href="/customizer" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text">Personalizar</Link>
+          {user && (
+            <Link href="/orders" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text">Mis Pedidos</Link>
+          )}
           <Link href="/cart" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text flex justify-between">
             Carrito
             {totalItems > 0 && <span className="text-[var(--accent)] font-mono font-bold">({totalItems})</span>}

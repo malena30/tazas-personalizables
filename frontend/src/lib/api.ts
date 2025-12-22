@@ -192,12 +192,24 @@ export interface OrderCreate {
     total_amount: number;
 }
 
+export interface OrderItemResponse {
+    id: string;
+    design_id?: string;
+    product_id?: string;
+    quantity: number;
+    price: number;
+    design?: Design;
+}
+
 export interface OrderResponse {
     id: string;
     total_amount: number;
     status: string;
+    shipping_address: any;
+    payment_method: string;
     checkout_url?: string;
     created_at: string;
+    items: OrderItemResponse[];
 }
 
 export async function createOrder(data: OrderCreate): Promise<OrderResponse> {
