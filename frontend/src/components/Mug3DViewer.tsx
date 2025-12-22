@@ -13,6 +13,9 @@ interface Mug3DViewerProps {
     onSelect: (id: string | null) => void;
     onUpdateElement: (element: CanvasElement) => void;
     mugColor: string;
+    isExpanded?: boolean;
+    showCanvas?: boolean;
+    onToggleExpand?: () => void;
 }
 
 // Componente de la taza 3D
@@ -282,7 +285,7 @@ function CanvasTextElement({ element, isSelected, onSelect, onChange }: any) {
 
 // Componente principal
 const Mug3DViewer = forwardRef(function Mug3DViewer(
-    { elements, selectedId, onSelect, onUpdateElement, mugColor }: Mug3DViewerProps,
+    { elements, selectedId, onSelect, onUpdateElement, mugColor, isExpanded = false, showCanvas = true, onToggleExpand }: Mug3DViewerProps,
     ref: any
 ) {
     const konvaStageRef = useRef<any>(null);
@@ -388,63 +391,88 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
     }));
 
     return (
-        <div className="flex flex-col lg:flex-row gap-3 lg:gap-4 items-center justify-center w-full max-w-full">
+        <div className={`flex flex-col ${isExpanded ? 'h-full w-full' : 'lg:flex-row lg:gap-8'} gap-3 items-center justify-center w-full max-w-full`}>
             {/* Canvas 2D para el diseño */}
-            <div
-                className="bg-white rounded-lg shadow-lg border-2 border-dashed border-gray-300 relative flex-shrink-0"
-                style={{ width: Math.min(designWidth, typeof window !== 'undefined' ? window.innerWidth - 100 : designWidth), height: designHeight }}
-            >
-                <div className="absolute top-2 left-2 text-xs text-gray-500 font-semibold z-20">
-                    ✏️ Área de diseño
-                </div>
-                <Stage
-                    width={designWidth}
-                    height={designHeight}
-                    ref={konvaStageRef}
-                    onMouseDown={(e: any) => {
-                        if (e.target === e.target.getStage()) {
-                            onSelect(null);
-                        }
+            {showCanvas && (
+                <div
+                    className={`bg-white rounded-lg shadow-lg border-2 border-dashed border-gray-300 relative flex-shrink-0 transition-all duration-300 group/viewer`}
+                    style={{
+                        width: isExpanded ? Math.min(500, typeof window !== 'undefined' ? window.innerWidth * 0.4 : 500) : Math.min(designWidth, typeof window !== 'undefined' ? window.innerWidth - 100 : designWidth),
+                        height: isExpanded ? Math.min(600, typeof window !== 'undefined' ? window.innerHeight * 0.7 : 600) : designHeight
                     }}
                 >
-                    <Layer>
-                        <Rect x={0} y={0} width={designWidth} height={designHeight} fill="white" />
+                    <div className="absolute top-2 left-2 text-xs text-gray-500 font-semibold z-20">
+                        ✏️ Área de diseño
+                    </div>
 
-                        {canvasElements
-                            .sort((a, b) => a.zIndex - b.zIndex)
-                            .map((element) => {
-                                if (element.type === 'image') {
-                                    return (
-                                        <CanvasImageElement
-                                            key={element.id}
-                                            element={element}
-                                            isSelected={element.id === selectedId}
-                                            onSelect={() => onSelect(element.id)}
-                                            onChange={onUpdateElement}
-                                        />
-                                    );
-                                } else if (element.type === 'text') {
-                                    return (
-                                        <CanvasTextElement
-                                            key={element.id}
-                                            element={element}
-                                            isSelected={element.id === selectedId}
-                                            onSelect={() => onSelect(element.id)}
-                                            onChange={onUpdateElement}
-                                        />
-                                    );
-                                }
-                                return null;
-                            })}
-                    </Layer>
-                </Stage>
-            </div>
+                    <Stage
+                        width={isExpanded ? Math.min(500, typeof window !== 'undefined' ? window.innerWidth * 0.4 : 500) : designWidth}
+                        height={isExpanded ? Math.min(600, typeof window !== 'undefined' ? window.innerHeight * 0.7 : 600) : designHeight}
+                        ref={konvaStageRef}
+                        onMouseDown={(e: any) => {
+                            if (e.target === e.target.getStage()) {
+                                onSelect(null);
+                            }
+                        }}
+                    >
+                        <Layer>
+                            <Rect x={0} y={0} width={isExpanded ? 500 : designWidth} height={isExpanded ? 600 : designHeight} fill="white" />
+
+                            {canvasElements
+                                .sort((a, b) => a.zIndex - b.zIndex)
+                                .map((element) => {
+                                    if (element.type === 'image') {
+                                        return (
+                                            <CanvasImageElement
+                                                key={element.id}
+                                                element={element}
+                                                isSelected={element.id === selectedId}
+                                                onSelect={() => onSelect(element.id)}
+                                                onChange={onUpdateElement}
+                                            />
+                                        );
+                                    } else if (element.type === 'text') {
+                                        return (
+                                            <CanvasTextElement
+                                                key={element.id}
+                                                element={element}
+                                                isSelected={element.id === selectedId}
+                                                onSelect={() => onSelect(element.id)}
+                                                onChange={onUpdateElement}
+                                            />
+                                        );
+                                    }
+                                    return null;
+                                })}
+                        </Layer>
+                    </Stage>
+                </div>
+            )}
 
             {/* Canvas 3D de la taza */}
             <div
-                className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-inner flex-shrink-0"
-                style={{ width: Math.min(500, typeof window !== 'undefined' ? window.innerWidth - 100 : 500), height: 400 }}
+                className={`bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-inner flex-shrink-0 transition-all duration-300 relative group/3dviewer ${!showCanvas ? 'w-full h-full rounded-none' : ''}`}
+                style={showCanvas ? {
+                    width: isExpanded ? Math.min(600, typeof window !== 'undefined' ? window.innerWidth * 0.5 : 600) : Math.min(500, typeof window !== 'undefined' ? window.innerWidth - 100 : 500),
+                    height: isExpanded ? Math.min(600, typeof window !== 'undefined' ? window.innerHeight * 0.7 : 600) : 400
+                } : { width: '100%', height: '100%' }}
             >
+                {/* Botón de Expandir/Contraer (dentro del visor 3D) */}
+                {onToggleExpand && (
+                    <button
+                        onClick={onToggleExpand}
+                        className={`absolute top-2 right-2 z-[110] p-1.5 rounded shadow-sm transition-all ${isExpanded
+                                ? 'bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm border border-[var(--border)] hover:bg-white dark:hover:bg-zinc-800'
+                                : 'bg-white/90 border border-gray-200 hover:bg-white opacity-0 group-hover/3dviewer:opacity-100'
+                            } group`}
+                        title={isExpanded ? "Contraer vista" : "Expandir vista"}
+                    >
+                        <div className={`font-mono font-bold ${isExpanded ? 'text-lg text-[var(--foreground)]' : 'text-sm text-gray-700'}`}>
+                            <span className="group-hover:scale-110 transition-transform inline-block">{isExpanded ? '][' : '[ ]'}</span>
+                        </div>
+                    </button>
+                )}
+
                 <Canvas
                     shadows
                     camera={{ position: [0, 1, 6], fov: 60 }}
