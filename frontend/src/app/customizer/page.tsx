@@ -41,6 +41,7 @@ export default function CustomizerPage() {
     const [showSaveModal, setShowSaveModal] = useState(false);
     const [designName, setDesignName] = useState("");
     const [currentDesignId, setCurrentDesignId] = useState<string | null>(null);
+    const [isExpanded, setIsExpanded] = useState(false);
     const canvasRef = useRef<any>(null);
     const addToCart = useCartStore((state) => state.addToCart);
     const { user } = useAuth();
@@ -405,54 +406,55 @@ export default function CustomizerPage() {
                 </h1>
 
                 <div className="flex gap-2 lg:gap-4 overflow-x-hidden">
-
                     {/* Panel de herramientas - Izquierda (ancho flexible) */}
-                    <Toolbar
-                        onAddImage={handleAddImage}
-                        onAddText={handleAddText}
-                        onExport={handleAddToCart}
-                        onDelete={handleDeleteElement}
-                        onBringToFront={handleBringToFront}
-                        onSendToBack={handleSendToBack}
-                        mugColor={mugColor}
-                        onMugColorChange={setMugColor}
-                        textColor={textColor}
-                        onTextColorChange={setTextColor}
-                        fontSize={fontSize}
-                        onFontSizeChange={setFontSize}
-                        fontFamily={fontFamily}
-                        onFontFamilyChange={setFontFamily}
-                        hasSelection={selectedId !== null}
-                        hasElements={elements.length > 0}
-                        stroke={stroke}
-                        onStrokeChange={setStroke}
-                        strokeWidth={strokeWidth}
-                        onStrokeWidthChange={setStrokeWidth}
-                        shadowColor={shadowColor}
-                        onShadowColorChange={setShadowColor}
-                        shadowBlur={shadowBlur}
-                        onShadowBlurChange={setShadowBlur}
-                        shadowOpacity={shadowOpacity}
-                        onShadowOpacityChange={setShadowOpacity}
-                        shadowOffsetX={shadowOffsetX}
-                        onShadowOffsetXChange={setShadowOffsetX}
-                        shadowOffsetY={shadowOffsetY}
-                        onShadowOffsetYChange={setShadowOffsetY}
-                        activeTab={activeTab}
-                        onTabChange={setActiveTab}
-                        curvature={curvature}
-                        onCurvatureChange={setCurvature}
-                        mugCoverage={selectedId ? elements.find(el => el.id === selectedId)?.coverage || 'front' : 'front'}
-                        onMugCoverageChange={(coverage) => {
-                            if (selectedId) {
-                                const el = elements.find(e => e.id === selectedId);
-                                if (el) handleUpdateElement({ ...el, coverage });
-                            }
-                        }}
-                    />
+                    {!isExpanded && (
+                        <Toolbar
+                            onAddImage={handleAddImage}
+                            onAddText={handleAddText}
+                            onExport={handleAddToCart}
+                            onDelete={handleDeleteElement}
+                            onBringToFront={handleBringToFront}
+                            onSendToBack={handleSendToBack}
+                            mugColor={mugColor}
+                            onMugColorChange={setMugColor}
+                            textColor={textColor}
+                            onTextColorChange={setTextColor}
+                            fontSize={fontSize}
+                            onFontSizeChange={setFontSize}
+                            fontFamily={fontFamily}
+                            onFontFamilyChange={setFontFamily}
+                            hasSelection={selectedId !== null}
+                            hasElements={elements.length > 0}
+                            stroke={stroke}
+                            onStrokeChange={setStroke}
+                            strokeWidth={strokeWidth}
+                            onStrokeWidthChange={setStrokeWidth}
+                            shadowColor={shadowColor}
+                            onShadowColorChange={setShadowColor}
+                            shadowBlur={shadowBlur}
+                            onShadowBlurChange={setShadowBlur}
+                            shadowOpacity={shadowOpacity}
+                            onShadowOpacityChange={setShadowOpacity}
+                            shadowOffsetX={shadowOffsetX}
+                            onShadowOffsetXChange={setShadowOffsetX}
+                            shadowOffsetY={shadowOffsetY}
+                            onShadowOffsetYChange={setShadowOffsetY}
+                            activeTab={activeTab}
+                            onTabChange={setActiveTab}
+                            curvature={curvature}
+                            onCurvatureChange={setCurvature}
+                            mugCoverage={selectedId ? elements.find(el => el.id === selectedId)?.coverage || 'front' : 'front'}
+                            onMugCoverageChange={(coverage) => {
+                                if (selectedId) {
+                                    const el = elements.find(e => e.id === selectedId);
+                                    if (el) handleUpdateElement({ ...el, coverage });
+                                }
+                            }}
+                        />
+                    )}
 
                     {/* Visor 3D de la Taza - Centro */}
-                    <div className="flex-1">
+                    <div className={`flex-1 relative ${isExpanded ? 'fixed inset-0 top-0 z-[100] bg-[var(--background)] flex items-center justify-center' : ''}`} style={isExpanded ? { paddingTop: '64px' } : {}}>
                         <Mug3DViewer
                             ref={canvasRef}
                             elements={elements}
@@ -460,67 +462,72 @@ export default function CustomizerPage() {
                             onSelect={setSelectedId}
                             onUpdateElement={handleUpdateElement}
                             mugColor={mugColor}
-                        // mugCoverage ya no se pasa globalmente, se maneja internamente por elemento
-
+                            isExpanded={isExpanded}
+                            showCanvas={!isExpanded}
+                            onToggleExpand={() => setIsExpanded(!isExpanded)}
                         />
 
-                        {/* Información del diseño */}
-                        <div className="mt-4 p-4 bg-[var(--background)] border border-[var(--border)] rounded-lg">
-                            <p className="text-sm font-text text-[var(--foreground)]">
-                                <span className="font-semibold">Elementos:</span> {elements.length} |
-                                <span className="font-semibold ml-2">Seleccionado:</span> {selectedId || 'Ninguno'}
-                            </p>
-                            {selectedId && (
-                                <p className="text-xs text-[var(--foreground)] opacity-70 mt-2 font-text">
-                                    💡 Tip: Arrastrá para mover, usa los controles de las esquinas para redimensionar
+                        {/* Información del diseño (solo visible si no está expandido) */}
+                        {!isExpanded && (
+                            <div className="mt-4 p-4 bg-[var(--background)] border border-[var(--border)] rounded-lg">
+                                <p className="text-sm font-text text-[var(--foreground)]">
+                                    <span className="font-semibold">Elementos:</span> {elements.length} |
+                                    <span className="font-semibold ml-2">Seleccionado:</span> {selectedId || 'Ninguno'}
                                 </p>
-                            )}
-                        </div>
+                                {selectedId && (
+                                    <p className="text-xs text-[var(--foreground)] opacity-70 mt-2 font-text">
+                                        💡 Tip: Arrastrá para mover, usa los controles de las esquinas para redimensionar
+                                    </p>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                 </div>
             </div>
 
             {/* Footer fijo - Botón Agregar al Carrito */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[var(--border)] shadow-lg z-50">
-                <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setShowLibrary(true)}
-                            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-text font-semibold transition-colors"
-                        >
-                            📁 Mis Diseños
-                        </button>
-                        <button
-                            onClick={() => setShowSaveModal(true)}
-                            disabled={elements.length === 0}
-                            className={`px-4 py-2 rounded-lg font-text font-semibold transition-colors ${elements.length > 0
-                                ? 'bg-green-500 text-white hover:bg-green-600'
-                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                }`}
-                        >
-                            💾 Guardar
-                        </button>
-                        <div className="flex items-center gap-2">
-                            <span className="text-2xl">🛒</span>
-                            <div>
-                                <p className="text-lg font-title font-bold text-[var(--foreground)]">$3.500</p>
-                                <p className="text-xs text-[var(--foreground)] opacity-60">Taza personalizada</p>
+            {!isExpanded && (
+                <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[var(--border)] shadow-lg z-50">
+                    <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setShowLibrary(true)}
+                                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-text font-semibold transition-colors"
+                            >
+                                📁 Mis Diseños
+                            </button>
+                            <button
+                                onClick={() => setShowSaveModal(true)}
+                                disabled={elements.length === 0}
+                                className={`px-4 py-2 rounded-lg font-text font-semibold transition-colors ${elements.length > 0
+                                    ? 'bg-green-500 text-white hover:bg-green-600'
+                                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    }`}
+                            >
+                                💾 Guardar
+                            </button>
+                            <div className="flex items-center gap-2">
+                                <span className="text-2xl">🛒</span>
+                                <div>
+                                    <p className="text-lg font-title font-bold text-[var(--foreground)]">$3.500</p>
+                                    <p className="text-xs text-[var(--foreground)] opacity-60">Taza personalizada</p>
+                                </div>
                             </div>
                         </div>
+                        <button
+                            onClick={handleAddToCart}
+                            disabled={elements.length === 0}
+                            className={`px-8 py-3 rounded-lg font-text font-semibold transition-all text-base ${elements.length > 0
+                                ? 'bg-[var(--accent)] text-[var(--foreground)] hover:opacity-90 cursor-pointer shadow-md hover:shadow-lg'
+                                : 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
+                                }`}
+                        >
+                            Añadir al carrito
+                        </button>
                     </div>
-                    <button
-                        onClick={handleAddToCart}
-                        disabled={elements.length === 0}
-                        className={`px-8 py-3 rounded-lg font-text font-semibold transition-all text-base ${elements.length > 0
-                            ? 'bg-[var(--accent)] text-[var(--foreground)] hover:opacity-90 cursor-pointer shadow-md hover:shadow-lg'
-                            : 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
-                            }`}
-                    >
-                        Añadir al carrito
-                    </button>
                 </div>
-            </div>
+            )}
 
             {/* Tooltip de confirmación */}
             {showTooltip && (
