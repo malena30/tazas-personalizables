@@ -19,7 +19,6 @@ export default function Footer() {
             <h3 className="font-title font-semibold text-[var(--foreground)] mb-4">Ayuda</h3>
             <ul className="space-y-2 text-sm text-[var(--foreground)] opacity-60 font-text">
               <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Comprar</a></li>
-              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Vender</a></li>
               <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Resolución de problemas</a></li>
             </ul>
           </div>
