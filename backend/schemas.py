@@ -46,6 +46,7 @@ class UserResponse(BaseModel):
     id: str
     username: str
     email: str
+    is_admin: bool = False
     created_at: datetime
 
     class Config:
@@ -84,6 +85,51 @@ class OrderItemResponse(BaseModel):
 class OrderResponse(BaseModel):
     id: str
     user_id: Optional[str]
+    total_amount: float
+    status: str
+    shipping_address: Any
+    payment_method: str
+    checkout_url: Optional[str] = None
+    created_at: datetime
+    items: List[OrderItemResponse]
+
+    class Config:
+        from_attributes = True
+
+# --- Admin Schemas ---
+
+class AdminStats(BaseModel):
+    """Estadísticas generales para el panel de admin"""
+    total_sales: float
+    total_orders: int
+    pending_orders: int
+    paid_orders: int
+    failed_orders: int
+    total_users: int
+    total_designs: int
+
+class OrderStatusUpdate(BaseModel):
+    """Schema para actualizar el estado de una orden"""
+    status: str = Field(..., pattern=r'^(pending|paid|failed)$')
+
+class AdminUserResponse(BaseModel):
+    """Usuario con estadísticas adicionales para admin"""
+    id: str
+    username: str
+    email: str
+    is_admin: bool
+    created_at: datetime
+    order_count: int = 0
+    design_count: int = 0
+
+    class Config:
+        from_attributes = True
+
+class AdminOrderResponse(BaseModel):
+    """Orden con información del usuario para admin"""
+    id: str
+    user_id: Optional[str]
+    user: Optional[UserResponse] = None
     total_amount: float
     status: str
     shipping_address: Any
