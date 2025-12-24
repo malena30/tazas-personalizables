@@ -53,6 +53,7 @@ export interface User {
     id: string;
     username: string;
     email: string;
+    is_admin: boolean;
     created_at: string;
 }
 
@@ -240,6 +241,111 @@ export async function getOrders(): Promise<OrderResponse[]> {
 
     if (!response.ok) {
         throw new Error('Error al obtener historial de órdenes');
+    }
+
+    return response.json();
+}
+
+// --- ADMIN FUNCTIONS ---
+
+export interface AdminStats {
+    total_sales: number;
+    total_orders: number;
+    pending_orders: number;
+    paid_orders: number;
+    failed_orders: number;
+    total_users: number;
+    total_designs: number;
+}
+
+export interface AdminUserResponse {
+    id: string;
+    username: string;
+    email: string;
+    is_admin: boolean;
+    created_at: string;
+    order_count: number;
+    design_count: number;
+}
+
+export interface AdminOrderResponse {
+    id: string;
+    user_id?: string;
+    user?: User;
+    total_amount: number;
+    status: string;
+    shipping_address: any;
+    payment_method: string;
+    checkout_url?: string;
+    created_at: string;
+    items: OrderItemResponse[];
+}
+
+export async function getAdminStats(): Promise<AdminStats> {
+    const response = await fetch(`${API_URL}/api/admin/stats`, {
+        headers: getAuthHeaders()
+    });
+
+    if (!response.ok) {
+        if (response.status === 403) throw new Error('No tienes permisos de administrador');
+        throw new Error('Error al obtener estadísticas');
+    }
+
+    return response.json();
+}
+
+export async function getAdminOrders(filters?: {
+    status?: string;
+    user_id?: string;
+    skip?: number;
+    limit?: number;
+}): Promise<AdminOrderResponse[]> {
+    const params = new URLSearchParams();
+    if (filters?.status) params.append('status_filter', filters.status);
+    if (filters?.user_id) params.append('user_id', filters.user_id);
+    if (filters?.skip !== undefined) params.append('skip', filters.skip.toString());
+    if (filters?.limit !== undefined) params.append('limit', filters.limit.toString());
+
+    const response = await fetch(
+        `${API_URL}/api/admin/orders?${params.toString()}`,
+        { headers: getAuthHeaders() }
+    );
+
+    if (!response.ok) {
+        if (response.status === 403) throw new Error('No tienes permisos de administrador');
+        throw new Error('Error al obtener órdenes');
+    }
+
+    return response.json();
+}
+
+export async function updateOrderStatus(orderId: string, status: string): Promise<OrderResponse> {
+    const response = await fetch(`${API_URL}/api/admin/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders(),
+        },
+        body: JSON.stringify({ status }),
+    });
+
+    if (!response.ok) {
+        if (response.status === 403) throw new Error('No tienes permisos de administrador');
+        throw new Error('Error al actualizar estado de orden');
+    }
+
+    return response.json();
+}
+
+export async function getAdminUsers(skip: number = 0, limit: number = 50): Promise<AdminUserResponse[]> {
+    const response = await fetch(
+        `${API_URL}/api/admin/users?skip=${skip}&limit=${limit}`,
+        { headers: getAuthHeaders() }
+    );
+
+    if (!response.ok) {
+        if (response.status === 403) throw new Error('No tienes permisos de administrador');
+        throw new Error('Error al obtener usuarios');
     }
 
     return response.json();

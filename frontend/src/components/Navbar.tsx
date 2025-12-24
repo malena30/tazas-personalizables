@@ -80,6 +80,11 @@ export default function Navbar() {
           {user && (
             <Link href="/orders" className="hover:opacity-70 transition-opacity">Mis Pedidos</Link>
           )}
+          {user?.is_admin && (
+            <Link href="/admin" className="hover:opacity-70 transition-opacity text-purple-600 dark:text-purple-400 font-semibold">
+              👑 Admin
+            </Link>
+          )}
 
           {/* Carrito */}
           <div className="relative">
@@ -141,6 +146,11 @@ export default function Navbar() {
           <Link href="/customizer" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text">Personalizar</Link>
           {user && (
             <Link href="/orders" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text">Mis Pedidos</Link>
+          )}
+          {user?.is_admin && (
+            <Link href="/admin" onClick={() => setOpen(false)} className="text-purple-600 dark:text-purple-400 font-text font-semibold">
+              👑 Admin Panel
+            </Link>
           )}
           <Link href="/cart" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text flex justify-between">
             Carrito

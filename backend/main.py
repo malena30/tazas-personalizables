@@ -1,19 +1,22 @@
 from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session, joinedload
-from typing import List
+from sqlalchemy import func
+from typing import List, Optional
 from datetime import timedelta
 import database
 from database import get_db, Design, User, Order, OrderItem
 from schemas import (
     DesignCreate, DesignUpdate, DesignResponse, 
     UserRegister, UserLogin, UserResponse, Token,
-    OrderCreate, OrderResponse
+    OrderCreate, OrderResponse,
+    AdminStats, AdminUserResponse, AdminOrderResponse, OrderStatusUpdate
 )
 from auth import (
     get_password_hash, verify_password, create_access_token, 
     get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
 )
+from admin_utils import get_admin_user
 from payments import create_preference, get_payment_info
 from cloudinary_utils import upload_base64_image
 
@@ -252,3 +255,116 @@ async def mercadopago_webhook(request: Request, db: Session = Depends(get_db)):
     except Exception as e:
         print(f"Error procesando webhook: {e}")
         return {"status": "error", "message": str(e)}
+
+# --- ADMIN ENDPOINTS ---
+
+@app.get("/api/admin/stats", response_model=AdminStats)
+async def get_admin_stats(
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(get_admin_user)
+):
+    """
+    Obtiene estadísticas generales para el panel de admin.
+    Solo accesible para usuarios admin.
+    """
+    # Total de ventas (suma de órdenes pagadas)
+    total_sales = db.query(func.sum(Order.total_amount)).filter(Order.status == "paid").scalar() or 0.0
+    
+    # Contadores de órdenes por estado
+    total_orders = db.query(Order).count()
+    pending_orders = db.query(Order).filter(Order.status == "pending").count()
+    paid_orders = db.query(Order).filter(Order.status == "paid").count()
+    failed_orders = db.query(Order).filter(Order.status == "failed").count()
+    
+    # Total de usuarios y diseños
+    total_users = db.query(User).count()
+    total_designs = db.query(Design).count()
+    
+    return AdminStats(
+        total_sales=total_sales,
+        total_orders=total_orders,
+        pending_orders=pending_orders,
+        paid_orders=paid_orders,
+        failed_orders=failed_orders,
+        total_users=total_users,
+        total_designs=total_designs
+    )
+
+@app.get("/api/admin/orders", response_model=List[AdminOrderResponse])
+async def get_admin_orders(
+    status_filter: Optional[str] = None,
+    user_id: Optional[str] = None,
+    skip: int = 0,
+    limit: int = 50,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(get_admin_user)
+):
+    """
+    Lista todas las órdenes con filtros y paginación.
+    Solo accesible para usuarios admin.
+    """
+    query = db.query(Order).options(
+        joinedload(Order.items).joinedload(OrderItem.design),
+        joinedload(Order.user)
+    )
+    
+    # Aplicar filtros
+    if status_filter:
+        query = query.filter(Order.status == status_filter)
+    if user_id:
+        query = query.filter(Order.user_id == user_id)
+    
+    orders = query.order_by(Order.created_at.desc()).offset(skip).limit(limit).all()
+    return orders
+
+@app.patch("/api/admin/orders/{order_id}", response_model=OrderResponse)
+async def update_order_status(
+    order_id: str,
+    status_update: OrderStatusUpdate,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(get_admin_user)
+):
+    """
+    Actualiza el estado de una orden.
+    Solo accesible para usuarios admin.
+    """
+    order = db.query(Order).filter(Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Orden no encontrada")
+    
+    order.status = status_update.status
+    db.commit()
+    db.refresh(order)
+    return order
+
+@app.get("/api/admin/users", response_model=List[AdminUserResponse])
+async def get_admin_users(
+    skip: int = 0,
+    limit: int = 50,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(get_admin_user)
+):
+    """
+    Lista todos los usuarios con estadísticas.
+    Solo accesible para usuarios admin.
+    """
+    users = db.query(User).offset(skip).limit(limit).all()
+    
+    # Agregar contadores de órdenes y diseños
+    users_with_stats = []
+    for user in users:
+        order_count = db.query(Order).filter(Order.user_id == user.id).count()
+        design_count = db.query(Design).filter(Design.user_id == user.id).count()
+        
+        user_dict = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "is_admin": user.is_admin,
+            "created_at": user.created_at,
+            "order_count": order_count,
+            "design_count": design_count
+        }
+        users_with_stats.append(AdminUserResponse(**user_dict))
+    
+    return users_with_stats
