@@ -8,7 +8,7 @@ export default function Footer() {
           <div>
             <h3 className="font-title font-semibold text-[var(--foreground)] mb-4">Acerca de</h3>
             <ul className="space-y-2 text-sm text-[var(--foreground)] opacity-60 font-text">
-              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Tazas.shop</a></li>
+              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Tazas Personalizables</a></li>
               <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Tendencias</a></li>
               <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Sustentabilidad</a></li>
             </ul>
