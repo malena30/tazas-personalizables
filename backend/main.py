@@ -10,7 +10,8 @@ from schemas import (
     DesignCreate, DesignUpdate, DesignResponse, 
     UserRegister, UserLogin, UserResponse, Token,
     OrderCreate, OrderResponse,
-    AdminStats, AdminUserResponse, AdminOrderResponse, OrderStatusUpdate
+    AdminStats, AdminUserResponse, AdminOrderResponse, OrderStatusUpdate,
+    UserProfileUpdate, UserStats, Address
 )
 from auth import (
     get_password_hash, verify_password, create_access_token, 
@@ -76,6 +77,77 @@ async def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
 @app.get("/auth/me", response_model=UserResponse)
 async def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+@app.patch("/auth/profile", response_model=UserResponse)
+async def update_profile(
+    profile_data: UserProfileUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Actualizar perfil del usuario.
+    Puede actualizar email, teléfono, direcciones y contraseña.
+    """
+    # Si cambia email, verificar que no exista otro usuario con ese email
+    if profile_data.email and profile_data.email != current_user.email:
+        existing_user = db.query(User).filter(User.email == profile_data.email).first()
+        if existing_user:
+            raise HTTPException(status_code=400, detail="El email ya está en uso")
+        current_user.email = profile_data.email
+    
+    # Actualizar teléfono
+    if profile_data.phone is not None:
+        current_user.phone = profile_data.phone
+    
+    # Actualizar direcciones (convertir objetos Address a dict)
+    if profile_data.addresses is not None:
+        current_user.addresses = [addr.model_dump() for addr in profile_data.addresses]
+    
+    # Cambiar contraseña si se proporciona
+    if profile_data.new_password:
+        if not profile_data.current_password:
+            raise HTTPException(status_code=400, detail="Debes proporcionar tu contraseña actual")
+        
+        if not verify_password(profile_data.current_password, current_user.hashed_password):
+            raise HTTPException(status_code=400, detail="Contraseña actual incorrecta")
+        
+        current_user.hashed_password = get_password_hash(profile_data.new_password)
+    
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
+@app.get("/auth/profile/stats", response_model=UserStats)
+async def get_user_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Obtener estadísticas del usuario para su perfil.
+    """
+    # Total gastado (sum de órdenes pagadas)
+    total_spent = db.query(func.sum(Order.total_amount)).filter(
+        Order.user_id == current_user.id,
+        Order.status == "paid"
+    ).scalar() or 0.0
+    
+    # Contadores de órdenes por estado
+    total_orders = db.query(Order).filter(Order.user_id == current_user.id).count()
+    paid_orders = db.query(Order).filter(Order.user_id == current_user.id, Order.status == "paid").count()
+    pending_orders = db.query(Order).filter(Order.user_id == current_user.id, Order.status == "pending").count()
+    failed_orders = db.query(Order).filter(Order.user_id == current_user.id, Order.status == "failed").count()
+    
+    # Total de diseños
+    total_designs = db.query(Design).filter(Design.user_id == current_user.id).count()
+    
+    return UserStats(
+        total_spent=total_spent,
+        total_orders=total_orders,
+        paid_orders=paid_orders,
+        pending_orders=pending_orders,
+        failed_orders=failed_orders,
+        total_designs=total_designs
+    )
 
 # --- DESIGN ENDPOINTS (PROTECTED) ---
 
