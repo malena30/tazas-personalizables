@@ -54,6 +54,8 @@ export interface User {
     username: string;
     email: string;
     is_admin: boolean;
+    phone?: string;
+    addresses?: Address[];
     created_at: string;
 }
 
@@ -346,6 +348,65 @@ export async function getAdminUsers(skip: number = 0, limit: number = 50): Promi
     if (!response.ok) {
         if (response.status === 403) throw new Error('No tienes permisos de administrador');
         throw new Error('Error al obtener usuarios');
+    }
+
+    return response.json();
+}
+
+// --- PROFILE FUNCTIONS ---
+
+export interface Address {
+    name: string;
+    street: string;
+    city: string;
+    state: string;
+    postal_code: string;
+    country: string;
+    phone?: string;
+}
+
+export interface UserProfileUpdate {
+    email?: string;
+    phone?: string;
+    addresses?: Address[];
+    current_password?: string;
+    new_password?: string;
+}
+
+export interface UserStats {
+    total_spent: number;
+    total_orders: number;
+    paid_orders: number;
+    pending_orders: number;
+    failed_orders: number;
+    total_designs: number;
+}
+
+export async function updateUserProfile(data: UserProfileUpdate): Promise<User> {
+    const response = await fetch(`${API_URL}/auth/profile`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders(),
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Error al actualizar perfil');
+    }
+
+    return response.json();
+}
+
+export async function getUserStats(): Promise<UserStats> {
+    const response = await fetch(`${API_URL}/auth/profile/stats`, {
+        headers: getAuthHeaders()
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al obtener estadísticas');
     }
 
     return response.json();

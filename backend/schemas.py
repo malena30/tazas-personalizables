@@ -47,6 +47,8 @@ class UserResponse(BaseModel):
     username: str
     email: str
     is_admin: bool = False
+    phone: Optional[str] = None
+    addresses: Optional[List[Any]] = []
     created_at: datetime
 
     class Config:
@@ -140,3 +142,32 @@ class AdminOrderResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+# --- Profile Schemas ---
+
+class Address(BaseModel):
+    """Dirección de envío"""
+    name: str  # Nombre del destinatario
+    street: str
+    city: str
+    state: str  # Provincia/Estado
+    postal_code: str
+    country: str = "Argentina"
+    phone: Optional[str] = None
+
+class UserProfileUpdate(BaseModel):
+    """Schema para actualizar el perfil del usuario"""
+    email: Optional[str] = Field(None, pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')
+    phone: Optional[str] = None
+    addresses: Optional[List[Address]] = None
+    current_password: Optional[str] = None  # Requerido si cambia contraseña
+    new_password: Optional[str] = Field(None, min_length=6)
+
+class UserStats(BaseModel):
+    """Estadísticas del usuario para su perfil"""
+    total_spent: float
+    total_orders: int
+    paid_orders: int
+    pending_orders: int
+    failed_orders: int
+    total_designs: int

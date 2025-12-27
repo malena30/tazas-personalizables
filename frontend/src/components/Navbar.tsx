@@ -78,7 +78,10 @@ export default function Navbar() {
           <Link href="/products" className="hover:opacity-70 transition-opacity">Productos</Link>
           <Link href="/customizer" className="hover:opacity-70 transition-opacity">Personalizar</Link>
           {user && (
-            <Link href="/orders" className="hover:opacity-70 transition-opacity">Mis Pedidos</Link>
+            <>
+              <Link href="/orders" className="hover:opacity-70 transition-opacity">Mis Pedidos</Link>
+              <Link href="/profile" className="hover:opacity-70 transition-opacity">Mi Perfil</Link>
+            </>
           )}
           {user?.is_admin && (
             <Link href="/admin" className="hover:opacity-70 transition-opacity text-purple-600 dark:text-purple-400 font-semibold">
@@ -145,7 +148,10 @@ export default function Navbar() {
           <Link href="/products" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text">Productos</Link>
           <Link href="/customizer" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text">Personalizar</Link>
           {user && (
-            <Link href="/orders" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text">Mis Pedidos</Link>
+            <>
+              <Link href="/orders" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text">Mis Pedidos</Link>
+              <Link href="/profile" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text">Mi Perfil</Link>
+            </>
           )}
           {user?.is_admin && (
             <Link href="/admin" onClick={() => setOpen(false)} className="text-purple-600 dark:text-purple-400 font-text font-semibold">

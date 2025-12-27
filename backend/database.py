@@ -23,6 +23,8 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
+    phone = Column(String, nullable=True)
+    addresses = Column(JSON, default=list, nullable=True)  # Lista de direcciones
     created_at = Column(DateTime, default=datetime.utcnow)
     
     designs = relationship("Design", back_populates="owner")
