@@ -2,13 +2,14 @@
 
 import { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { CanvasElement, ImageElement, TextElement, MugCoverage } from "@/types/customizer";
+import { CanvasElement, ImageElement, TextElement, EmojiElement, MugCoverage } from "@/types/customizer";
 import Toolbar from "@/components/Toolbar";
 import DesignLibrary from "@/components/DesignLibrary";
 import { useCartStore } from "@/store/cartStore";
 import { saveDesign, updateDesign, Design } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { templates } from "@/data/templates";
 
 // Importación dinámica de Mug3DViewer para evitar errores de SSR con Three.js y Konva
 const Mug3DViewer = dynamic(() => import("@/components/Mug3DViewer"), {
@@ -34,7 +35,7 @@ export default function CustomizerPage() {
     const [curvature, setCurvature] = useState<number>(0);
 
     // Estado para la pestaña activa del toolbar
-    const [activeTab, setActiveTab] = useState<'producto' | 'capas' | 'imagen' | 'texto' | null>(null);
+    const [activeTab, setActiveTab] = useState<'producto' | 'capas' | 'imagen' | 'texto' | 'stickers' | 'plantillas' | null>(null);
 
     const [showTooltip, setShowTooltip] = useState(false);
     const [showLibrary, setShowLibrary] = useState(false);
@@ -89,6 +90,44 @@ export default function CustomizerPage() {
         setElements([...elements, newText]);
         setSelectedId(newText.id);
         setActiveTab('texto'); // Auto-abrir pestaña texto
+    };
+
+    const handleAddEmoji = (emoji: string) => {
+        const newEmoji: EmojiElement = {
+            id: generateId(),
+            type: 'emoji',
+            emoji: emoji,
+            fontSize: 60,
+            position: { x: 200, y: 150 },
+            rotation: 0,
+            zIndex: elements.length,
+            coverage: 'front'
+        };
+        setElements([...elements, newEmoji]);
+        setSelectedId(newEmoji.id);
+    };
+
+    const handleLoadTemplate = (templateId: string) => {
+        const template = templates.find(t => t.id === templateId);
+        if (template) {
+            // Confirmar si hay elementos actuales
+            if (elements.length > 0) {
+                if (!confirm("¿Deseas cargar esta plantilla? Se reemplazará tu diseño actual.")) {
+                    return;
+                }
+            }
+
+            // Cargar elementos de la plantilla con nuevos IDs para evitar duplicados
+            const newElements = template.elements.map(el => ({
+                ...el,
+                id: generateId()
+            }));
+
+            setElements(newElements);
+            setMugColor(template.mugColor);
+            setSelectedId(null);
+            setActiveTab(null);
+        }
     };
 
     // Eliminar elemento seleccionado
@@ -411,6 +450,8 @@ export default function CustomizerPage() {
                         <Toolbar
                             onAddImage={handleAddImage}
                             onAddText={handleAddText}
+                            onAddEmoji={handleAddEmoji}
+                            onLoadTemplate={handleLoadTemplate}
                             onExport={handleAddToCart}
                             onDelete={handleDeleteElement}
                             onBringToFront={handleBringToFront}
@@ -450,6 +491,15 @@ export default function CustomizerPage() {
                                     if (el) handleUpdateElement({ ...el, coverage });
                                 }
                             }}
+                            imageFilters={selectedId ? (elements.find(el => el.id === selectedId) as ImageElement)?.filters : undefined}
+                            onImageFiltersChange={(filters) => {
+                                if (selectedId) {
+                                    const el = elements.find(e => e.id === selectedId);
+                                    if (el && el.type === 'image') {
+                                        handleUpdateElement({ ...el, filters });
+                                    }
+                                }
+                            }}
                         />
                     )}
 
@@ -482,7 +532,6 @@ export default function CustomizerPage() {
                             </div>
                         )}
                     </div>
-
                 </div>
             </div>
 

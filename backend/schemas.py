@@ -24,6 +24,7 @@ class DesignResponse(BaseModel):
     mug_color: str
     elements: List[Any]
     thumbnail: Optional[str]
+    is_favorite: bool = False
     created_at: datetime
     updated_at: datetime
 

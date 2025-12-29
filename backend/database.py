@@ -39,7 +39,8 @@ class Design(Base):
     name = Column(String, nullable=False)
     mug_color = Column(String, nullable=False)
     elements = Column(JSON, nullable=False)  # Array de CanvasElement
-    thumbnail = Column(String, nullable=True)  # Base64 o URL
+    thumbnail = Column(String, nullable=True)
+    is_favorite = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

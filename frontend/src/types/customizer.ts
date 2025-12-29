@@ -10,9 +10,17 @@ export interface Size {
     height: number;
 }
 
-export type ElementType = 'image' | 'text';
+export type ElementType = 'image' | 'text' | 'emoji';
 
 export type MugCoverage = 'front' | 'front-back' | 'full';
+
+export interface ImageFilters {
+    grayscale?: number;  // 0-100
+    sepia?: number;      // 0-100
+    brightness?: number; // 0-200
+    contrast?: number;   // 0-200
+    saturate?: number;   // 0-200
+}
 
 export interface BaseElement {
     id: string;
@@ -28,6 +36,13 @@ export interface ImageElement extends BaseElement {
     url: string;
     size: Size;
     opacity: number;
+    filters?: ImageFilters;
+}
+
+export interface EmojiElement extends BaseElement {
+    type: 'emoji';
+    emoji: string;
+    fontSize: number;
 }
 
 export interface TextElement extends BaseElement {
@@ -50,7 +65,7 @@ export interface TextElement extends BaseElement {
     curvature?: number; // -100 a 100
 }
 
-export type CanvasElement = ImageElement | TextElement;
+export type CanvasElement = ImageElement | TextElement | EmojiElement;
 
 export interface MugDesign {
     id: string;

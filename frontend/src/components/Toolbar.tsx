@@ -1,11 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { MugCoverage } from "@/types/customizer";
+import { MugCoverage, ImageFilters } from "@/types/customizer";
 
 interface ToolbarProps {
     onAddImage: (imageUrl: string) => void;
     onAddText: () => void;
+    onAddEmoji: (emoji: string) => void;
+    onLoadTemplate: (templateId: string) => void;
     onExport: () => void;
     onDelete: () => void;
     onBringToFront: () => void;
@@ -35,19 +37,23 @@ interface ToolbarProps {
     onShadowOffsetXChange: (offset: number) => void;
     shadowOffsetY?: number;
     onShadowOffsetYChange: (offset: number) => void;
-    activeTab: 'producto' | 'capas' | 'imagen' | 'texto' | null;
-    onTabChange: (tab: 'producto' | 'capas' | 'imagen' | 'texto' | null) => void;
+    activeTab: 'producto' | 'capas' | 'imagen' | 'texto' | 'stickers' | 'plantillas' | null;
+    onTabChange: (tab: 'producto' | 'capas' | 'imagen' | 'texto' | 'stickers' | 'plantillas' | null) => void;
     curvature?: number;
     onCurvatureChange: (curvature: number) => void;
     mugCoverage: MugCoverage;
     onMugCoverageChange: (coverage: MugCoverage) => void;
+    imageFilters?: ImageFilters;
+    onImageFiltersChange: (filters: any) => void;
 }
 
-type Tab = 'producto' | 'capas' | 'imagen' | 'texto' | null;
+type Tab = 'producto' | 'capas' | 'imagen' | 'texto' | 'stickers' | 'plantillas' | null;
 
 export default function Toolbar({
     onAddImage,
     onAddText,
+    onAddEmoji,
+    onLoadTemplate,
     onExport,
     onDelete,
     onBringToFront,
@@ -81,7 +87,9 @@ export default function Toolbar({
     curvature,
     onCurvatureChange,
     mugCoverage,
-    onMugCoverageChange
+    onMugCoverageChange,
+    imageFilters,
+    onImageFiltersChange
 }: ToolbarProps) {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -114,7 +122,9 @@ export default function Toolbar({
         { id: 'producto', label: 'Producto', icon: '☕' },
         { id: 'capas', label: 'Capas', icon: '📚' },
         { id: 'imagen', label: 'Imagen', icon: '🖼️' },
-        { id: 'texto', label: 'Texto', icon: 'T' }
+        { id: 'texto', label: 'Texto', icon: 'T' },
+        { id: 'stickers', label: 'Stickers', icon: '😀' },
+        { id: 'plantillas', label: 'Plantillas', icon: '📋' }
     ];
 
     return (
@@ -316,6 +326,106 @@ export default function Toolbar({
                                                     }`}
                                             >
                                                 Toda la Vuelta
+                                            </button>
+                                        </div>
+
+                                        {/* Filtros de Imagen */}
+                                        <div className="mt-6 space-y-4">
+                                            <h3 className="text-sm font-title font-semibold text-[var(--foreground)] border-b border-[var(--border)] pb-2">
+                                                Filtros de Imagen
+                                            </h3>
+
+                                            {/* Grayscale */}
+                                            <div className="space-y-1">
+                                                <div className="flex justify-between text-xs font-semibold text-[var(--foreground)]">
+                                                    <label>Blanco y Negro</label>
+                                                    <span>{imageFilters?.grayscale || 0}%</span>
+                                                </div>
+                                                <input
+                                                    type="range"
+                                                    min="0"
+                                                    max="100"
+                                                    value={imageFilters?.grayscale || 0}
+                                                    onChange={(e) => onImageFiltersChange({ ...imageFilters, grayscale: parseInt(e.target.value) })}
+                                                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[var(--accent)]"
+                                                />
+                                            </div>
+
+                                            {/* Sepia */}
+                                            <div className="space-y-1">
+                                                <div className="flex justify-between text-xs font-semibold text-[var(--foreground)]">
+                                                    <label>Sepia</label>
+                                                    <span>{imageFilters?.sepia || 0}%</span>
+                                                </div>
+                                                <input
+                                                    type="range"
+                                                    min="0"
+                                                    max="100"
+                                                    value={imageFilters?.sepia || 0}
+                                                    onChange={(e) => onImageFiltersChange({ ...imageFilters, sepia: parseInt(e.target.value) })}
+                                                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[var(--accent)]"
+                                                />
+                                            </div>
+
+                                            {/* Brightness */}
+                                            <div className="space-y-1">
+                                                <div className="flex justify-between text-xs font-semibold text-[var(--foreground)]">
+                                                    <label>Brillo</label>
+                                                    <span>{imageFilters?.brightness || 100}%</span>
+                                                </div>
+                                                <input
+                                                    type="range"
+                                                    min="0"
+                                                    max="200"
+                                                    value={imageFilters?.brightness || 100}
+                                                    onChange={(e) => onImageFiltersChange({ ...imageFilters, brightness: parseInt(e.target.value) })}
+                                                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[var(--accent)]"
+                                                />
+                                            </div>
+
+                                            {/* Contrast */}
+                                            <div className="space-y-1">
+                                                <div className="flex justify-between text-xs font-semibold text-[var(--foreground)]">
+                                                    <label>Contraste</label>
+                                                    <span>{imageFilters?.contrast || 100}%</span>
+                                                </div>
+                                                <input
+                                                    type="range"
+                                                    min="0"
+                                                    max="200"
+                                                    value={imageFilters?.contrast || 100}
+                                                    onChange={(e) => onImageFiltersChange({ ...imageFilters, contrast: parseInt(e.target.value) })}
+                                                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[var(--accent)]"
+                                                />
+                                            </div>
+
+                                            {/* Saturate */}
+                                            <div className="space-y-1">
+                                                <div className="flex justify-between text-xs font-semibold text-[var(--foreground)]">
+                                                    <label>Saturación</label>
+                                                    <span>{imageFilters?.saturate || 100}%</span>
+                                                </div>
+                                                <input
+                                                    type="range"
+                                                    min="0"
+                                                    max="200"
+                                                    value={imageFilters?.saturate || 100}
+                                                    onChange={(e) => onImageFiltersChange({ ...imageFilters, saturate: parseInt(e.target.value) })}
+                                                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[var(--accent)]"
+                                                />
+                                            </div>
+
+                                            <button
+                                                onClick={() => onImageFiltersChange({
+                                                    grayscale: 0,
+                                                    sepia: 0,
+                                                    brightness: 100,
+                                                    contrast: 100,
+                                                    saturate: 100
+                                                })}
+                                                className="w-full py-2 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                                            >
+                                                Restablecer Filtros
                                             </button>
                                         </div>
                                     </div>
@@ -635,6 +745,107 @@ export default function Toolbar({
                                 )}
                             </>
                         )}
+
+                        {/* TAB: Stickers */}
+                        {activeTab === 'stickers' && (
+                            <>
+                                <div>
+                                    <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-3">
+                                        Emojis y Stickers
+                                    </h3>
+                                    <div className="grid grid-cols-6 gap-2">
+                                        {['😀', '😍', '🎉', '❤️', '⭐', '✨', '🎁', '🎂', '☕', '🌟', '💖', '👑', '🌈', '🔥', '💪', '🎨', '🌸', '🦋', '☀️', '🌙', '🎵', '📸', '✓', '→'].map(emoji => (
+                                            <button
+                                                key={emoji}
+                                                onClick={() => onAddEmoji(emoji)}
+                                                className="aspect-square bg-[var(--accent)] border border-[var(--border)] rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors text-3xl flex items-center justify-center"
+                                                title="Click para agregar"
+                                            >
+                                                {emoji}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        {/* TAB: Plantillas */}
+                        {activeTab === 'plantillas' && (
+                            <>
+                                <div>
+                                    <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-3">
+                                        Diseños Prediseñados
+                                    </h3>
+                                    <div className="space-y-3">
+                                        <button
+                                            onClick={() => onLoadTemplate('happy-birthday')}
+                                            className="w-full p-4 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border border-[var(--border)] rounded-lg hover:shadow-md transition-all text-left"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="text-4xl">🎉</div>
+                                                <div>
+                                                    <h4 className="font-semibold text-[var(--foreground)]">Feliz Cumpleaños</h4>
+                                                    <p className="text-sm opacity-70">Celebración colorida</p>
+                                                </div>
+                                            </div>
+                                        </button>
+
+                                        <button
+                                            onClick={() => onLoadTemplate('love-you')}
+                                            className="w-full p-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 border border-[var(--border)] rounded-lg hover:shadow-md transition-all text-left"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="text-4xl">❤️</div>
+                                                <div>
+                                                    <h4 className="font-semibold text-[var(--foreground)]">Te Amo</h4>
+                                                    <p className="text-sm opacity-70">Romántico</p>
+                                                </div>
+                                            </div>
+                                        </button>
+
+                                        <button
+                                            onClick={() => onLoadTemplate('best-mom')}
+                                            className="w-full p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border border-[var(--border)] rounded-lg hover:shadow-md transition-all text-left"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="text-4xl">👑</div>
+                                                <div>
+                                                    <h4 className="font-semibold text-[var(--foreground)]">Mejor Mamá</h4>
+                                                    <p className="text-sm opacity-70">Para mamá</p>
+                                                </div>
+                                            </div>
+                                        </button>
+
+                                        <button
+                                            onClick={() => onLoadTemplate('coffee-lover')}
+                                            className="w-full p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border border-[var(--border)] rounded-lg hover:shadow-md transition-all text-left"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="text-4xl">☕</div>
+                                                <div>
+                                                    <h4 className="font-semibold text-[var(--foreground)]">Coffee Lover</h4>
+                                                    <p className="text-sm opacity-70">Para cafeteros</p>
+                                                </div>
+                                            </div>
+                                        </button>
+
+                                        <button
+                                            onClick={() => onLoadTemplate('motivational')}
+                                            className="w-full p-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border border-[var(--border)] rounded-lg hover:shadow-md transition-all text-left"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="text-4xl">💪</div>
+                                                <div>
+                                                    <h4 className="font-semibold text-[var(--foreground)]">Motivacional</h4>
+                                                    <p className="text-sm opacity-70">Inspirador</p>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
                         {/* Botón de eliminar al final del contenido */}
                         {hasSelection && (
                             <div className="pt-4 mt-4 border-t border-[var(--border)]">
@@ -648,7 +859,8 @@ export default function Toolbar({
                         )}
                     </div>
                 </aside>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 }
