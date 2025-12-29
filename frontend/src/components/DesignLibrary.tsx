@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { listDesigns, deleteDesign, Design } from '@/lib/api';
+import { listDesigns, deleteDesign, toggleFavoriteDesign, Design } from '@/lib/api';
 
 interface DesignLibraryProps {
     isOpen: boolean;
@@ -13,6 +13,7 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
     const [designs, setDesigns] = useState<Design[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
     // Cargar diseños cuando se abre el modal
     useEffect(() => {
@@ -32,6 +33,15 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
             console.error(err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleToggleFavorite = async (id: string) => {
+        try {
+            const updatedDesign = await toggleFavoriteDesign(id);
+            setDesigns(designs.map(d => d.id === id ? updatedDesign : d));
+        } catch (err) {
+            console.error('Error toggling favorite:', err);
         }
     };
 
@@ -60,12 +70,23 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b">
                     <h2 className="text-2xl font-title font-bold text-gray-900">Mis Diseños</h2>
-                    <button
-                        onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
-                    >
-                        ✕
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors ${showOnlyFavorites
+                                    ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+                                    : 'bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200'
+                                }`}
+                        >
+                            {showOnlyFavorites ? '★ Solo Favoritos' : '☆ Mostrar Todos'}
+                        </button>
+                        <button
+                            onClick={onClose}
+                            className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+                        >
+                            ✕
+                        </button>
+                    </div>
                 </div>
 
                 {/* Content */}
@@ -96,51 +117,67 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
 
                     {!loading && !error && designs.length > 0 && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {designs.map((design) => (
-                                <div
-                                    key={design.id}
-                                    className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                                >
-                                    {/* Thumbnail */}
-                                    <div className="aspect-square bg-gray-100 flex items-center justify-center">
-                                        {design.thumbnail ? (
-                                            <img
-                                                src={design.thumbnail}
-                                                alt={design.name}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <div className="text-gray-400 text-4xl">🖼️</div>
-                                        )}
-                                    </div>
+                            {designs
+                                .filter(d => !showOnlyFavorites || d.is_favorite)
+                                .map((design) => (
+                                    <div
+                                        key={design.id}
+                                        className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                                    >
+                                        {/* Thumbnail */}
+                                        <div className="aspect-square bg-gray-100 flex items-center justify-center">
+                                            {design.thumbnail ? (
+                                                <img
+                                                    src={design.thumbnail}
+                                                    alt={design.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="text-gray-400 text-4xl">🖼️</div>
+                                            )}
 
-                                    {/* Info */}
-                                    <div className="p-4">
-                                        <h3 className="font-semibold text-gray-900 truncate">
-                                            {design.name}
-                                        </h3>
-                                        <p className="text-sm text-gray-500 mt-1">
-                                            {new Date(design.updated_at).toLocaleDateString()}
-                                        </p>
-
-                                        {/* Actions */}
-                                        <div className="flex gap-2 mt-4">
+                                            {/* Favorite Toggle Overlay */}
                                             <button
-                                                onClick={() => handleLoad(design)}
-                                                className="flex-1 px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-semibold"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleToggleFavorite(design.id);
+                                                }}
+                                                className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all ${design.is_favorite
+                                                        ? 'bg-yellow-400 text-white'
+                                                        : 'bg-white/80 text-gray-400 hover:text-yellow-500'
+                                                    }`}
                                             >
-                                                Cargar
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(design.id)}
-                                                className="px-3 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 text-sm font-semibold"
-                                            >
-                                                🗑️
+                                                {design.is_favorite ? '★' : '☆'}
                                             </button>
                                         </div>
+
+                                        {/* Info */}
+                                        <div className="p-4">
+                                            <h3 className="font-semibold text-gray-900 truncate">
+                                                {design.name}
+                                            </h3>
+                                            <p className="text-sm text-gray-500 mt-1">
+                                                {new Date(design.updated_at).toLocaleDateString()}
+                                            </p>
+
+                                            {/* Actions */}
+                                            <div className="flex gap-2 mt-4">
+                                                <button
+                                                    onClick={() => handleLoad(design)}
+                                                    className="flex-1 px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-semibold"
+                                                >
+                                                    Cargar
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(design.id)}
+                                                    className="px-3 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 text-sm font-semibold"
+                                                >
+                                                    🗑️
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
                         </div>
                     )}
                 </div>

@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState, forwardRef } from "react";
 import dynamic from "next/dynamic";
+import Konva from 'konva';
 import { Stage, Layer, Rect, Text as KonvaText, TextPath, Image as KonvaImage, Transformer } from "react-konva";
 import { CanvasElement } from "@/types/customizer";
 
@@ -49,6 +50,17 @@ function CanvasImageElement({ element, isSelected, onSelect, onChange }: any) {
                     draggable
                     onClick={onSelect}
                     onTap={onSelect}
+                    // Aplicar filtros si existen
+                    {...(element.filters ? {
+                        filters: [
+                            ...(element.filters.grayscale ? [Konva.Filters.Grayscale] : []),
+                            ...(element.filters.sepia ? [Konva.Filters.Sepia] : []),
+                            ...(element.filters.brightness !== 100 || element.filters.contrast !== 100 || element.filters.saturate !== 100 ? [Konva.Filters.Brighten] : [])
+                        ],
+                        brightness: (element.filters.brightness - 100) / 100,
+                        contrast: (element.filters.contrast - 100),
+                        saturation: (element.filters.saturate - 100) / 100
+                    } : {})}
                     onDragEnd={(e: any) => {
                         onChange({
                             ...element,
@@ -236,6 +248,74 @@ function CanvasTextElement({ element, isSelected, onSelect, onChange, onDoubleCl
             {isSelected && (
                 <Transformer
                     ref={transformerRef}
+                    boundBoxFunc={(oldBox: any, newBox: any) => {
+                        if (newBox.width < 5 || newBox.height < 5) {
+                            return oldBox;
+                        }
+                        return newBox;
+                    }}
+                />
+            )}
+        </>
+    );
+}
+
+// Componente para renderizar emojis
+function CanvasEmojiElement({ element, isSelected, onSelect, onChange }: any) {
+    const emojiRef = useRef<any>(null);
+    const transformerRef = useRef<any>(null);
+
+    useEffect(() => {
+        if (isSelected && transformerRef.current && emojiRef.current) {
+            transformerRef.current.nodes([emojiRef.current]);
+            transformerRef.current.getLayer().batchDraw();
+        }
+    }, [isSelected]);
+
+    return (
+        <>
+            <KonvaText
+                ref={emojiRef}
+                text={element.emoji}
+                x={element.position.x}
+                y={element.position.y}
+                fontSize={element.fontSize}
+                rotation={element.rotation}
+                draggable
+                onClick={onSelect}
+                onTap={onSelect}
+                onDragEnd={(e: any) => {
+                    onChange({
+                        ...element,
+                        position: {
+                            x: e.target.x(),
+                            y: e.target.y()
+                        }
+                    });
+                }}
+                onTransformEnd={(e: any) => {
+                    const node = emojiRef.current;
+                    const scaleX = node.scaleX();
+
+                    node.scaleX(1);
+                    node.scaleY(1);
+
+                    onChange({
+                        ...element,
+                        position: {
+                            x: node.x(),
+                            y: node.y()
+                        },
+                        fontSize: Math.max(5, node.fontSize() * scaleX),
+                        rotation: node.rotation()
+                    });
+                }}
+            />
+            {isSelected && (
+                <Transformer
+                    ref={transformerRef}
+                    enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
+                    keepRatio={true}
                     boundBoxFunc={(oldBox: any, newBox: any) => {
                         if (newBox.width < 5 || newBox.height < 5) {
                             return oldBox;
@@ -511,6 +591,24 @@ const MugCanvas = forwardRef<any, MugCanvasProps>(function MugCanvas({
                                                                 color: element.color
                                                             });
                                                         }}
+                                                        onChange={(newEl: any) => {
+                                                            handleElementChange({
+                                                                ...newEl,
+                                                                position: {
+                                                                    x: newEl.position.x + designAreaX,
+                                                                    y: newEl.position.y + designAreaY
+                                                                }
+                                                            });
+                                                        }}
+                                                    />
+                                                );
+                                            } else if (element.type === 'emoji') {
+                                                return (
+                                                    <CanvasEmojiElement
+                                                        key={element.id}
+                                                        element={adjustedElement}
+                                                        isSelected={isSelected}
+                                                        onSelect={() => onSelect(element.id)}
                                                         onChange={(newEl: any) => {
                                                             handleElementChange({
                                                                 ...newEl,

@@ -237,6 +237,22 @@ async def delete_design(
     db.commit()
     return None
 
+@app.patch('/api/designs/{design_id}/favorite', response_model=DesignResponse)
+async def toggle_favorite(
+    design_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Toggle favorite status for a design."""
+    design = db.query(Design).filter(Design.id == design_id, Design.user_id == current_user.id).first()
+    if not design:
+        raise HTTPException(status_code=404, detail="Diseño no encontrado")
+    
+    design.is_favorite = not design.is_favorite
+    db.commit()
+    db.refresh(design)
+    return design
+
 # --- ORDER ENDPOINTS ---
 
 @app.post('/api/orders', response_model=OrderResponse, status_code=201)

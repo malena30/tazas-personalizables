@@ -15,6 +15,7 @@ export interface Design {
     mug_color: string;
     elements: CanvasElement[];
     thumbnail?: string;
+    is_favorite?: boolean;
     created_at: string;
     updated_at: string;
 }
@@ -407,6 +408,19 @@ export async function getUserStats(): Promise<UserStats> {
 
     if (!response.ok) {
         throw new Error('Error al obtener estadísticas');
+    }
+
+    return response.json();
+}
+
+export async function toggleFavoriteDesign(designId: string): Promise<Design> {
+    const response = await fetch(`${API_URL}/api/designs/${designId}/favorite`, {
+        method: 'PATCH',
+        headers: getAuthHeaders()
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al actualizar favorito');
     }
 
     return response.json();

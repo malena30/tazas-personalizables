@@ -1,0 +1,287 @@
+﻿
+> frontend@1.0.0 build
+> next build
+
+node.exe : [baselin
+e-browser-mapping] 
+The data in this 
+module is over two 
+months old.  To 
+ensure accurate 
+Baseline data, 
+please update: 
+`npm i baseline-bro
+wser-mapping@latest
+ -D`
+En C:\Program Files
+\nodejs\npm.ps1: 
+29 Carácter: 3
++   & $NODE_EXE 
+$NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+    + CategoryInfo 
+             : No  
+  tSpecified: ([   
+ baseline-brows    
+...ping@latest     
+-D`:String) [    
+], RemoteExcep    
+tion
+    + FullyQualifi 
+   edErrorId : Na  
+  tiveCommandErr   
+ or
+ 
+ ÔÜá Warning: 
+Next.js inferred 
+your workspace 
+root, but it may 
+not be correct.
+ We detected 
+multiple lockfiles 
+and selected the 
+directory of 
+C:\Users\Malena Cor
+t├®s\Desktop\tazas-
+personalizables\pac
+kage-lock.json as 
+the root directory.
+ To silence this 
+warning, set 
+`turbopack.root` 
+in your Next.js 
+config, or 
+consider removing 
+one of the 
+lockfiles if it's 
+not needed.
+   See https://next
+js.org/docs/app/api
+-reference/config/n
+ext-config-js/turbo
+pack#root-directory
+ for more 
+information.
+ Detected 
+additional 
+lockfiles: 
+   * 
+C:\Users\Malena Cor
+t├®s\Desktop\tazas-
+personalizables\fro
+ntend\package-lock.
+json
+
+   Ôû▓ Next.js 16.0.3 (Turbopack)
+
+   Creating an optimized production build ...
+[baseline-browser-m
+apping] The data 
+in this module is 
+over two months 
+old.  To ensure 
+accurate Baseline 
+data, please 
+update: `npm i base
+line-browser-mappin
+g@latest -D`
+ Ô£ô Compiled successfully in 13.7s
+   Running TypeScript ...
+   Collecting page data using 7 workers ...
+[baseline-browser-m
+apping] The data 
+in this module is 
+over two months 
+old.  To ensure 
+accurate Baseline 
+data, please 
+update: `npm i base
+line-browser-mappin
+g@latest -D`
+[baseline-browser-m
+apping] The data 
+in this module is 
+over two months 
+old.  To ensure 
+accurate Baseline 
+data, please 
+update: `npm i base
+line-browser-mappin
+g@latest -D`
+[baseline-browser-m
+apping] The data 
+in this module is 
+over two months 
+old.  To ensure 
+accurate Baseline 
+data, please 
+update: `npm i base
+line-browser-mappin
+g@latest -D`
+[baseline-browser-m
+apping] The data 
+in this module is 
+over two months 
+old.  To ensure 
+accurate Baseline 
+data, please 
+update: `npm i base
+line-browser-mappin
+g@latest -D`
+[baseline-browser-m
+apping] The data 
+in this module is 
+over two months 
+old.  To ensure 
+accurate Baseline 
+data, please 
+update: `npm i base
+line-browser-mappin
+g@latest -D`
+[baseline-browser-m
+apping] The data 
+in this module is 
+over two months 
+old.  To ensure 
+accurate Baseline 
+data, please 
+update: `npm i base
+line-browser-mappin
+g@latest -D`
+[baseline-browser-m
+apping] The data 
+in this module is 
+over two months 
+old.  To ensure 
+accurate Baseline 
+data, please 
+update: `npm i base
+line-browser-mappin
+g@latest -D`
+   Generating static pages using 7 workers (0/13) ...
+[baseline-browser-m
+apping] The data 
+in this module is 
+over two months 
+old.  To ensure 
+accurate Baseline 
+data, please 
+update: `npm i base
+line-browser-mappin
+g@latest -D`
+   Generating static pages using 7 workers (3/13) 
+   Generating static pages using 7 workers (6/13) 
+ Ô¿» 
+useSearchParams() 
+should be wrapped 
+in a suspense 
+boundary at page 
+"/login". Read 
+more: https://nextj
+s.org/docs/messages
+/missing-suspense-w
+ith-csr-bailout
+    at S 
+(C:\Users\Malena Co
+rt├®s\Desktop\tazas
+-personalizables\fr
+ontend\.next\server
+\chunks\ssr\9e883_n
+ext_ac3153e3._.js:2
+:2111)
+    at p 
+(C:\Users\Malena Co
+rt├®s\Desktop\tazas
+-personalizables\fr
+ontend\.next\server
+\chunks\ssr\9e883_n
+ext_ac3153e3._.js:4
+:4846)
+    at g 
+(C:\Users\Malena Co
+rt├®s\Desktop\tazas
+-personalizables\fr
+ontend\.next\server
+\chunks\ssr\fronten
+d_src_app_login_pag
+e_tsx_1e429bb3._.js
+:1:355)
+    at ar 
+(C:\Users\Malena Co
+rt├®s\Desktop\tazas
+-personalizables\fr
+ontend\node_modules
+\next\dist\compiled
+\next-server\app-pa
+ge-turbo.runtime.pr
+od.js:2:84366)
+    at aa 
+(C:\Users\Malena Co
+rt├®s\Desktop\tazas
+-personalizables\fr
+ontend\node_modules
+\next\dist\compiled
+\next-server\app-pa
+ge-turbo.runtime.pr
+od.js:2:86185)
+    at as 
+(C:\Users\Malena Co
+rt├®s\Desktop\tazas
+-personalizables\fr
+ontend\node_modules
+\next\dist\compiled
+\next-server\app-pa
+ge-turbo.runtime.pr
+od.js:2:107952)
+    at ao 
+(C:\Users\Malena Co
+rt├®s\Desktop\tazas
+-personalizables\fr
+ontend\node_modules
+\next\dist\compiled
+\next-server\app-pa
+ge-turbo.runtime.pr
+od.js:2:105374)
+    at an 
+(C:\Users\Malena Co
+rt├®s\Desktop\tazas
+-personalizables\fr
+ontend\node_modules
+\next\dist\compiled
+\next-server\app-pa
+ge-turbo.runtime.pr
+od.js:2:84718)
+    at aa 
+(C:\Users\Malena Co
+rt├®s\Desktop\tazas
+-personalizables\fr
+ontend\node_modules
+\next\dist\compiled
+\next-server\app-pa
+ge-turbo.runtime.pr
+od.js:2:86234)
+    at aa 
+(C:\Users\Malena Co
+rt├®s\Desktop\tazas
+-personalizables\fr
+ontend\node_modules
+\next\dist\compiled
+\next-server\app-pa
+ge-turbo.runtime.pr
+od.js:2:104714)
+Error occurred 
+prerendering page 
+"/login". Read 
+more: https://nextj
+s.org/docs/messages
+/prerender-error
+Export encountered 
+an error on 
+/login/page: 
+/login, exiting 
+the build.
+ Ô¿» Next.js build 
+worker exited with 
+code: 1 and 
+signal: null
