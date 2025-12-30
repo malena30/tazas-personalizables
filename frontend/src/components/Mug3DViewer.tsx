@@ -283,6 +283,65 @@ function CanvasTextElement({ element, isSelected, onSelect, onChange }: any) {
     );
 }
 
+// Componente para renderizar emojis en el canvas 2D
+function CanvasEmojiElement({ element, isSelected, onSelect, onChange }: any) {
+    const emojiRef = useRef<any>(null);
+    const transformerRef = useRef<any>(null);
+
+    useEffect(() => {
+        if (isSelected && transformerRef.current && emojiRef.current) {
+            transformerRef.current.nodes([emojiRef.current]);
+            transformerRef.current.getLayer().batchDraw();
+        }
+    }, [isSelected]);
+
+    return (
+        <>
+            <KonvaText
+                ref={emojiRef}
+                id={element.id} // ID para búsqueda
+                text={element.emoji}
+                x={element.position.x}
+                y={element.position.y}
+                fontSize={element.fontSize}
+                rotation={element.rotation}
+                draggable
+                onClick={onSelect}
+                onTap={onSelect}
+                onDragEnd={(e: any) => {
+                    onChange({
+                        ...element,
+                        position: { x: e.target.x(), y: e.target.y() }
+                    });
+                }}
+                onTransformEnd={(e: any) => {
+                    const node = emojiRef.current;
+                    const scaleX = node.scaleX();
+                    node.scaleX(1);
+                    node.scaleY(1);
+                    onChange({
+                        ...element,
+                        position: { x: node.x(), y: node.y() },
+                        fontSize: Math.max(5, node.fontSize() * scaleX),
+                        rotation: node.rotation()
+                    });
+                }}
+            />
+            {isSelected && (
+                <Transformer
+                    ref={transformerRef}
+                    enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
+                    keepRatio={true}
+                    boundBoxFunc={(oldBox: any, newBox: any) => {
+                        if (newBox.width < 5 || newBox.height < 5) return oldBox;
+                        return newBox;
+                    }}
+                />
+            )}
+        </>
+    );
+}
+
 // Componente principal
 const Mug3DViewer = forwardRef(function Mug3DViewer(
     { elements, selectedId, onSelect, onUpdateElement, mugColor, isExpanded = false, showCanvas = true, onToggleExpand }: Mug3DViewerProps,
@@ -441,6 +500,16 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
                                                 onChange={onUpdateElement}
                                             />
                                         );
+                                    } else if (element.type === 'emoji') {
+                                        return (
+                                            <CanvasEmojiElement
+                                                key={element.id}
+                                                element={element}
+                                                isSelected={element.id === selectedId}
+                                                onSelect={() => onSelect(element.id)}
+                                                onChange={onUpdateElement}
+                                            />
+                                        );
                                     }
                                     return null;
                                 })}
@@ -462,8 +531,8 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
                     <button
                         onClick={onToggleExpand}
                         className={`absolute top-2 right-2 z-[110] p-1.5 rounded shadow-sm transition-all ${isExpanded
-                                ? 'bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm border border-[var(--border)] hover:bg-white dark:hover:bg-zinc-800'
-                                : 'bg-white/90 border border-gray-200 hover:bg-white opacity-0 group-hover/3dviewer:opacity-100'
+                            ? 'bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm border border-[var(--border)] hover:bg-white dark:hover:bg-zinc-800'
+                            : 'bg-white/90 border border-gray-200 hover:bg-white opacity-0 group-hover/3dviewer:opacity-100'
                             } group`}
                         title={isExpanded ? "Contraer vista" : "Expandir vista"}
                     >
