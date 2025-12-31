@@ -5,13 +5,14 @@ from sqlalchemy import func
 from typing import List, Optional
 from datetime import timedelta
 import database
-from database import get_db, Design, User, Order, OrderItem
+from database import get_db, Design, User, Order, OrderItem, Product
 from schemas import (
     DesignCreate, DesignUpdate, DesignResponse, 
     UserRegister, UserLogin, UserResponse, Token,
     OrderCreate, OrderResponse,
     AdminStats, AdminUserResponse, AdminOrderResponse, OrderStatusUpdate,
-    UserProfileUpdate, UserStats, Address
+    UserProfileUpdate, UserStats, Address,
+    ProductCreate, ProductUpdate, ProductResponse
 )
 from auth import (
     get_password_hash, verify_password, create_access_token, 
@@ -456,3 +457,100 @@ async def get_admin_users(
         users_with_stats.append(AdminUserResponse(**user_dict))
     
     return users_with_stats
+
+# --- PRODUCT ENDPOINTS ---
+
+@app.get("/api/products", response_model=List[ProductResponse])
+async def get_products(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    """
+    Obtener lista de productos activos (público).
+    """
+    products = db.query(Product).filter(Product.is_active == True).offset(skip).limit(limit).all()
+    return products
+
+@app.get("/api/products/all", response_model=List[ProductResponse])
+async def get_all_products(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(get_admin_user)
+):
+    """
+    Obtener lista de todos los productos (admin only).
+    """
+    products = db.query(Product).offset(skip).limit(limit).all()
+    return products
+
+@app.post("/api/products", response_model=ProductResponse, status_code=201)
+async def create_product(
+    product: ProductCreate,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(get_admin_user)
+):
+    """
+    Crear un nuevo producto (admin only).
+    """
+    image_url = product.image_url
+    if image_url and image_url.startswith("data:image"):
+        image_url = upload_base64_image(image_url, folder="tazas_products")
+
+    new_product = Product(
+        name=product.name,
+        description=product.description,
+        price=product.price,
+        image_url=image_url,
+        stock=product.stock,
+        is_active=product.is_active
+    )
+    db.add(new_product)
+    db.commit()
+    db.refresh(new_product)
+    return new_product
+
+@app.put("/api/products/{product_id}", response_model=ProductResponse)
+async def update_product(
+    product_id: str,
+    product_update: ProductUpdate,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(get_admin_user)
+):
+    """
+    Actualizar un producto existente (admin only).
+    """
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+    
+    # Actualizar solo los campos proporcionados
+    update_data = product_update.model_dump(exclude_unset=True)
+    
+    if "image_url" in update_data and update_data["image_url"] and update_data["image_url"].startswith("data:image"):
+        update_data["image_url"] = upload_base64_image(update_data["image_url"], folder="tazas_products")
+
+    for key, value in update_data.items():
+        setattr(product, key, value)
+    
+    db.commit()
+    db.refresh(product)
+    return product
+
+@app.delete("/api/products/{product_id}", status_code=204)
+async def delete_product(
+    product_id: str,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(get_admin_user)
+):
+    """
+    Eliminar un producto (admin only).
+    """
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+    
+    db.delete(product)
+    db.commit()
+    return None

@@ -11,12 +11,19 @@ import {
     AdminStats,
     AdminOrderResponse,
     AdminUserResponse,
+    getAllProducts,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    Product,
+    ProductCreate,
+    ProductUpdate,
 } from "@/lib/api";
 
 export default function AdminPanel() {
     const { user } = useAuth();
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<"dashboard" | "orders" | "users">("dashboard");
+    const [activeTab, setActiveTab] = useState<"dashboard" | "orders" | "users" | "products">("dashboard");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -29,6 +36,19 @@ export default function AdminPanel() {
 
     // Users data
     const [users, setUsers] = useState<AdminUserResponse[]>([]);
+
+    // Products data
+    const [products, setProducts] = useState<Product[]>([]);
+    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [showProductModal, setShowProductModal] = useState(false);
+    const [productForm, setProductForm] = useState<ProductCreate>({
+        name: "",
+        description: "",
+        price: 0,
+        image_url: "",
+        stock: 0,
+        is_active: true
+    });
 
     useEffect(() => {
         if (!user) {
@@ -60,6 +80,10 @@ export default function AdminPanel() {
             const usersData = await getAdminUsers();
             setUsers(usersData);
 
+            // Cargar productos
+            const productsData = await getAllProducts();
+            setProducts(productsData);
+
             setLoading(false);
         } catch (err: any) {
             setError(err.message || "Error al cargar datos del panel");
@@ -76,6 +100,81 @@ export default function AdminPanel() {
         } catch (err: any) {
             alert(err.message || "Error al actualizar estado");
         }
+    };
+
+    const loadProducts = async () => {
+        try {
+            const productsData = await getAllProducts();
+            setProducts(productsData);
+        } catch (err: any) {
+            alert(err.message || "Error al cargar productos");
+        }
+    };
+
+    const handleCreateProduct = async () => {
+        try {
+            await createProduct(productForm);
+            await loadProducts();
+            setShowProductModal(false);
+            resetProductForm();
+        } catch (err: any) {
+            alert(err.message || "Error al crear producto");
+        }
+    };
+
+    const handleUpdateProduct = async () => {
+        if (!editingProduct) return;
+        try {
+            const updateData: ProductUpdate = {
+                name: productForm.name || undefined,
+                description: productForm.description || undefined,
+                price: productForm.price || undefined,
+                image_url: productForm.image_url || undefined,
+                stock: productForm.stock || undefined,
+                is_active: productForm.is_active
+            };
+            await updateProduct(editingProduct.id, updateData);
+            await loadProducts();
+            setShowProductModal(false);
+            setEditingProduct(null);
+            resetProductForm();
+        } catch (err: any) {
+            alert(err.message || "Error al actualizar producto");
+        }
+    };
+
+    const handleDeleteProduct = async (productId: string) => {
+        if (!confirm("¿Estás seguro de eliminar este producto?")) return;
+        try {
+            await deleteProduct(productId);
+            await loadProducts();
+        } catch (err: any) {
+            alert(err.message || "Error al eliminar producto");
+        }
+    };
+
+    const openEditModal = (product: Product) => {
+        setEditingProduct(product);
+        setProductForm({
+            name: product.name,
+            description: product.description || "",
+            price: product.price,
+            image_url: product.image_url || "",
+            stock: product.stock || 0,
+            is_active: product.is_active
+        });
+        setShowProductModal(true);
+    };
+
+    const resetProductForm = () => {
+        setProductForm({
+            name: "",
+            description: "",
+            price: 0,
+            image_url: "",
+            stock: 0,
+            is_active: true
+        });
     };
 
     if (!user || !user.is_admin) {
@@ -116,8 +215,8 @@ export default function AdminPanel() {
                     <button
                         onClick={() => setActiveTab("dashboard")}
                         className={`px-6 py-3 font-medium transition-all ${activeTab === "dashboard"
-                                ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
-                                : "text-[var(--foreground)] opacity-60 hover:opacity-100"
+                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
+                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
                             }`}
                     >
                         Dashboard
@@ -125,8 +224,8 @@ export default function AdminPanel() {
                     <button
                         onClick={() => setActiveTab("orders")}
                         className={`px-6 py-3 font-medium transition-all ${activeTab === "orders"
-                                ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
-                                : "text-[var(--foreground)] opacity-60 hover:opacity-100"
+                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
+                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
                             }`}
                     >
                         Órdenes ({stats?.total_orders || 0})
@@ -134,11 +233,20 @@ export default function AdminPanel() {
                     <button
                         onClick={() => setActiveTab("users")}
                         className={`px-6 py-3 font-medium transition-all ${activeTab === "users"
-                                ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
-                                : "text-[var(--foreground)] opacity-60 hover:opacity-100"
+                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
+                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
                             }`}
                     >
                         Usuarios ({stats?.total_users || 0})
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("products")}
+                        className={`px-6 py-3 font-medium transition-all ${activeTab === "products"
+                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
+                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
+                            }`}
+                    >
+                        Productos ({products.length})
                     </button>
                 </div>
 
@@ -263,10 +371,10 @@ export default function AdminPanel() {
                                                 <td className="px-4 py-3 text-sm">
                                                     <span
                                                         className={`px-3 py-1 rounded-full text-xs font-medium ${order.status === "paid"
-                                                                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-                                                                : order.status === "pending"
-                                                                    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
-                                                                    : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                                                            ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                                                            : order.status === "pending"
+                                                                ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
+                                                                : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
                                                             }`}
                                                     >
                                                         {order.status === "paid"
@@ -364,7 +472,264 @@ export default function AdminPanel() {
                         </table>
                     </div>
                 )}
+
+                {/* Products Tab */}
+                {activeTab === "products" && (
+                    <div className="space-y-6">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-2xl font-title font-bold text-[var(--foreground)]">
+                                Gestión de Productos
+                            </h2>
+                            <button
+                                onClick={() => {
+                                    setEditingProduct(null);
+                                    resetProductForm();
+                                    setShowProductModal(true);
+                                }}
+                                className="bg-[var(--accent)] text-[var(--foreground)] px-6 py-2 rounded-lg font-text font-semibold hover:opacity-90 transition-all shadow-sm"
+                            >
+                                + Nuevo Producto
+                            </button>
+                        </div>
+
+                        <div className="overflow-x-auto bg-[var(--accent)] rounded-xl border border-[var(--border)]">
+                            <table className="w-full">
+                                <thead className="border-b border-[var(--border)]">
+                                    <tr>
+                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
+                                            Imagen
+                                        </th>
+                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
+                                            Nombre
+                                        </th>
+                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
+                                            Precio
+                                        </th>
+                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
+                                            Stock
+                                        </th>
+                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
+                                            Estado
+                                        </th>
+                                        <th className="px-4 py-3 text-right text-sm font-medium text-[var(--foreground)]">
+                                            Acciones
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {products.map((p) => (
+                                        <tr
+                                            key={p.id}
+                                            className="border-b border-[var(--border)] hover:bg-[var(--background)]/50 transition-colors"
+                                        >
+                                            <td className="px-4 py-3">
+                                                <div className="relative w-12 h-12 bg-white rounded border border-[var(--border)] overflow-hidden">
+                                                    {p.image_url ? (
+                                                        <img
+                                                            src={p.image_url}
+                                                            alt={p.name}
+                                                            className="w-full h-full object-contain"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-[var(--foreground)] opacity-30">
+                                                            🖼️
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-4 py-3 text-sm text-[var(--foreground)] font-medium">
+                                                {p.name}
+                                            </td>
+                                            <td className="px-4 py-3 text-sm text-[var(--foreground)] font-mono">
+                                                ${p.price.toLocaleString("es-AR")}
+                                            </td>
+                                            <td className="px-4 py-3 text-sm text-[var(--foreground)]">
+                                                {p.stock}
+                                            </td>
+                                            <td className="px-4 py-3 text-sm">
+                                                {p.is_active ? (
+                                                    <span className="px-3 py-1 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded-full text-xs font-medium">
+                                                        Activo
+                                                    </span>
+                                                ) : (
+                                                    <span className="px-3 py-1 bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 rounded-full text-xs">
+                                                        Inactivo
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className="px-4 py-3 text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    <button
+                                                        onClick={() => openEditModal(p)}
+                                                        className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                                                        title="Editar"
+                                                    >
+                                                        ✏️
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteProduct(p.id)}
+                                                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                                        title="Eliminar"
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
             </div>
+
+            {/* Product Modal */}
+            {showProductModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-[var(--background)] rounded-2xl border border-[var(--border)] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <div className="p-6 border-b border-[var(--border)] flex justify-between items-center sticky top-0 bg-[var(--background)] z-10">
+                            <h3 className="text-xl font-title font-bold text-[var(--foreground)]">
+                                {editingProduct ? "Editar Producto" : "Nuevo Producto"}
+                            </h3>
+                            <button
+                                onClick={() => setShowProductModal(false)}
+                                className="text-[var(--foreground)] opacity-50 hover:opacity-100 text-2xl"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <div className="p-6 space-y-6">
+                            {/* Image Upload */}
+                            <div>
+                                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                                    Imagen del Producto
+                                </label>
+                                <div className="flex items-center gap-6">
+                                    <div className="relative w-32 h-32 bg-[var(--accent)] rounded-xl border border-[var(--border)] overflow-hidden flex items-center justify-center">
+                                        {productForm.image_url ? (
+                                            <img
+                                                src={productForm.image_url}
+                                                alt="Preview"
+                                                className="w-full h-full object-contain"
+                                            />
+                                        ) : (
+                                            <span className="text-4xl opacity-30">🖼️</span>
+                                        )}
+                                    </div>
+                                    <div className="flex-1">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    const reader = new FileReader();
+                                                    reader.onloadend = () => {
+                                                        setProductForm({ ...productForm, image_url: reader.result as string });
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            }}
+                                            className="hidden"
+                                            id="product-image-upload"
+                                        />
+                                        <label
+                                            htmlFor="product-image-upload"
+                                            className="inline-block bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-4 py-2 rounded-lg cursor-pointer hover:bg-[var(--hover-bg)] transition-colors"
+                                        >
+                                            Seleccionar Imagen
+                                        </label>
+                                        <p className="text-xs text-[var(--foreground)] opacity-50 mt-2">
+                                            JPG, PNG o WEBP. Máx 5MB.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                                        Nombre
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={productForm.name}
+                                        onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                                        className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2 text-[var(--foreground)] focus:ring-2 focus:ring-[var(--accent)] outline-none"
+                                        placeholder="Ej: Taza Cerámica Blanca"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                                        Precio ($)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={productForm.price}
+                                        onChange={(e) => setProductForm({ ...productForm, price: Number(e.target.value) })}
+                                        className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2 text-[var(--foreground)] focus:ring-2 focus:ring-[var(--accent)] outline-none font-mono"
+                                        placeholder="0.00"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                                        Stock
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={productForm.stock}
+                                        onChange={(e) => setProductForm({ ...productForm, stock: Number(e.target.value) })}
+                                        className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2 text-[var(--foreground)] focus:ring-2 focus:ring-[var(--accent)] outline-none font-mono"
+                                        placeholder="0"
+                                    />
+                                </div>
+                                <div className="flex items-end pb-2">
+                                    <label className="flex items-center gap-3 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={productForm.is_active}
+                                            onChange={(e) => setProductForm({ ...productForm, is_active: e.target.checked })}
+                                            className="w-5 h-5 rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
+                                        />
+                                        <span className="text-sm font-medium text-[var(--foreground)]">
+                                            Producto Activo
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                                    Descripción
+                                </label>
+                                <textarea
+                                    value={productForm.description}
+                                    onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+                                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2 text-[var(--foreground)] focus:ring-2 focus:ring-[var(--accent)] outline-none min-h-[100px]"
+                                    placeholder="Detalles del producto..."
+                                />
+                            </div>
+                        </div>
+
+                        <div className="p-6 border-t border-[var(--border)] flex justify-end gap-4 sticky bottom-0 bg-[var(--background)] z-10">
+                            <button
+                                onClick={() => setShowProductModal(false)}
+                                className="px-6 py-2 text-[var(--foreground)] opacity-70 hover:opacity-100 font-medium"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={editingProduct ? handleUpdateProduct : handleCreateProduct}
+                                className="bg-[var(--accent)] text-[var(--foreground)] px-8 py-2 rounded-lg font-text font-semibold hover:opacity-90 transition-all shadow-sm"
+                            >
+                                {editingProduct ? "Guardar Cambios" : "Crear Producto"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
