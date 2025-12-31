@@ -425,3 +425,102 @@ export async function toggleFavoriteDesign(designId: string): Promise<Design> {
 
     return response.json();
 }
+
+// --- PRODUCT API ---
+
+export interface Product {
+    id: string;
+    name: string;
+    description?: string;
+    price: number;
+    image_url?: string;
+    stock?: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ProductCreate {
+    name: string;
+    description?: string;
+    price: number;
+    image_url?: string;
+    stock?: number;
+    is_active?: boolean;
+}
+
+export interface ProductUpdate {
+    name?: string;
+    description?: string;
+    price?: number;
+    image_url?: string;
+    stock?: number;
+    is_active?: boolean;
+}
+
+export async function getProducts(): Promise<Product[]> {
+    const response = await fetch(`${API_URL}/api/products`);
+
+    if (!response.ok) {
+        throw new Error('Error al obtener productos');
+    }
+
+    return response.json();
+}
+
+export async function getAllProducts(): Promise<Product[]> {
+    const response = await fetch(`${API_URL}/api/products/all`, {
+        headers: getAuthHeaders()
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al obtener todos los productos');
+    }
+
+    return response.json();
+}
+
+export async function createProduct(product: ProductCreate): Promise<Product> {
+    const response = await fetch(`${API_URL}/api/products`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+        },
+        body: JSON.stringify(product)
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al crear producto');
+    }
+
+    return response.json();
+}
+
+export async function updateProduct(productId: string, product: ProductUpdate): Promise<Product> {
+    const response = await fetch(`${API_URL}/api/products/${productId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+        },
+        body: JSON.stringify(product)
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al actualizar producto');
+    }
+
+    return response.json();
+}
+
+export async function deleteProduct(productId: string): Promise<void> {
+    const response = await fetch(`${API_URL}/api/products/${productId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al eliminar producto');
+    }
+}

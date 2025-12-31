@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, String, DateTime, JSON, ForeignKey, Boolean
+from sqlalchemy import create_engine, Column, String, DateTime, JSON, ForeignKey, Boolean, Float, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
@@ -29,6 +29,20 @@ class User(Base):
     
     designs = relationship("Design", back_populates="owner")
     orders = relationship("Order", back_populates="user")
+
+# Modelo de Producto
+class Product(Base):
+    __tablename__ = "products"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+    price = Column(Float, nullable=False)
+    image_url = Column(String, nullable=True)
+    stock = Column(Integer, default=0, nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 # Modelo de Diseño
 class Design(Base):
