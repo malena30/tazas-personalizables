@@ -1,10 +1,30 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import TestimonialCard from "@/components/TestimonialCard";
+import SimpleMugHero from "@/components/SimpleMugHero";
+import { getProducts, Product } from "@/lib/api";
 
 export default function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await getProducts();
+        setProducts(data.slice(0, 4)); // Mostrar solo los primeros 4
+      } catch (error) {
+        console.error("Error loading products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProducts();
+  }, []);
+
   return (
     <main className="w-full bg-[var(--background)] min-h-screen">
 
@@ -27,7 +47,7 @@ export default function Home() {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-[var(--foreground)] opacity-80 mb-8 font-text">
-              Personaliza con tus fotos, diseños o frases favoritas. Únic a como vos.
+              Personaliza con tus fotos, diseños o frases favoritas. Única como vos.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link
@@ -45,13 +65,35 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Hero Image */}
+          {/* Hero Image (3D) */}
           <div className="relative z-10 flex justify-center">
             <div className="relative w-full max-w-md">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full filter blur-3xl opacity-30 animate-pulse"></div>
-              <div className="relative text-9xl animate-float">
-                ☕
-              </div>
+              <SimpleMugHero />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* STATS SECTION */}
+      <section className="w-full py-12 bg-white dark:bg-gray-900 border-y border-[var(--border)]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">+1.5k</p>
+              <p className="text-sm text-[var(--foreground)] opacity-60 uppercase tracking-widest mt-2">Clientes</p>
+            </div>
+            <div>
+              <p className="text-4xl font-bold text-purple-600 dark:text-purple-400">+500</p>
+              <p className="text-sm text-[var(--foreground)] opacity-60 uppercase tracking-widest mt-2">Diseños</p>
+            </div>
+            <div>
+              <p className="text-4xl font-bold text-pink-600 dark:text-pink-400">24h</p>
+              <p className="text-sm text-[var(--foreground)] opacity-60 uppercase tracking-widest mt-2">Producción</p>
+            </div>
+            <div>
+              <p className="text-4xl font-bold text-yellow-600 dark:text-yellow-400">100%</p>
+              <p className="text-sm text-[var(--foreground)] opacity-60 uppercase tracking-widest mt-2">Garantía</p>
             </div>
           </div>
         </div>
@@ -120,31 +162,60 @@ export default function Home() {
             Las tazas más populares de nuestra tienda
           </p>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <ProductCard
-              name="Taza Clásica"
-              price={3500}
-              image=""
-              description="Cerámica premium personalizable con tu diseño"
-            />
-            <ProductCard
-              name="Taza con Foto"
-              price={4200}
-              image=""
-              description="Impresión full color de alta calidad"
-            />
-            <ProductCard
-              name="Taza Mágica"
-              price={4800}
-              image=""
-              description="Cambia de color con líquidos calientes"
-            />
-            <ProductCard
-              name="Set x2 Tazas"
-              price={7500}
-              image=""
-              description="Perfectas para parejas o regalos"
-            />
+          {loading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-96 bg-[var(--accent)] animate-pulse rounded-2xl" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  name={product.name}
+                  price={product.price}
+                  image={product.image_url || ""}
+                  description={product.description || ""}
+                />
+              ))}
+            </div>
+          )}
+
+          <div className="mt-12 text-center">
+            <Link
+              href="/products"
+              className="inline-block px-8 py-3 border-2 border-[var(--border)] rounded-full font-semibold hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-all"
+            >
+              Ver Todo el Catálogo
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ SECTION */}
+      <section className="w-full py-20 px-6 bg-[var(--accent)]">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-4xl font-title font-bold text-center text-[var(--foreground)] mb-12">
+            Preguntas Frecuentes
+          </h2>
+          <div className="space-y-4">
+            {[
+              { q: "¿Cuánto tarda el envío?", a: "El tiempo de producción es de 24-48h. El envío suele tardar entre 2 y 5 días hábiles dependiendo de tu ubicación." },
+              { q: "¿Las tazas son aptas para microondas?", a: "¡Sí! Todas nuestras tazas de cerámica premium son aptas para microondas y lavavajillas." },
+              { q: "¿Puedo subir mis propias fotos?", a: "Absolutamente. Nuestro personalizador te permite subir imágenes en alta resolución para obtener el mejor resultado." },
+              { q: "¿Hacen ventas por mayor?", a: "Sí, ofrecemos descuentos especiales para eventos corporativos, souvenirs o revendedores a partir de 12 unidades." }
+            ].map((item, i) => (
+              <details key={i} className="group bg-[var(--background)] rounded-xl border border-[var(--border)] overflow-hidden">
+                <summary className="p-6 cursor-pointer font-bold text-[var(--foreground)] flex justify-between items-center list-none">
+                  {item.q}
+                  <span className="text-xl group-open:rotate-180 transition-transform">↓</span>
+                </summary>
+                <div className="px-6 pb-6 text-[var(--foreground)] opacity-70">
+                  {item.a}
+                </div>
+              </details>
+            ))}
           </div>
         </div>
       </section>
@@ -176,6 +247,24 @@ export default function Home() {
               comment="Me encanta el diseñador, es muy fácil de usar. Pude crear una taza personalizada para mi mamá en minutos. ¡Le encantó!"
             />
           </div>
+        </div>
+      </section>
+
+      {/* NEWSLETTER SECTION */}
+      <section className="w-full py-20 px-6">
+        <div className="max-w-4xl mx-auto bg-gradient-to-br from-blue-600 to-purple-700 rounded-3xl p-12 text-center text-white shadow-2xl">
+          <h2 className="text-3xl md:text-4xl font-title font-bold mb-4">¡No te pierdas nada!</h2>
+          <p className="text-white/80 mb-8">Suscribite para recibir ofertas exclusivas y nuevos templates de diseño.</p>
+          <form className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
+            <input
+              type="email"
+              placeholder="Tu email"
+              className="flex-1 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+            />
+            <button className="px-8 py-4 bg-white text-purple-600 rounded-full font-bold hover:bg-purple-50 transition-all">
+              Suscribirme
+            </button>
+          </form>
         </div>
       </section>
 
@@ -221,14 +310,6 @@ export default function Home() {
             transform: translate(0px, 0px) scale(1);
           }
         }
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
         .animate-blob {
           animation: blob 7s infinite;
         }
@@ -237,9 +318,6 @@ export default function Home() {
         }
         .animation-delay-4000 {
           animation-delay: 4s;
-        }
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
         }
       `}</style>
     </main>
