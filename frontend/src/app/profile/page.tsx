@@ -6,15 +6,17 @@ import { useRouter } from "next/navigation";
 import {
     updateUserProfile,
     getUserStats,
+    getOrders,
     Address,
     UserProfileUpdate,
     UserStats,
+    OrderResponse,
 } from "@/lib/api";
 
 export default function ProfilePage() {
     const { user, refreshUser } = useAuth();
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<"info" | "addresses" | "stats">("info");
+    const [activeTab, setActiveTab] = useState<"info" | "addresses" | "stats" | "orders">("info");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -41,6 +43,7 @@ export default function ProfilePage() {
 
     // Stats
     const [stats, setStats] = useState<UserStats | null>(null);
+    const [orders, setOrders] = useState<OrderResponse[]>([]);
 
     useEffect(() => {
         if (!user) {
@@ -53,9 +56,19 @@ export default function ProfilePage() {
         setPhone(user.phone || "");
         setAddresses(user.addresses || []);
 
-        // Cargar estadísticas
+        // Cargar datos adicionales
         loadStats();
+        loadOrders();
     }, [user, router]);
+
+    const loadOrders = async () => {
+        try {
+            const ordersData = await getOrders();
+            setOrders(ordersData);
+        } catch (err: any) {
+            console.error("Error al cargar órdenes:", err);
+        }
+    };
 
     const loadStats = async () => {
         try {
@@ -182,27 +195,36 @@ export default function ProfilePage() {
                 <div className="flex gap-2 mb-8 border-b border-[var(--border)]">
                     <button
                         onClick={() => setActiveTab("info")}
-                        className={`px-6 py-3 font-medium transition-all ${activeTab === "info"
-                                ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
-                                : "text-[var(--foreground)] opacity-60 hover:opacity-100"
+                        className={`px-6 py-3 font-medium transition-all whitespace-nowrap ${activeTab === "info"
+                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
+                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
                             }`}
                     >
                         Información Personal
                     </button>
                     <button
+                        onClick={() => setActiveTab("orders")}
+                        className={`px-6 py-3 font-medium transition-all whitespace-nowrap ${activeTab === "orders"
+                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
+                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
+                            }`}
+                    >
+                        Mis Órdenes ({orders.length})
+                    </button>
+                    <button
                         onClick={() => setActiveTab("addresses")}
-                        className={`px-6 py-3 font-medium transition-all ${activeTab === "addresses"
-                                ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
-                                : "text-[var(--foreground)] opacity-60 hover:opacity-100"
+                        className={`px-6 py-3 font-medium transition-all whitespace-nowrap ${activeTab === "addresses"
+                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
+                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
                             }`}
                     >
                         Direcciones ({addresses.length})
                     </button>
                     <button
                         onClick={() => setActiveTab("stats")}
-                        className={`px-6 py-3 font-medium transition-all ${activeTab === "stats"
-                                ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
-                                : "text-[var(--foreground)] opacity-60 hover:opacity-100"
+                        className={`px-6 py-3 font-medium transition-all whitespace-nowrap ${activeTab === "stats"
+                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
+                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
                             }`}
                     >
                         Estadísticas
@@ -312,6 +334,110 @@ export default function ProfilePage() {
                             </button>
                         </div>
                     </form>
+                )}
+
+                {/* Orders Tab */}
+                {activeTab === "orders" && (
+                    <div className="space-y-6">
+                        {orders.length === 0 ? (
+                            <div className="bg-[var(--accent)] p-12 rounded-xl border border-[var(--border)] text-center">
+                                <span className="text-6xl mb-4 block">📦</span>
+                                <h3 className="text-xl font-semibold text-[var(--foreground)] mb-2">
+                                    No tienes órdenes todavía
+                                </h3>
+                                <p className="text-[var(--foreground)] opacity-60 mb-6">
+                                    ¡Crea tu primer diseño y personaliza tu taza hoy mismo!
+                                </p>
+                                <button
+                                    onClick={() => router.push("/customizer")}
+                                    className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all"
+                                >
+                                    Ir al Personalizador
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                {orders.map((order) => (
+                                    <div
+                                        key={order.id}
+                                        className="bg-[var(--accent)] rounded-xl border border-[var(--border)] overflow-hidden"
+                                    >
+                                        <div className="p-6 border-b border-[var(--border)] flex flex-wrap justify-between items-center gap-4">
+                                            <div>
+                                                <p className="text-xs font-mono text-[var(--foreground)] opacity-50 uppercase tracking-wider">
+                                                    Orden #{order.id.substring(0, 8)}
+                                                </p>
+                                                <p className="text-sm text-[var(--foreground)] opacity-70 mt-1">
+                                                    {new Date(order.created_at).toLocaleDateString("es-AR", {
+                                                        day: "numeric",
+                                                        month: "long",
+                                                        year: "numeric",
+                                                    })}
+                                                </p>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <span
+                                                    className={`px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest ${order.status === "paid"
+                                                        ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                                                        : order.status === "pending"
+                                                            ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
+                                                            : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                                                        }`}
+                                                >
+                                                    {order.status === "paid" ? "Pagado" : order.status === "pending" ? "Pendiente" : "Fallido"}
+                                                </span>
+                                                <p className="text-xl font-bold text-[var(--foreground)]">
+                                                    ${order.total_amount.toLocaleString("es-AR")}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="p-6 bg-[var(--background)]/30">
+                                            <div className="space-y-4">
+                                                {order.items.map((item, idx) => (
+                                                    <div key={idx} className="flex items-center gap-4">
+                                                        <div className="w-16 h-16 bg-white rounded-lg border border-[var(--border)] overflow-hidden flex-shrink-0">
+                                                            {item.design?.thumbnail ? (
+                                                                <img
+                                                                    src={item.design.thumbnail}
+                                                                    alt={item.design.name}
+                                                                    className="w-full h-full object-contain"
+                                                                />
+                                                            ) : (
+                                                                <div className="w-full h-full flex items-center justify-center text-2xl">
+                                                                    ☕
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <p className="font-semibold text-[var(--foreground)]">
+                                                                {item.design?.name || "Taza Personalizada"}
+                                                            </p>
+                                                            <p className="text-sm text-[var(--foreground)] opacity-60">
+                                                                Cantidad: {item.quantity} × ${item.price.toLocaleString("es-AR")}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            {order.status === "pending" && order.checkout_url && (
+                                                <div className="mt-6 pt-6 border-t border-[var(--border)] flex justify-end">
+                                                    <a
+                                                        href={order.checkout_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="bg-blue-600 text-white px-8 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
+                                                    >
+                                                        Pagar Ahora
+                                                    </a>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 )}
 
                 {/* Addresses Tab */}
