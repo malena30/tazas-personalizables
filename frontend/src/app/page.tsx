@@ -5,6 +5,7 @@ import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import TestimonialCard from "@/components/TestimonialCard";
 import SimpleMugHero from "@/components/SimpleMugHero";
+import ProductSkeleton from "@/components/ProductSkeleton";
 import { getProducts, Product } from "@/lib/api";
 
 export default function Home() {
@@ -165,7 +166,7 @@ export default function Home() {
           {loading ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-96 bg-[var(--accent)] animate-pulse rounded-2xl" />
+                <ProductSkeleton key={i} />
               ))}
             </div>
           ) : (

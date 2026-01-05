@@ -392,9 +392,12 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
 
                 // Renderizar y crear textura
                 stage.batchDraw();
-                const canvas = stage.toCanvas({ pixelRatio: 2 });
+                const canvas = stage.toCanvas({ pixelRatio: 1.5 }); // Optimizado de 2 a 1.5
                 const texture = new THREE.CanvasTexture(canvas);
                 texture.flipY = true;
+                texture.minFilter = THREE.LinearFilter;
+                texture.magFilter = THREE.LinearFilter;
+                texture.generateMipmaps = false; // Ahorra memoria y tiempo
                 texture.needsUpdate = true;
                 texture.colorSpace = THREE.SRGBColorSpace;
 
