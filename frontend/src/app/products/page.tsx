@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useCartStore, Product } from "@/store/cartStore";
 import { getProducts } from "@/lib/api";
+import ProductListSkeleton from "@/components/ProductListSkeleton";
 
 export default function ProductsPage() {
   const addToCart = useCartStore((state) => state.addToCart);
@@ -65,8 +66,10 @@ export default function ProductsPage() {
           <h1 className="text-xl font-title font-semibold text-[var(--foreground)] mb-4">TAZAS</h1>
 
           {loading && (
-            <div className="text-center py-12">
-              <p className="text-[var(--foreground)] opacity-70">Cargando productos...</p>
+            <div className="bg-[var(--background)] border border-[var(--border)] rounded-lg shadow-sm divide-y divide-[var(--border)]">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <ProductListSkeleton key={i} />
+              ))}
             </div>
           )}
 
