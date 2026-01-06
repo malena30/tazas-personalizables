@@ -509,6 +509,14 @@ export default function Toolbar({
                                         <option value="Dancing Script" style={{ fontFamily: 'Dancing Script' }}>Dancing Script</option>
                                         <option value="Bebas Neue" style={{ fontFamily: 'Bebas Neue' }}>Bebas Neue</option>
                                         <option value="Oswald" style={{ fontFamily: 'Oswald' }}>Oswald</option>
+                                        <option value="Lobster" style={{ fontFamily: 'Lobster' }}>Lobster</option>
+                                        <option value="Abril Fatface" style={{ fontFamily: 'Abril Fatface' }}>Abril Fatface</option>
+                                        <option value="Comfortaa" style={{ fontFamily: 'Comfortaa' }}>Comfortaa</option>
+                                        <option value="Caveat" style={{ fontFamily: 'Caveat' }}>Caveat</option>
+                                        <option value="Permanent Marker" style={{ fontFamily: 'Permanent Marker' }}>Permanent Marker</option>
+                                        <option value="Righteous" style={{ fontFamily: 'Righteous' }}>Righteous</option>
+                                        <option value="Fredoka One" style={{ fontFamily: 'Fredoka One' }}>Fredoka One</option>
+                                        <option value="Cinzel" style={{ fontFamily: 'Cinzel' }}>Cinzel</option>
                                     </select>
                                 </div>
 
@@ -748,17 +756,46 @@ export default function Toolbar({
 
                         {/* TAB: Stickers */}
                         {activeTab === 'stickers' && (
-                            <>
+                            <div className="space-y-6">
                                 <div>
                                     <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-3">
-                                        Emojis y Stickers
+                                        Stickers Ilustrados
+                                    </h3>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        {[
+                                            { id: 'cat', url: '/stickers/cat.png', name: 'Gatito' },
+                                            { id: 'mug', url: '/stickers/mug.png', name: 'Taza' },
+                                            { id: 'heart', url: '/stickers/heart.png', name: 'Corazón' },
+                                            { id: 'rocket', url: '/stickers/rocket.png', name: 'Cohete' },
+                                        ].map(sticker => (
+                                            <button
+                                                key={sticker.id}
+                                                onClick={() => onAddImage(sticker.url)}
+                                                className="aspect-square bg-white border border-[var(--border)] rounded-lg hover:border-[var(--accent)] hover:shadow-md transition-all p-2 flex items-center justify-center group"
+                                                title={sticker.name}
+                                            >
+                                                <img
+                                                    src={sticker.url}
+                                                    alt={sticker.name}
+                                                    className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform"
+                                                />
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <hr className="border-[var(--border)]" />
+
+                                <div>
+                                    <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-3">
+                                        Emojis Rápidos
                                     </h3>
                                     <div className="grid grid-cols-6 gap-2">
                                         {['😀', '😍', '🎉', '❤️', '⭐', '✨', '🎁', '🎂', '☕', '🌟', '💖', '👑', '🌈', '🔥', '💪', '🎨', '🌸', '🦋', '☀️', '🌙', '🎵', '📸', '✓', '→'].map(emoji => (
                                             <button
                                                 key={emoji}
                                                 onClick={() => onAddEmoji(emoji)}
-                                                className="aspect-square bg-[var(--accent)] border border-[var(--border)] rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors text-3xl flex items-center justify-center"
+                                                className="aspect-square bg-[var(--accent)] bg-opacity-10 border border-[var(--border)] rounded-lg hover:bg-opacity-20 transition-colors text-2xl flex items-center justify-center"
                                                 title="Click para agregar"
                                             >
                                                 {emoji}
@@ -766,7 +803,7 @@ export default function Toolbar({
                                         ))}
                                     </div>
                                 </div>
-                            </>
+                            </div>
                         )}
 
                         {/* TAB: Plantillas */}

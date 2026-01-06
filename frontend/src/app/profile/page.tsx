@@ -7,7 +7,10 @@ import {
     updateUserProfile,
     getUserStats,
     getOrders,
+    listDesigns,
+    deleteDesign,
     Address,
+    Design,
     UserProfileUpdate,
     UserStats,
     OrderResponse,
@@ -44,6 +47,7 @@ export default function ProfilePage() {
     // Stats
     const [stats, setStats] = useState<UserStats | null>(null);
     const [orders, setOrders] = useState<OrderResponse[]>([]);
+    const [designs, setDesigns] = useState<Design[]>([]);
 
     useEffect(() => {
         if (!user) {
@@ -59,7 +63,28 @@ export default function ProfilePage() {
         // Cargar datos adicionales
         loadStats();
         loadOrders();
+        loadDesigns();
     }, [user, router]);
+
+    const loadDesigns = async () => {
+        try {
+            const designsData = await listDesigns();
+            setDesigns(designsData);
+        } catch (err: any) {
+            console.error("Error al cargar diseños:", err);
+        }
+    };
+
+    const handleDeleteDesign = async (id: string) => {
+        if (!confirm("¿Estás seguro de que quieres eliminar este diseño?")) return;
+        try {
+            await deleteDesign(id);
+            setDesigns(designs.filter(d => d.id !== id));
+            loadStats(); // Actualizar contador de diseños
+        } catch (err: any) {
+            alert(err.message || "Error al eliminar diseño");
+        }
+    };
 
     const loadOrders = async () => {
         try {
@@ -228,6 +253,15 @@ export default function ProfilePage() {
                             }`}
                     >
                         Estadísticas
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("designs" as any)}
+                        className={`px-6 py-3 font-medium transition-all whitespace-nowrap ${activeTab === ("designs" as any)
+                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
+                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
+                            }`}
+                    >
+                        Mis Diseños
                     </button>
                 </div>
 
@@ -634,6 +668,86 @@ export default function ProfilePage() {
                                 Tus creaciones
                             </div>
                         </div>
+                    </div>
+                )}
+
+                {/* Designs Tab */}
+                {activeTab === ("designs" as any) && (
+                    <div className="space-y-6">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-semibold text-[var(--foreground)]">
+                                Mis Diseños Guardados
+                            </h2>
+                            <button
+                                onClick={() => router.push("/customizer")}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all text-sm"
+                            >
+                                + Crear Nuevo
+                            </button>
+                        </div>
+
+                        {designs.length === 0 ? (
+                            <div className="bg-[var(--accent)] p-12 rounded-xl border border-[var(--border)] text-center">
+                                <span className="text-6xl mb-4 block">🎨</span>
+                                <h3 className="text-xl font-semibold text-[var(--foreground)] mb-2">
+                                    Aún no tienes diseños guardados
+                                </h3>
+                                <p className="text-[var(--foreground)] opacity-60 mb-6">
+                                    ¡Empieza a crear tus propias tazas personalizadas!
+                                </p>
+                                <button
+                                    onClick={() => router.push("/customizer")}
+                                    className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all"
+                                >
+                                    Ir al Personalizador
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {designs.map((design) => (
+                                    <div
+                                        key={design.id}
+                                        className="bg-[var(--accent)] rounded-xl border border-[var(--border)] overflow-hidden group hover:shadow-lg transition-all"
+                                    >
+                                        <div className="aspect-square bg-white relative flex items-center justify-center p-4">
+                                            {design.thumbnail ? (
+                                                <img
+                                                    src={design.thumbnail}
+                                                    alt={design.name}
+                                                    className="w-full h-full object-contain group-hover:scale-105 transition-transform"
+                                                />
+                                            ) : (
+                                                <div className="text-6xl">☕</div>
+                                            )}
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                                                <button
+                                                    onClick={() => router.push(`/customizer?load=${design.id}`)}
+                                                    className="p-3 bg-white text-blue-600 rounded-full hover:bg-blue-50 transition-colors"
+                                                    title="Editar diseño"
+                                                >
+                                                    ✏️
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteDesign(design.id)}
+                                                    className="p-3 bg-white text-red-600 rounded-full hover:bg-red-50 transition-colors"
+                                                    title="Eliminar diseño"
+                                                >
+                                                    🗑️
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="p-4">
+                                            <h3 className="font-semibold text-[var(--foreground)] truncate">
+                                                {design.name}
+                                            </h3>
+                                            <p className="text-xs text-[var(--foreground)] opacity-60 mt-1">
+                                                Creado el {new Date(design.created_at).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
