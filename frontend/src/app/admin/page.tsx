@@ -19,6 +19,23 @@ import {
     ProductCreate,
     ProductUpdate,
 } from "@/lib/api";
+import {
+    FaTachometerAlt,
+    FaMagic,
+    FaShoppingBag,
+    FaUsers,
+    FaBoxOpen,
+    FaChartLine,
+    FaPlus,
+    FaSearch,
+    FaEllipsisV,
+    FaTrashAlt,
+    FaEdit,
+    FaCheckCircle,
+    FaClock,
+    FaTimesCircle,
+    FaArrowLeft
+} from "react-icons/fa";
 
 export default function AdminPanel() {
     const { user } = useAuth();
@@ -183,127 +200,194 @@ export default function AdminPanel() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[var(--background)] pt-20 px-6">
-                <div className="max-w-7xl mx-auto text-center">
-                    <p className="text-[var(--foreground)]">Cargando panel...</p>
+            <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
+                    <p className="text-gray-500 font-medium">Cargando panel de control...</p>
                 </div>
             </div>
         );
     }
 
+    const menuItems = [
+        { id: "dashboard", label: "Dashboard", icon: <FaTachometerAlt /> },
+        { id: "orders", label: "Órdenes", icon: <FaShoppingBag /> },
+        { id: "users", label: "Usuarios", icon: <FaUsers /> },
+        { id: "products", label: "Productos", icon: <FaBoxOpen /> },
+    ];
+
     return (
-        <div className="min-h-screen bg-[var(--background)] pt-20 px-6 pb-12">
-            <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-4xl font-title font-bold text-[var(--foreground)]">
-                        📊 Panel de Administración
-                    </h1>
-                    <p className="text-[var(--foreground)] opacity-70 mt-2">
-                        Gestiona órdenes, usuarios y estadísticas de tu negocio
-                    </p>
+        <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex">
+            {/* Sidebar */}
+            <aside className="w-64 bg-white dark:bg-zinc-900 border-r border-[var(--border)] hidden lg:flex flex-col sticky top-0 h-screen">
+                <div className="p-8">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                            <FaChartLine size={20} />
+                        </div>
+                        <span className="text-xl font-bold text-[var(--foreground)] tracking-tight">AdminPanel</span>
+                    </div>
+
+                    <nav className="space-y-2">
+                        {menuItems.map((item) => (
+                            <button
+                                key={item.id}
+                                onClick={() => setActiveTab(item.id as any)}
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === item.id
+                                    ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                                    : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[var(--foreground)]"
+                                    }`}
+                            >
+                                <span className="text-lg">{item.icon}</span>
+                                {item.label}
+                            </button>
+                        ))}
+                    </nav>
                 </div>
 
+                <div className="mt-auto p-8 border-t border-[var(--border)]">
+                    <button
+                        onClick={() => router.push("/")}
+                        className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition-colors"
+                    >
+                        <FaArrowLeft size={12} />
+                        Volver a la tienda
+                    </button>
+                </div>
+            </aside>
+
+            {/* Main Content */}
+            <main className="flex-1 p-8 lg:p-12 overflow-y-auto">
+                <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                    <div>
+                        <h1 className="text-3xl font-bold text-[var(--foreground)] tracking-tight capitalize">
+                            {activeTab === 'dashboard' ? 'Resumen General' : activeTab}
+                        </h1>
+                        <p className="text-gray-500 dark:text-gray-400 mt-1">
+                            {activeTab === 'dashboard' && 'Visualiza el rendimiento de tu negocio en tiempo real.'}
+                            {activeTab === 'orders' && 'Gestiona y realiza seguimiento de todos los pedidos.'}
+                            {activeTab === 'users' && 'Administra la base de datos de tus clientes.'}
+                            {activeTab === 'products' && 'Controla tu inventario y catálogo de productos.'}
+                        </p>
+                    </div>
+
+                    {activeTab === 'products' && (
+                        <button
+                            onClick={() => {
+                                setEditingProduct(null);
+                                resetProductForm();
+                                setShowProductModal(true);
+                            }}
+                            className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2"
+                        >
+                            <FaPlus size={14} />
+                            Nuevo Producto
+                        </button>
+                    )}
+                </header>
+
                 {error && (
-                    <div className="mb-6 p-4 bg-red-100 border border-red-300 rounded-lg text-red-700">
+                    <div className="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl text-red-600 dark:text-red-400 flex items-center gap-3">
+                        <FaTimesCircle />
                         {error}
                     </div>
                 )}
 
-                {/* Tabs */}
-                <div className="flex gap-2 mb-8 border-b border-[var(--border)]">
-                    <button
-                        onClick={() => setActiveTab("dashboard")}
-                        className={`px-6 py-3 font-medium transition-all ${activeTab === "dashboard"
-                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
-                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
-                            }`}
-                    >
-                        Dashboard
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("orders")}
-                        className={`px-6 py-3 font-medium transition-all ${activeTab === "orders"
-                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
-                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
-                            }`}
-                    >
-                        Órdenes ({stats?.total_orders || 0})
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("users")}
-                        className={`px-6 py-3 font-medium transition-all ${activeTab === "users"
-                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
-                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
-                            }`}
-                    >
-                        Usuarios ({stats?.total_users || 0})
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("products")}
-                        className={`px-6 py-3 font-medium transition-all ${activeTab === "products"
-                            ? "border-b-2 border-[var(--foreground)] text-[var(--foreground)]"
-                            : "text-[var(--foreground)] opacity-60 hover:opacity-100"
-                            }`}
-                    >
-                        Productos ({products.length})
-                    </button>
-                </div>
-
                 {/* Dashboard Tab */}
                 {activeTab === "dashboard" && stats && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {/* Total Sales */}
-                        <div className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
-                            <div className="text-sm text-green-700 dark:text-green-300 font-medium mb-2">
-                                Total Ventas
+                    <div className="space-y-12">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {/* Total Sales */}
+                            <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="w-12 h-12 bg-green-50 dark:bg-green-900/20 rounded-xl flex items-center justify-center text-green-600 dark:text-green-400 group-hover:scale-110 transition-transform">
+                                        <FaChartLine size={20} />
+                                    </div>
+                                    <span className="text-xs font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-lg">
+                                        +12%
+                                    </span>
+                                </div>
+                                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Ventas</div>
+                                <div className="text-3xl font-black text-[var(--foreground)] mt-1">
+                                    ${stats.total_sales.toLocaleString('es-AR')}
+                                </div>
+                                <div className="text-xs text-gray-400 mt-4">
+                                    De {stats.paid_orders} órdenes pagadas
+                                </div>
                             </div>
-                            <div className="text-3xl font-bold text-green-900 dark:text-green-100">
-                                ${stats.total_sales.toFixed(2)}
+
+                            {/* Total Orders */}
+                            <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
+                                        <FaShoppingBag size={20} />
+                                    </div>
+                                </div>
+                                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Órdenes</div>
+                                <div className="text-3xl font-black text-[var(--foreground)] mt-1">
+                                    {stats.total_orders}
+                                </div>
+                                <div className="flex gap-3 mt-4">
+                                    <span className="text-[10px] font-bold text-green-600 bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-full">
+                                        {stats.paid_orders} Pagadas
+                                    </span>
+                                    <span className="text-[10px] font-bold text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-0.5 rounded-full">
+                                        {stats.pending_orders} Pend.
+                                    </span>
+                                </div>
                             </div>
-                            <div className="text-xs text-green-600 dark:text-green-400 mt-2">
-                                De {stats.paid_orders} órdenes pagadas
+
+                            {/* Users */}
+                            <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-xl flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
+                                        <FaUsers size={20} />
+                                    </div>
+                                </div>
+                                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Usuarios</div>
+                                <div className="text-3xl font-black text-[var(--foreground)] mt-1">
+                                    {stats.total_users}
+                                </div>
+                                <div className="text-xs text-gray-400 mt-4">
+                                    Clientes registrados
+                                </div>
+                            </div>
+
+                            {/* Designs */}
+                            <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="w-12 h-12 bg-orange-50 dark:bg-orange-900/20 rounded-xl flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
+                                        <FaMagic size={20} />
+                                    </div>
+                                </div>
+                                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Diseños</div>
+                                <div className="text-3xl font-black text-[var(--foreground)] mt-1">
+                                    {stats.total_designs}
+                                </div>
+                                <div className="text-xs text-gray-400 mt-4">
+                                    Personalizaciones creadas
+                                </div>
                             </div>
                         </div>
 
-                        {/* Total Orders */}
-                        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
-                            <div className="text-sm text-blue-700 dark:text-blue-300 font-medium mb-2">
-                                Total Órdenes
-                            </div>
-                            <div className="text-3xl font-bold text-blue-900 dark:text-blue-100">
-                                {stats.total_orders}
-                            </div>
-                            <div className="text-xs text-blue-600 dark:text-blue-400 mt-2 flex gap-2">
-                                <span>✅ {stats.paid_orders}</span>
-                                <span>⏳ {stats.pending_orders}</span>
-                                <span>❌ {stats.failed_orders}</span>
-                            </div>
-                        </div>
-
-                        {/* Users */}
-                        <div className="bg-gradient-to-br from-purple-50 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800">
-                            <div className="text-sm text-purple-700 dark:text-purple-300 font-medium mb-2">
-                                Usuarios
-                            </div>
-                            <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">
-                                {stats.total_users}
-                            </div>
-                            <div className="text-xs text-purple-600 dark:text-purple-400 mt-2">
-                                Registrados
-                            </div>
-                        </div>
-
-                        {/* Designs */}
-                        <div className="bg-gradient-to-br from-orange-50 to-amber-100 dark:from-orange-900/20 dark:to-amber-900/20 p-6 rounded-xl border border-orange-200 dark:border-orange-800">
-                            <div className="text-sm text-orange-700 dark:text-orange-300 font-medium mb-2">
-                                Diseños
-                            </div>
-                            <div className="text-3xl font-bold text-orange-900 dark:text-orange-100">
-                                {stats.total_designs}
-                            </div>
-                            <div className="text-xs text-orange-600 dark:text-orange-400 mt-2">
-                                Creados
+                        {/* Recent Activity Placeholder */}
+                        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm p-8">
+                            <h3 className="text-lg font-bold text-[var(--foreground)] mb-6">Actividad Reciente</h3>
+                            <div className="space-y-6">
+                                {orders.slice(0, 5).map((order) => (
+                                    <div key={order.id} className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-0">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-2 h-2 rounded-full ${order.status === 'paid' ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                                            <div>
+                                                <p className="text-sm font-bold text-[var(--foreground)]">Nueva orden #{order.id.substring(0, 8)}</p>
+                                                <p className="text-xs text-gray-500">{order.user?.username || 'Invitado'} • {new Date(order.created_at).toLocaleDateString()}</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-sm font-bold text-[var(--foreground)]">
+                                            ${order.total_amount.toLocaleString('es-AR')}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -311,89 +395,86 @@ export default function AdminPanel() {
 
                 {/* Orders Tab */}
                 {activeTab === "orders" && (
-                    <div>
-                        {/* Filter */}
-                        <div className="mb-6 flex gap-4">
+                    <div className="space-y-6">
+                        <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-zinc-900 p-4 rounded-2xl border border-[var(--border)] shadow-sm">
+                            <div className="relative flex-1 w-full">
+                                <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                                <input
+                                    type="text"
+                                    placeholder="Buscar por ID o usuario..."
+                                    className="w-full pl-12 pr-4 py-2 bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                />
+                            </div>
                             <select
                                 value={orderFilter}
                                 onChange={(e) => setOrderFilter(e.target.value)}
-                                className="px-4 py-2 border border-[var(--border)] rounded-lg bg-[var(--background)] text-[var(--foreground)]"
+                                className="px-4 py-2 bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl text-[var(--foreground)] outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <option value="">Todas las órdenes</option>
+                                <option value="">Todos los estados</option>
                                 <option value="pending">Pendientes</option>
                                 <option value="paid">Pagadas</option>
                                 <option value="failed">Fallidas</option>
                             </select>
                         </div>
 
-                        {/* Orders Table */}
-                        <div className="overflow-x-auto bg-[var(--accent)] rounded-xl border border-[var(--border)]">
-                            <table className="w-full">
-                                <thead className="border-b border-[var(--border)]">
-                                    <tr>
-                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                            ID
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                            Usuario
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                            Total
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                            Estado
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                            Fecha
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                            Acciones
-                                        </th>
+                        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-gray-50 dark:bg-zinc-800/50 border-b border-[var(--border)]">
+                                        <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Orden</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Cliente</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Total</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Estado</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="divide-y divide-[var(--border)]">
                                     {orders
                                         .filter((order) => !orderFilter || order.status === orderFilter)
                                         .map((order) => (
-                                            <tr
-                                                key={order.id}
-                                                className="border-b border-[var(--border)] hover:bg-[var(--background)]/50 transition-colors"
-                                            >
-                                                <td className="px-4 py-3 text-sm text-[var(--foreground)] font-mono">
-                                                    {order.id.substring(0, 8)}...
-                                                </td>
-                                                <td className="px-4 py-3 text-sm text-[var(--foreground)]">
-                                                    {order.user?.username || "N/A"}
-                                                </td>
-                                                <td className="px-4 py-3 text-sm text-[var(--foreground)] font-semibold">
-                                                    ${order.total_amount.toFixed(2)}
-                                                </td>
-                                                <td className="px-4 py-3 text-sm">
-                                                    <span
-                                                        className={`px-3 py-1 rounded-full text-xs font-medium ${order.status === "paid"
-                                                            ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-                                                            : order.status === "pending"
-                                                                ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
-                                                                : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                                                            }`}
-                                                    >
-                                                        {order.status === "paid"
-                                                            ? "Pagado"
-                                                            : order.status === "pending"
-                                                                ? "Pendiente"
-                                                                : "Fallido"}
+                                            <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group">
+                                                <td className="px-6 py-4">
+                                                    <span className="text-sm font-mono font-bold text-blue-600 dark:text-blue-400">
+                                                        #{order.id.substring(0, 8)}
                                                     </span>
                                                 </td>
-                                                <td className="px-4 py-3 text-sm text-[var(--foreground)] opacity-70">
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-xs font-bold">
+                                                            {order.user?.username?.substring(0, 2).toUpperCase() || 'IN'}
+                                                        </div>
+                                                        <span className="text-sm font-medium text-[var(--foreground)]">
+                                                            {order.user?.username || "Invitado"}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className="text-sm font-black text-[var(--foreground)]">
+                                                        ${order.total_amount.toLocaleString('es-AR')}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${order.status === "paid"
+                                                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                                                        : order.status === "pending"
+                                                            ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                                            : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                                                        }`}>
+                                                        {order.status === 'paid' && <FaCheckCircle size={10} />}
+                                                        {order.status === 'pending' && <FaClock size={10} />}
+                                                        {order.status === 'failed' && <FaTimesCircle size={10} />}
+                                                        {order.status === 'paid' ? 'Pagado' : order.status === 'pending' ? 'Pendiente' : 'Fallido'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">
                                                     {new Date(order.created_at).toLocaleDateString()}
                                                 </td>
-                                                <td className="px-4 py-3 text-sm">
+                                                <td className="px-6 py-4 text-right">
                                                     <select
                                                         value={order.status}
-                                                        onChange={(e) =>
-                                                            handleUpdateOrderStatus(order.id, e.target.value)
-                                                        }
-                                                        className="px-3 py-1 border border-[var(--border)] rounded-lg bg-[var(--background)] text-[var(--foreground)] text-xs"
+                                                        onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
+                                                        className="text-xs bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-lg px-2 py-1 outline-none focus:ring-2 focus:ring-blue-500"
                                                     >
                                                         <option value="pending">Pendiente</option>
                                                         <option value="paid">Pagado</option>
@@ -410,60 +491,48 @@ export default function AdminPanel() {
 
                 {/* Users Tab */}
                 {activeTab === "users" && (
-                    <div className="overflow-x-auto bg-[var(--accent)] rounded-xl border border-[var(--border)]">
-                        <table className="w-full">
-                            <thead className="border-b border-[var(--border)]">
-                                <tr>
-                                    <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                        Usuario
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                        Email
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                        Órdenes
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                        Diseños
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                        Admin
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                        Registro
-                                    </th>
+                    <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-gray-50 dark:bg-zinc-800/50 border-b border-[var(--border)]">
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Usuario</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Actividad</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Rol</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Registro</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className="divide-y divide-[var(--border)]">
                                 {users.map((u) => (
-                                    <tr
-                                        key={u.id}
-                                        className="border-b border-[var(--border)] hover:bg-[var(--background)]/50 transition-colors"
-                                    >
-                                        <td className="px-4 py-3 text-sm text-[var(--foreground)] font-medium">
-                                            {u.username}
+                                    <tr key={u.id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
+                                                    {u.username.substring(0, 2).toUpperCase()}
+                                                </div>
+                                                <span className="text-sm font-bold text-[var(--foreground)]">{u.username}</span>
+                                            </div>
                                         </td>
-                                        <td className="px-4 py-3 text-sm text-[var(--foreground)] opacity-70">
-                                            {u.email}
-                                        </td>
-                                        <td className="px-4 py-3 text-sm text-[var(--foreground)]">
-                                            {u.order_count}
-                                        </td>
-                                        <td className="px-4 py-3 text-sm text-[var(--foreground)]">
-                                            {u.design_count}
-                                        </td>
-                                        <td className="px-4 py-3 text-sm">
-                                            {u.is_admin ? (
-                                                <span className="px-3 py-1 bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 rounded-full text-xs font-medium">
-                                                    Admin
+                                        <td className="px-6 py-4 text-sm text-gray-500">{u.email}</td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex gap-4 text-xs">
+                                                <span className="flex items-center gap-1 text-gray-500">
+                                                    <FaShoppingBag size={10} /> {u.order_count}
                                                 </span>
-                                            ) : (
-                                                <span className="px-3 py-1 bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 rounded-full text-xs">
-                                                    Usuario
+                                                <span className="flex items-center gap-1 text-gray-500">
+                                                    <FaMagic size={10} /> {u.design_count}
                                                 </span>
-                                            )}
+                                            </div>
                                         </td>
-                                        <td className="px-4 py-3 text-sm text-[var(--foreground)] opacity-70">
+                                        <td className="px-6 py-4">
+                                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${u.is_admin
+                                                ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+                                                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                                                }`}>
+                                                {u.is_admin ? "Administrador" : "Cliente"}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">
                                             {new Date(u.created_at).toLocaleDateString()}
                                         </td>
                                     </tr>
@@ -476,102 +545,68 @@ export default function AdminPanel() {
                 {/* Products Tab */}
                 {activeTab === "products" && (
                     <div className="space-y-6">
-                        <div className="flex justify-between items-center">
-                            <h2 className="text-2xl font-title font-bold text-[var(--foreground)]">
-                                Gestión de Productos
-                            </h2>
-                            <button
-                                onClick={() => {
-                                    setEditingProduct(null);
-                                    resetProductForm();
-                                    setShowProductModal(true);
-                                }}
-                                className="bg-[var(--accent)] text-[var(--foreground)] px-6 py-2 rounded-lg font-text font-semibold hover:opacity-90 transition-all shadow-sm"
-                            >
-                                + Nuevo Producto
-                            </button>
-                        </div>
-
-                        <div className="overflow-x-auto bg-[var(--accent)] rounded-xl border border-[var(--border)]">
-                            <table className="w-full">
-                                <thead className="border-b border-[var(--border)]">
-                                    <tr>
-                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                            Imagen
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                            Nombre
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                            Precio
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                            Stock
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-sm font-medium text-[var(--foreground)]">
-                                            Estado
-                                        </th>
-                                        <th className="px-4 py-3 text-right text-sm font-medium text-[var(--foreground)]">
-                                            Acciones
-                                        </th>
+                        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-gray-50 dark:bg-zinc-800/50 border-b border-[var(--border)]">
+                                        <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Producto</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Precio</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Stock</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Estado</th>
+                                        <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="divide-y divide-[var(--border)]">
                                     {products.map((p) => (
-                                        <tr
-                                            key={p.id}
-                                            className="border-b border-[var(--border)] hover:bg-[var(--background)]/50 transition-colors"
-                                        >
-                                            <td className="px-4 py-3">
-                                                <div className="relative w-12 h-12 bg-white rounded border border-[var(--border)] overflow-hidden">
-                                                    {p.image_url ? (
-                                                        <img
-                                                            src={p.image_url}
-                                                            alt={p.name}
-                                                            className="w-full h-full object-contain"
-                                                        />
-                                                    ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-[var(--foreground)] opacity-30">
-                                                            🖼️
-                                                        </div>
-                                                    )}
+                                        <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group">
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 bg-gray-100 dark:bg-zinc-800 rounded-xl overflow-hidden flex-shrink-0 border border-[var(--border)]">
+                                                        {p.image_url ? (
+                                                            <img src={p.image_url} alt={p.name} className="w-full h-full object-contain" />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center text-xl">☕</div>
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-bold text-[var(--foreground)]">{p.name}</p>
+                                                        <p className="text-xs text-gray-500 truncate max-w-[200px]">{p.description || 'Sin descripción'}</p>
+                                                    </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3 text-sm text-[var(--foreground)] font-medium">
-                                                {p.name}
+                                            <td className="px-6 py-4">
+                                                <span className="text-sm font-black text-[var(--foreground)]">
+                                                    ${p.price.toLocaleString('es-AR')}
+                                                </span>
                                             </td>
-                                            <td className="px-4 py-3 text-sm text-[var(--foreground)] font-mono">
-                                                ${p.price.toLocaleString("es-AR")}
+                                            <td className="px-6 py-4">
+                                                <span className={`text-sm font-bold ${p.stock && p.stock < 10 ? 'text-red-500' : 'text-[var(--foreground)]'}`}>
+                                                    {p.stock} uds.
+                                                </span>
                                             </td>
-                                            <td className="px-4 py-3 text-sm text-[var(--foreground)]">
-                                                {p.stock}
+                                            <td className="px-6 py-4">
+                                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${p.is_active
+                                                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                                                    : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                                                    }`}>
+                                                    {p.is_active ? "Activo" : "Inactivo"}
+                                                </span>
                                             </td>
-                                            <td className="px-4 py-3 text-sm">
-                                                {p.is_active ? (
-                                                    <span className="px-3 py-1 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded-full text-xs font-medium">
-                                                        Activo
-                                                    </span>
-                                                ) : (
-                                                    <span className="px-3 py-1 bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 rounded-full text-xs">
-                                                        Inactivo
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td className="px-4 py-3 text-right">
+                                            <td className="px-6 py-4 text-right">
                                                 <div className="flex justify-end gap-2">
                                                     <button
                                                         onClick={() => openEditModal(p)}
                                                         className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                                                         title="Editar"
                                                     >
-                                                        ✏️
+                                                        <FaEdit size={16} />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDeleteProduct(p.id)}
                                                         className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                                         title="Eliminar"
                                                     >
-                                                        🗑️
+                                                        <FaTrashAlt size={16} />
                                                     </button>
                                                 </div>
                                             </td>
@@ -582,43 +617,41 @@ export default function AdminPanel() {
                         </div>
                     </div>
                 )}
-            </div>
+            </main>
 
             {/* Product Modal */}
             {showProductModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-[var(--background)] rounded-2xl border border-[var(--border)] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                        <div className="p-6 border-b border-[var(--border)] flex justify-between items-center sticky top-0 bg-[var(--background)] z-10">
-                            <h3 className="text-xl font-title font-bold text-[var(--foreground)]">
-                                {editingProduct ? "Editar Producto" : "Nuevo Producto"}
-                            </h3>
+                <div className="fixed inset-0 bg-zinc-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden border border-[var(--border)] animate-in fade-in zoom-in duration-200">
+                        <div className="p-8 border-b border-[var(--border)] flex justify-between items-center">
+                            <div>
+                                <h3 className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
+                                    {editingProduct ? "Editar Producto" : "Nuevo Producto"}
+                                </h3>
+                                <p className="text-sm text-gray-500 mt-1">Completa la información del catálogo.</p>
+                            </div>
                             <button
                                 onClick={() => setShowProductModal(false)}
-                                className="text-[var(--foreground)] opacity-50 hover:opacity-100 text-2xl"
+                                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-400 transition-colors"
                             >
-                                ✕
+                                <FaTimesCircle size={24} />
                             </button>
                         </div>
 
-                        <div className="p-6 space-y-6">
-                            {/* Image Upload */}
-                            <div>
-                                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
-                                    Imagen del Producto
-                                </label>
-                                <div className="flex items-center gap-6">
-                                    <div className="relative w-32 h-32 bg-[var(--accent)] rounded-xl border border-[var(--border)] overflow-hidden flex items-center justify-center">
-                                        {productForm.image_url ? (
-                                            <img
-                                                src={productForm.image_url}
-                                                alt="Preview"
-                                                className="w-full h-full object-contain"
-                                            />
-                                        ) : (
-                                            <span className="text-4xl opacity-30">🖼️</span>
-                                        )}
-                                    </div>
-                                    <div className="flex-1">
+                        <div className="p-8 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                            {/* Image Upload Section */}
+                            <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start">
+                                <div className="relative w-40 h-40 bg-gray-50 dark:bg-zinc-800 rounded-2xl border-2 border-dashed border-[var(--border)] flex items-center justify-center overflow-hidden group">
+                                    {productForm.image_url ? (
+                                        <img src={productForm.image_url} alt="Preview" className="w-full h-full object-contain" />
+                                    ) : (
+                                        <div className="text-center p-4">
+                                            <FaBoxOpen className="mx-auto text-3xl text-gray-300 mb-2" />
+                                            <span className="text-[10px] font-bold text-gray-400 uppercase">Sin Imagen</span>
+                                        </div>
+                                    )}
+                                    <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                                        <span className="text-white text-xs font-bold">Cambiar</span>
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -633,96 +666,85 @@ export default function AdminPanel() {
                                                 }
                                             }}
                                             className="hidden"
-                                            id="product-image-upload"
                                         />
-                                        <label
-                                            htmlFor="product-image-upload"
-                                            className="inline-block bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-4 py-2 rounded-lg cursor-pointer hover:bg-[var(--hover-bg)] transition-colors"
-                                        >
-                                            Seleccionar Imagen
-                                        </label>
-                                        <p className="text-xs text-[var(--foreground)] opacity-50 mt-2">
-                                            JPG, PNG o WEBP. Máx 5MB.
-                                        </p>
+                                    </label>
+                                </div>
+                                <div className="flex-1 space-y-4 w-full">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nombre del Producto</label>
+                                        <input
+                                            type="text"
+                                            value={productForm.name}
+                                            onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                                            className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-3 text-[var(--foreground)] focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                            placeholder="Ej: Taza Cerámica Premium"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Precio ($)</label>
+                                            <input
+                                                type="number"
+                                                value={productForm.price}
+                                                onChange={(e) => setProductForm({ ...productForm, price: Number(e.target.value) })}
+                                                className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-3 text-[var(--foreground)] focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Stock</label>
+                                            <input
+                                                type="number"
+                                                value={productForm.stock}
+                                                onChange={(e) => setProductForm({ ...productForm, stock: Number(e.target.value) })}
+                                                className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-3 text-[var(--foreground)] focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
-                                        Nombre
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={productForm.name}
-                                        onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                                        className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2 text-[var(--foreground)] focus:ring-2 focus:ring-[var(--accent)] outline-none"
-                                        placeholder="Ej: Taza Cerámica Blanca"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
-                                        Precio ($)
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={productForm.price}
-                                        onChange={(e) => setProductForm({ ...productForm, price: Number(e.target.value) })}
-                                        className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2 text-[var(--foreground)] focus:ring-2 focus:ring-[var(--accent)] outline-none font-mono"
-                                        placeholder="0.00"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
-                                        Stock
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={productForm.stock}
-                                        onChange={(e) => setProductForm({ ...productForm, stock: Number(e.target.value) })}
-                                        className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2 text-[var(--foreground)] focus:ring-2 focus:ring-[var(--accent)] outline-none font-mono"
-                                        placeholder="0"
-                                    />
-                                </div>
-                                <div className="flex items-end pb-2">
-                                    <label className="flex items-center gap-3 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={productForm.is_active}
-                                            onChange={(e) => setProductForm({ ...productForm, is_active: e.target.checked })}
-                                            className="w-5 h-5 rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
-                                        />
-                                        <span className="text-sm font-medium text-[var(--foreground)]">
-                                            Producto Activo
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-
                             <div>
-                                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
-                                    Descripción
-                                </label>
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Descripción</label>
                                 <textarea
                                     value={productForm.description}
                                     onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
-                                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2 text-[var(--foreground)] focus:ring-2 focus:ring-[var(--accent)] outline-none min-h-[100px]"
-                                    placeholder="Detalles del producto..."
+                                    className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-3 text-[var(--foreground)] focus:ring-2 focus:ring-blue-500 outline-none min-h-[100px] resize-none transition-all"
+                                    placeholder="Describe las características del producto..."
                                 />
+                            </div>
+
+                            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-zinc-800 rounded-2xl border border-[var(--border)]">
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${productForm.is_active ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-400'}`}>
+                                        <FaCheckCircle size={20} />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-[var(--foreground)]">Estado del Producto</p>
+                                        <p className="text-xs text-gray-500">{productForm.is_active ? 'Visible en la tienda' : 'Oculto del catálogo'}</p>
+                                    </div>
+                                </div>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={productForm.is_active}
+                                        onChange={(e) => setProductForm({ ...productForm, is_active: e.target.checked })}
+                                        className="sr-only peer"
+                                    />
+                                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                </label>
                             </div>
                         </div>
 
-                        <div className="p-6 border-t border-[var(--border)] flex justify-end gap-4 sticky bottom-0 bg-[var(--background)] z-10">
+                        <div className="p-8 bg-gray-50 dark:bg-zinc-800/50 border-t border-[var(--border)] flex justify-end gap-4">
                             <button
                                 onClick={() => setShowProductModal(false)}
-                                className="px-6 py-2 text-[var(--foreground)] opacity-70 hover:opacity-100 font-medium"
+                                className="px-6 py-3 text-sm font-bold text-gray-500 hover:text-[var(--foreground)] transition-colors"
                             >
                                 Cancelar
                             </button>
                             <button
                                 onClick={editingProduct ? handleUpdateProduct : handleCreateProduct}
-                                className="bg-[var(--accent)] text-[var(--foreground)] px-8 py-2 rounded-lg font-text font-semibold hover:opacity-90 transition-all shadow-sm"
+                                className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all"
                             >
                                 {editingProduct ? "Guardar Cambios" : "Crear Producto"}
                             </button>
@@ -733,3 +755,4 @@ export default function AdminPanel() {
         </div>
     );
 }
+
