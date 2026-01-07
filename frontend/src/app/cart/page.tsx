@@ -1,6 +1,6 @@
 "use client";
 
-import { FaRegTrashAlt } from "react-icons/fa";
+import { FaRegTrashAlt, FaPlus, FaMinus, FaArrowRight, FaShoppingBag } from "react-icons/fa";
 import { useCartStore } from "@/store/cartStore";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -61,139 +61,183 @@ export default function CartPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 mt-20 grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* COLUMNA IZQUIERDA: LISTA DE PRODUCTOS */}
-      <div className="lg:col-span-2 space-y-4 text-[var(--foreground)]">
-        <h1 className="text-3xl font-title font-bold mb-4 text-[var(--foreground)]">Carrito</h1>
+    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <header className="mb-12">
+          <h1 className="text-4xl font-bold text-[var(--foreground)] tracking-tight">Tu Carrito</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Revisá tus productos antes de finalizar la compra.</p>
+        </header>
 
         {cart.length === 0 ? (
-          <p className="text-[var(--foreground)] opacity-60 font-text text-lg">Tu carrito está vacío.</p>
+          <div className="bg-white dark:bg-zinc-900 rounded-3xl p-12 text-center border border-[var(--border)] shadow-sm">
+            <div className="w-24 h-24 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FaShoppingBag className="text-4xl text-blue-600 dark:text-blue-400" />
+            </div>
+            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">Tu carrito está vacío</h2>
+            <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
+              Parece que aún no has añadido nada. ¡Explora nuestros productos y personaliza tu taza ideal!
+            </p>
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all hover:scale-105 active:scale-95"
+            >
+              Explorar Productos
+              <FaArrowRight size={14} />
+            </Link>
+          </div>
         ) : (
-          <>
-            {cart.map((item) => (
-              <div
-                key={item.id}
-                className="p-4 border border-[var(--border)] rounded-lg flex justify-between items-center bg-[var(--background)] shadow-sm"
-              >
-                {/* Nombre y precio */}
-                <div>
-                  <p className="font-title font-semibold text-[var(--foreground)]">{item.name}</p>
-                  <p className="text-[var(--foreground)] font-mono">${item.price}</p>
-                </div>
-
-                {/* Controles */}
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() =>
-                      updateQuantity(item.id, Math.max(1, item.quantity - 1))
-                    }
-                    className="px-3 py-1 border border-[var(--border)] rounded font-mono"
-                  >
-                    -
-                  </button>
-
-                  <span className="font-mono text-[var(--foreground)]">{item.quantity}</span>
-
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="px-3 py-1 border border-[var(--border)] rounded font-mono"
-                  >
-                    +
-                  </button>
-
-                  <button
-                    onClick={() => removeFromCart(item.id)}
-                    className="ml-4 text-red-600 hover:text-red-700 transition cursor-pointer"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      viewBox="0 0 24 24"
-                      className="w-6 h-6 hover:scale-110 transition-transform"
+          <div className="flex flex-col lg:flex-row gap-12">
+            {/* COLUMNA IZQUIERDA: LISTA DE PRODUCTOS */}
+            <div className="flex-1 space-y-6">
+              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)] overflow-hidden shadow-sm">
+                <div className="divide-y divide-[var(--border)]">
+                  {cart.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-6 flex flex-col sm:flex-row gap-6 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18" />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"
-                      />
-                    </svg>
-                  </button>
+                      {/* Imagen */}
+                      <div className="w-full sm:w-32 h-32 bg-gray-100 dark:bg-zinc-800 rounded-xl overflow-hidden flex-shrink-0 border border-[var(--border)] relative">
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-4xl">☕</div>
+                        )}
+                      </div>
+
+                      {/* Detalles */}
+                      <div className="flex-1 flex flex-col justify-between">
+                        <div className="flex justify-between items-start gap-4">
+                          <div>
+                            <h3 className="text-lg font-bold text-[var(--foreground)] leading-tight">{item.name}</h3>
+                            <p className="text-blue-600 dark:text-blue-400 font-bold mt-1">
+                              ${item.price.toLocaleString('es-AR')}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 dark:hover:bg-red-900/10"
+                            title="Eliminar"
+                          >
+                            <FaRegTrashAlt size={18} />
+                          </button>
+                        </div>
+
+                        <div className="flex justify-between items-center mt-4">
+                          {/* Controles de cantidad */}
+                          <div className="flex items-center bg-gray-100 dark:bg-zinc-800 rounded-xl p-1 border border-[var(--border)]">
+                            <button
+                              onClick={() =>
+                                updateQuantity(item.id, Math.max(1, item.quantity - 1))
+                              }
+                              className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors"
+                            >
+                              <FaMinus size={12} />
+                            </button>
+                            <span className="w-10 text-center font-bold text-[var(--foreground)]">{item.quantity}</span>
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors"
+                            >
+                              <FaPlus size={12} />
+                            </button>
+                          </div>
+                          <div className="text-lg font-black text-[var(--foreground)]">
+                            ${(item.price * item.quantity).toLocaleString('es-AR')}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
 
-            {/* Botón Vaciar */}
-            <button
-              onClick={clearCart}
-              className="bg-red-500 text-white px-4 py-2 rounded font-text flex items-center gap-2 cursor-pointer hover:bg-red-600 transition-colors"
-            >
-              <FaRegTrashAlt size={18} />
-              Vaciar carrito
-            </button>
-          </>
-        )}
-      </div>
-
-      {/* COLUMNA DERECHA: RESUMEN + ENVÍO */}
-      {cart.length > 0 && (
-        <div className="p-6 border border-[var(--border)] rounded-lg bg-[var(--background)] shadow-md h-fit sticky top-24">
-          <h2 className="text-2xl font-title font-bold mb-4 text-[var(--foreground)]">Resumen de compra</h2>
-
-          <div className="text-lg">
-            <p className="flex justify-between mb-2 text-[var(--foreground)] font-text">
-              <span>Productos</span>
-              <span className="font-mono">${subtotal}</span>
-            </p>
-
-            {/* SELECT DE PROVINCIA */}
-            <div className="my-4">
-              <label className="font-text font-medium text-[var(--foreground)]">Envío</label>
-              <select
-                value={province}
-                onChange={handleProvinceChange}
-                className="w-full mt-2 p-2 border border-[var(--border)] rounded text-[var(--foreground)] bg-[var(--background)] font-text"
-              >
-                <option value="">Seleccionar provincia</option>
-                <option>Buenos Aires</option>
-                <option>CABA</option>
-                <option>Córdoba</option>
-                <option>Santa Fe</option>
-                <option>Mendoza</option>
-                <option>Tucumán</option>
-                <option>Salta</option>
-                <option>Neuquén</option>
-                <option>Río Negro</option>
-                <option>Chubut</option>
-                <option>Santa Cruz</option>
-                <option>Tierra del Fuego</option>
-              </select>
-
-              <p className="mt-2 flex justify-between text-[var(--foreground)] font-text">
-                <span>Costo de envío</span>
-                <span className="font-mono">${shippingCost}</span>
-              </p>
+              {/* Botón Vaciar */}
+              <div className="flex justify-end">
+                <button
+                  onClick={clearCart}
+                  className="text-gray-500 hover:text-red-500 flex items-center gap-2 text-sm font-medium transition-colors px-4 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/10"
+                >
+                  <FaRegTrashAlt size={14} />
+                  Vaciar carrito
+                </button>
+              </div>
             </div>
 
-            <hr className="my-4" />
+            {/* COLUMNA DERECHA: RESUMEN + ENVÍO */}
+            <aside className="lg:w-96">
+              <div className="sticky top-24 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-xl overflow-hidden">
+                <div className="p-8">
+                  <h2 className="text-xl font-bold text-[var(--foreground)] mb-6">Resumen de Compra</h2>
 
-            <p className="text-2xl font-title font-bold flex justify-between text-[var(--foreground)]">
-              <span>Total</span>
-              <span className="font-mono">${total}</span>
-            </p>
+                  <div className="space-y-4">
+                    <div className="flex justify-between text-gray-600 dark:text-gray-400">
+                      <span>Subtotal</span>
+                      <span className="font-bold text-[var(--foreground)]">${subtotal.toLocaleString('es-AR')}</span>
+                    </div>
 
-            {/* BOTÓN COMPRAR → LLEVA A /checkout (con check de auth) */}
-            <button
-              onClick={handleCheckout}
-              className="w-full mt-6 bg-[var(--accent)] text-[var(--foreground)] py-3 text-lg font-text font-semibold rounded-lg shadow hover:opacity-90 transition-opacity block text-center cursor-pointer"
-            >
-              Comprar
-            </button>
+                    {/* SELECT DE PROVINCIA */}
+                    <div className="pt-4 border-t border-[var(--border)]">
+                      <label className="block text-sm font-bold text-[var(--foreground)] mb-2">Calcular Envío</label>
+                      <select
+                        value={province}
+                        onChange={handleProvinceChange}
+                        className="w-full p-3 bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl text-[var(--foreground)] focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                      >
+                        <option value="">Seleccionar provincia</option>
+                        <option>Buenos Aires</option>
+                        <option>CABA</option>
+                        <option>Córdoba</option>
+                        <option>Santa Fe</option>
+                        <option>Mendoza</option>
+                        <option>Tucumán</option>
+                        <option>Salta</option>
+                        <option>Neuquén</option>
+                        <option>Río Negro</option>
+                        <option>Chubut</option>
+                        <option>Santa Cruz</option>
+                        <option>Tierra del Fuego</option>
+                      </select>
+
+                      <div className="flex justify-between mt-4 text-gray-600 dark:text-gray-400">
+                        <span>Costo de envío</span>
+                        <span className="font-bold text-[var(--foreground)]">
+                          {shippingCost > 0 ? `$${shippingCost.toLocaleString('es-AR')}` : '—'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-[var(--border)]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-lg font-bold text-[var(--foreground)]">Total</span>
+                        <span className="text-3xl font-black text-blue-600 dark:text-blue-400">
+                          ${total.toLocaleString('es-AR')}
+                        </span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handleCheckout}
+                      className="w-full mt-8 bg-blue-600 text-white py-4 rounded-xl font-bold text-lg shadow-xl shadow-blue-500/20 hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+                    >
+                      Continuar Compra
+                      <FaArrowRight size={16} />
+                    </button>
+
+                    <p className="text-[10px] text-center text-gray-400 dark:text-gray-500 mt-4 px-4">
+                      El costo de envío final se confirmará en el siguiente paso según tu dirección exacta.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </aside>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
