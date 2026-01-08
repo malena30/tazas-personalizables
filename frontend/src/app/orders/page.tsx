@@ -5,6 +5,17 @@ import { useAuth } from "@/context/AuthContext";
 import { getOrders, OrderResponse } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import {
+    FaShoppingBag,
+    FaCalendarAlt,
+    FaCheckCircle,
+    FaClock,
+    FaTimesCircle,
+    FaExternalLinkAlt,
+    FaArrowRight,
+    FaBoxOpen,
+    FaCreditCard
+} from "react-icons/fa";
 
 export default function MyOrdersPage() {
     const { user, loading: authLoading } = useAuth();
@@ -39,98 +50,161 @@ export default function MyOrdersPage() {
     const getStatusBadge = (status: string) => {
         switch (status) {
             case "paid":
-                return <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase">Pagado</span>;
+                return (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                        <FaCheckCircle size={10} />
+                        Pagado
+                    </span>
+                );
             case "pending":
-                return <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold uppercase">Pendiente</span>;
+                return (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                        <FaClock size={10} />
+                        Pendiente
+                    </span>
+                );
             case "failed":
-                return <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold uppercase">Fallido</span>;
+                return (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                        <FaTimesCircle size={10} />
+                        Fallido
+                    </span>
+                );
             default:
-                return <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold uppercase">{status}</span>;
+                return (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                        {status}
+                    </span>
+                );
         }
     };
 
     if (authLoading || loading) {
         return (
-            <div className="min-h-screen pt-24 flex items-center justify-center bg-[var(--background)]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent)]"></div>
+            <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
+                    <p className="text-gray-500 font-medium">Cargando tus pedidos...</p>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen pt-24 pb-12 bg-[var(--background)]">
+        <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 pt-32 pb-20">
             <div className="max-w-5xl mx-auto px-6">
-                <h1 className="text-4xl font-title font-extrabold text-[var(--foreground)] mb-8">Mis Pedidos</h1>
+                <header className="mb-12">
+                    <h1 className="text-4xl font-bold text-[var(--foreground)] tracking-tight mb-2">
+                        Mis Pedidos
+                    </h1>
+                    <p className="text-gray-500 dark:text-gray-400">
+                        Gestiona y realiza el seguimiento de todas tus compras.
+                    </p>
+                </header>
 
                 {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                    <div className="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl text-red-600 dark:text-red-400 flex items-center gap-3">
+                        <FaTimesCircle />
                         {error}
                     </div>
                 )}
 
                 {orders.length === 0 ? (
-                    <div className="bg-white dark:bg-zinc-900 rounded-2xl p-12 text-center shadow-sm border border-[var(--border)]">
-                        <div className="text-6xl mb-4">📦</div>
-                        <h2 className="text-2xl font-title font-bold mb-2">No tienes pedidos aún</h2>
-                        <p className="text-gray-500 mb-8">¡Personaliza tu primera taza y haz tu pedido hoy!</p>
+                    <div className="bg-white dark:bg-zinc-900 rounded-3xl p-16 text-center shadow-sm border border-[var(--border)] animate-in fade-in zoom-in duration-500">
+                        <div className="w-24 h-24 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-600 dark:text-blue-400">
+                            <FaShoppingBag size={40} />
+                        </div>
+                        <h2 className="text-2xl font-bold text-[var(--foreground)] mb-3">No tienes pedidos aún</h2>
+                        <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
+                            ¡Personaliza tu primera taza y dale un toque único a tus mañanas!
+                        </p>
                         <Link
                             href="/customizer"
-                            className="px-8 py-3 bg-[var(--accent)] text-[var(--foreground)] rounded-xl font-bold hover:opacity-90 transition-opacity"
+                            className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all"
                         >
-                            Ir al Personalizador
+                            Comenzar a Diseñar
+                            <FaArrowRight size={14} />
                         </Link>
                     </div>
                 ) : (
-                    <div className="space-y-6">
-                        {orders.map((order) => (
+                    <div className="space-y-8">
+                        {orders.map((order, index) => (
                             <div
                                 key={order.id}
-                                className="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]"
+                                className="bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden shadow-sm border border-[var(--border)] hover:shadow-md transition-all animate-in fade-in slide-in-from-bottom-4 duration-500"
+                                style={{ animationDelay: `${index * 100}ms` }}
                             >
                                 {/* Header de la Orden */}
-                                <div className="bg-gray-50 dark:bg-zinc-800/50 p-6 border-b border-[var(--border)] flex flex-wrap justify-between items-center gap-4">
-                                    <div>
-                                        <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Pedido #{order.id.slice(0, 8)}</p>
-                                        <p className="text-sm font-medium">{new Date(order.created_at).toLocaleDateString()} a las {new Date(order.created_at).toLocaleTimeString()}</p>
-                                    </div>
-                                    <div className="flex items-center gap-6">
-                                        <div className="text-right">
-                                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Total</p>
-                                            <p className="text-lg font-mono font-bold">${order.total_amount.toLocaleString()}</p>
+                                <div className="bg-gray-50/50 dark:bg-zinc-800/30 p-6 lg:p-8 border-b border-[var(--border)] flex flex-wrap justify-between items-center gap-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 bg-white dark:bg-zinc-800 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm border border-[var(--border)]">
+                                            <FaBoxOpen size={20} />
                                         </div>
-                                        {getStatusBadge(order.status)}
+                                        <div>
+                                            <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Pedido</p>
+                                            <p className="text-sm font-mono font-bold text-[var(--foreground)]">#{order.id.slice(0, 8).toUpperCase()}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-wrap items-center gap-8">
+                                        <div className="hidden sm:block">
+                                            <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Fecha</p>
+                                            <div className="flex items-center gap-2 text-sm font-bold text-[var(--foreground)]">
+                                                <FaCalendarAlt size={12} className="text-gray-400" />
+                                                {new Date(order.created_at).toLocaleDateString()}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Total</p>
+                                            <p className="text-xl font-black text-[var(--foreground)]">${order.total_amount.toLocaleString('es-AR')}</p>
+                                        </div>
+
+                                        <div className="flex flex-col items-end">
+                                            <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mb-1">Estado</p>
+                                            {getStatusBadge(order.status)}
+                                        </div>
                                     </div>
                                 </div>
 
                                 {/* Items de la Orden */}
-                                <div className="p-6">
-                                    <div className="space-y-4">
+                                <div className="p-6 lg:p-8">
+                                    <div className="space-y-6">
                                         {order.items.map((item) => (
-                                            <div key={item.id} className="flex items-center gap-4">
-                                                <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border border-[var(--border)]">
+                                            <div key={item.id} className="flex items-center gap-6 group">
+                                                <div className="w-24 h-24 bg-gray-50 dark:bg-zinc-800 rounded-2xl overflow-hidden flex-shrink-0 border border-[var(--border)] group-hover:scale-105 transition-transform">
                                                     {item.design?.thumbnail ? (
                                                         <img
                                                             src={item.design.thumbnail}
                                                             alt={item.design.name}
-                                                            className="w-full h-full object-cover"
+                                                            className="w-full h-full object-contain p-2"
                                                         />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-2xl">☕</div>
+                                                        <div className="w-full h-full flex items-center justify-center text-3xl">☕</div>
                                                     )}
                                                 </div>
                                                 <div className="flex-grow">
-                                                    <h3 className="font-bold text-[var(--foreground)]">
+                                                    <h3 className="text-lg font-bold text-[var(--foreground)] mb-1">
                                                         {item.design?.name || "Taza Personalizada"}
                                                     </h3>
-                                                    <p className="text-sm text-gray-500">Cantidad: {item.quantity}</p>
-                                                    <p className="text-sm font-mono">${item.price.toLocaleString()} c/u</p>
+                                                    <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                                                        <span className="flex items-center gap-1.5">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                                            Cantidad: {item.quantity}
+                                                        </span>
+                                                        <span>•</span>
+                                                        <span className="font-mono font-bold text-gray-700 dark:text-gray-300">
+                                                            ${item.price.toLocaleString('es-AR')} c/u
+                                                        </span>
+                                                    </div>
                                                 </div>
                                                 {item.design_id && (
                                                     <Link
                                                         href={`/customizer?load=${item.design_id}`}
-                                                        className="text-sm text-[var(--accent)] font-bold hover:underline"
+                                                        className="flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
                                                     >
                                                         Ver Diseño
+                                                        <FaExternalLinkAlt size={10} />
                                                     </Link>
                                                 )}
                                             </div>
@@ -139,12 +213,17 @@ export default function MyOrdersPage() {
 
                                     {/* Footer de la Orden (Acciones) */}
                                     {order.status === "pending" && order.checkout_url && (
-                                        <div className="mt-6 pt-6 border-t border-[var(--border)] flex justify-end">
+                                        <div className="mt-8 pt-8 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4">
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                                                <FaCreditCard className="text-blue-500" />
+                                                Tu pago está pendiente. Completa el proceso para recibir tu pedido.
+                                            </p>
                                             <a
                                                 href={order.checkout_url}
-                                                className="px-6 py-2 bg-[#009EE3] text-white rounded-lg font-bold hover:opacity-90 transition-opacity flex items-center gap-2"
+                                                className="w-full sm:w-auto px-8 py-3 bg-[#009EE3] text-white rounded-xl font-bold hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
                                             >
                                                 Pagar con Mercado Pago
+                                                <FaArrowRight size={14} />
                                             </a>
                                         </div>
                                     )}
