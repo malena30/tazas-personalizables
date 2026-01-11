@@ -15,12 +15,14 @@ export default function Skeleton({
 }: SkeletonProps) {
     return (
         <div
-            className={`animate-pulse bg-gray-200 dark:bg-zinc-800 ${className}`}
+            className={`relative overflow-hidden bg-gray-100 dark:bg-zinc-800/50 ${className}`}
             style={{
                 width: width,
                 height: height,
                 borderRadius: borderRadius
             }}
-        />
+        >
+            <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/20 dark:via-white/5 to-transparent" />
+        </div>
     );
 }

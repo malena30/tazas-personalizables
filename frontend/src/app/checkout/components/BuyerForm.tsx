@@ -18,7 +18,7 @@ export default function BuyerForm() {
                 phone: user.phone || "",
                 address: user.addresses?.[0]?.street || "",
                 city: user.addresses?.[0]?.city || "",
-                postalCode: user.addresses?.[0]?.postalCode || "",
+                postalCode: user.addresses?.[0]?.postal_code || "",
             });
         }
     }, [user]);
@@ -30,11 +30,11 @@ export default function BuyerForm() {
         });
     };
 
-    const inputClasses = "w-full px-4 py-3 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-[var(--foreground)] placeholder:text-gray-400";
-    const labelClasses = "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 ml-1";
+    const inputClasses = "w-full px-5 py-4 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all text-[var(--foreground)] placeholder:text-gray-400 font-medium";
+    const labelClasses = "block text-xs font-black text-gray-400 dark:text-gray-500 mb-2 ml-1 uppercase tracking-widest";
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <div className="md:col-span-2">
                 <label className={labelClasses}>Nombre Completo</label>

@@ -54,32 +54,38 @@ export default function CheckoutPage() {
                             <p className="text-gray-500 dark:text-gray-400 mt-2">Completá tus datos para procesar el pedido.</p>
                         </header>
 
-                        <div className="space-y-6">
-                            <section className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-[var(--border)] overflow-hidden">
-                                <div className="p-6 sm:p-8">
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm">1</span>
-                                        <h2 className="text-xl font-semibold text-[var(--foreground)]">Datos Personales</h2>
+                        <div className="space-y-8">
+                            <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-sm border border-[var(--border)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <div className="p-10">
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black shadow-lg shadow-blue-500/30">
+                                            1
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-[var(--foreground)]">Datos Personales</h2>
                                     </div>
                                     <BuyerForm />
                                 </div>
                             </section>
 
-                            <section className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-[var(--border)] overflow-hidden">
-                                <div className="p-6 sm:p-8">
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm">2</span>
-                                        <h2 className="text-xl font-semibold text-[var(--foreground)]">Envío</h2>
+                            <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-sm border border-[var(--border)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 delay-75">
+                                <div className="p-10">
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black shadow-lg shadow-blue-500/30">
+                                            2
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-[var(--foreground)]">Método de Envío</h2>
                                     </div>
                                     <ShippingOptions />
                                 </div>
                             </section>
 
-                            <section className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-[var(--border)] overflow-hidden">
-                                <div className="p-6 sm:p-8">
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm">3</span>
-                                        <h2 className="text-xl font-semibold text-[var(--foreground)]">Pago</h2>
+                            <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-sm border border-[var(--border)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+                                <div className="p-10">
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black shadow-lg shadow-blue-500/30">
+                                            3
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-[var(--foreground)]">Información de Pago</h2>
                                     </div>
                                     <PaymentMethods />
                                 </div>
@@ -88,9 +94,13 @@ export default function CheckoutPage() {
                     </div>
 
                     {/* Sidebar - Summary */}
-                    <aside className="lg:w-96">
-                        <div className="sticky top-24">
+                    <aside className="lg:w-[400px]">
+                        <div className="sticky top-32">
                             <OrderSummary />
+                            <div className="mt-8 flex items-center justify-center gap-3 text-gray-400">
+                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                <p className="text-[10px] font-bold uppercase tracking-widest">Pago 100% Seguro</p>
+                            </div>
                         </div>
                     </aside>
 

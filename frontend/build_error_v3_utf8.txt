@@ -1,0 +1,165 @@
+﻿
+> frontend@1.0.0 build
+> next build
+
+node.exe : [baselin
+e-browser-mapping] 
+The data in this 
+module is over two 
+months old.  To 
+ensure accurate 
+Baseline data, 
+please update: 
+`npm i baseline-bro
+wser-mapping@latest
+ -D`
+En C:\Program Files
+\nodejs\npm.ps1: 
+29 Carácter: 3
++   & $NODE_EXE 
+$NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+    + CategoryInfo 
+             : No  
+  tSpecified: ([   
+ baseline-brows    
+...ping@latest     
+-D`:String) [    
+], RemoteExcep    
+tion
+    + FullyQualifi 
+   edErrorId : Na  
+  tiveCommandErr   
+ or
+ 
+ ÔÜá Warning: 
+Next.js inferred 
+your workspace 
+root, but it may 
+not be correct.
+ We detected 
+multiple lockfiles 
+and selected the 
+directory of 
+C:\Users\Malena Cor
+t├®s\Desktop\tazas-
+personalizables\pac
+kage-lock.json as 
+the root directory.
+ To silence this 
+warning, set 
+`turbopack.root` 
+in your Next.js 
+config, or 
+consider removing 
+one of the 
+lockfiles if it's 
+not needed.
+   See https://next
+js.org/docs/app/api
+-reference/config/n
+ext-config-js/turbo
+pack#root-directory
+ for more 
+information.
+ Detected 
+additional 
+lockfiles: 
+   * 
+C:\Users\Malena Cor
+t├®s\Desktop\tazas-
+personalizables\fro
+ntend\package-lock.
+json
+
+   Ôû▓ Next.js 16.0.3 (Turbopack)
+
+   Creating an optimized production build ...
+[baseline-browser-m
+apping] The data 
+in this module is 
+over two months 
+old.  To ensure 
+accurate Baseline 
+data, please 
+update: `npm i base
+line-browser-mappin
+g@latest -D`
+ Ô£ô Compiled successfully in 13.5s
+   Running TypeScript ...
+Failed to compile.
+
+./src/app/products/
+page.tsx:36:19
+Type error: 
+Argument of type 
+'{ id: number; 
+name: string; 
+description: 
+string; price: 
+number; image: 
+string; }[]' is 
+not assignable to 
+parameter of type '
+SetStateAction<Prod
+uct[]>'.
+  Type '{ id: 
+number; name: 
+string; 
+description: 
+string; price: 
+number; image: 
+string; }[]' is 
+not assignable to 
+type 'Product[]'.
+    Type '{ id: 
+number; name: 
+string; 
+description: 
+string; price: 
+number; image: 
+string; }' is 
+missing the 
+following 
+properties from 
+type 'Product': 
+is_active, 
+created_at, 
+updated_at
+
+[0m [90m 34 
+|[39m         
+image[33m:[39m p
+[33m.[39mimage_url
+ [33m||[39m [32m
+""[39m[33m,[39m
+ [90m 35 |[39m   
+    }))[33m;[39m
+[31m[1m>[22m[39
+m[90m 36 |[39m   
+    setProducts(car
+tProducts)[33m;[3
+9m
+ [90m    |[39m   
+                [3
+1m[1m^[22m[39m
+ [90m 37 |[39m   
+    setError([32m"
+"[39m)[33m;[39m
+ [90m 38 |[39m   
+  } 
+[36mcatch[39m 
+(err[33m:[39m 
+any) {
+ [90m 39 |[39m   
+    setError(err[3
+3m.[39mmessage 
+[33m||[39m 
+[32m"Error al 
+cargar productos"[
+39m)[33m;[39m[0m
+Next.js build 
+worker exited with 
+code: 1 and 
+signal: null

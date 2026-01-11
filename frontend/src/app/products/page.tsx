@@ -1,16 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
-import { useCartStore, Product } from "@/store/cartStore";
-import { getProducts } from "@/lib/api";
-import ProductListSkeleton from "@/components/ProductListSkeleton";
+import { FaPlus, FaMinus, FaShoppingBag, FaPalette, FaCheckCircle } from "react-icons/fa";
+import ProductSkeleton from "@/components/ProductSkeleton";
+import { useCartStore } from "@/store/cartStore";
+import { getProducts, Product } from "@/lib/api";
+import { useRouter } from "next/navigation";
+
+interface UIProduct {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+}
 
 export default function ProductsPage() {
+  const router = useRouter();
   const addToCart = useCartStore((state) => state.addToCart);
   const [tooltipVisible, setTooltipVisible] = useState<number | null>(null);
   const [quantities, setQuantities] = useState<Record<number, number>>({});
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<UIProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -48,7 +58,7 @@ export default function ProductsPage() {
     }));
   };
 
-  const handleAddToCart = (product: Product) => {
+  const handleAddToCart = (product: UIProduct) => {
     const quantity = quantities[product.id] || 1;
     addToCart({ ...product, quantity });
     setTooltipVisible(product.id);
@@ -58,107 +68,157 @@ export default function ProductsPage() {
   };
 
   return (
-    <main className="w-full bg-[var(--background)] min-h-screen py-8">
-      <div className="max-w-6xl mx-auto px-4">
+    <main className="w-full bg-gray-50 dark:bg-zinc-950 min-h-screen py-20 px-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-black text-[var(--foreground)] tracking-tight">
+              Nuestras <span className="text-blue-600">Tazas</span>
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-4 max-w-lg text-lg">
+              Explora nuestra colección de tazas premium listas para ser personalizadas con tu toque único.
+            </p>
+          </div>
+          <div className="flex items-center gap-4 bg-white dark:bg-zinc-900 p-2 rounded-2xl border border-[var(--border)] shadow-sm">
+            <button className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-blue-500/20">
+              Todos
+            </button>
+            <button className="px-6 py-2 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-xl font-bold text-sm transition-all">
+              Cerámica
+            </button>
+            <button className="px-6 py-2 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-xl font-bold text-sm transition-all">
+              Plástico
+            </button>
+          </div>
+        </div>
 
-        {/* LISTADO DE PRODUCTOS */}
-        <div className="w-full">
-          <h1 className="text-xl font-title font-semibold text-[var(--foreground)] mb-4">TAZAS</h1>
+        {loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <ProductSkeleton key={i} />
+            ))}
+          </div>
+        )}
 
-          {loading && (
-            <div className="bg-[var(--background)] border border-[var(--border)] rounded-lg shadow-sm divide-y divide-[var(--border)]">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <ProductListSkeleton key={i} />
-              ))}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-6 rounded-3xl flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
+            <div className="w-12 h-12 bg-red-100 dark:bg-red-900/40 rounded-2xl flex items-center justify-center shrink-0">
+              <FaShoppingBag />
             </div>
-          )}
-
-          {error && (
-            <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded mb-4">
-              {error}
+            <div>
+              <p className="font-bold">Ocurrió un error</p>
+              <p className="text-sm opacity-80">{error}</p>
             </div>
-          )}
+          </div>
+        )}
 
-          {!loading && !error && products.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-[var(--foreground)] opacity-70">No hay productos disponibles en este momento.</p>
+        {!loading && !error && products.length === 0 && (
+          <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)] shadow-sm">
+            <div className="w-24 h-24 bg-gray-50 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FaShoppingBag className="text-4xl text-gray-300" />
             </div>
-          )}
+            <h3 className="text-2xl font-bold text-[var(--foreground)]">No hay productos disponibles</h3>
+            <p className="text-gray-500 dark:text-gray-400 mt-2">Vuelve a intentarlo más tarde.</p>
+          </div>
+        )}
 
-          {!loading && !error && products.length > 0 && (
-            <div className="bg-[var(--background)] border border-[var(--border)] rounded-lg shadow-sm divide-y divide-[var(--border)]">
-              {products.map((product) => (
-                <div key={product.id} className="flex flex-col md:flex-row p-6 gap-6 hover:bg-[var(--hover-bg)] transition-colors">
-
-                  {/* Imagen */}
-                  <div className="relative w-full md:w-48 h-48 shrink-0">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-contain rounded"
-                    />
+        {!loading && !error && products.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className="group bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] overflow-hidden hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500 hover:-translate-y-2 flex flex-col"
+              >
+                {/* Image */}
+                <div className="relative aspect-square bg-gray-50 dark:bg-zinc-800/50 overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center p-8">
+                    {product.image ? (
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 ease-out"
+                      />
+                    ) : (
+                      <div className="text-7xl group-hover:scale-110 transition-transform duration-500">☕</div>
+                    )}
                   </div>
 
-                  {/* Info */}
-                  <div className="flex-1">
-                    <h2 className="text-xl font-title font-medium text-[var(--foreground)] mb-2 cursor-pointer hover:text-[var(--accent)] transition-colors">
-                      {product.name}
-                    </h2>
+                  {/* Quick Actions Overlay */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 backdrop-blur-[2px]">
+                    <button
+                      onClick={() => router.push("/customizer")}
+                      className="p-4 bg-white text-blue-600 rounded-2xl hover:bg-blue-50 transition-all transform translate-y-4 group-hover:translate-y-0 duration-300 shadow-lg"
+                      title="Personalizar"
+                    >
+                      <FaPalette size={20} />
+                    </button>
+                  </div>
+                </div>
 
-                    <div className="flex items-baseline gap-2 mb-2">
-                      <span className="text-3xl font-mono font-medium text-[var(--foreground)]">
-                        $ {product.price.toLocaleString("es-AR")}
+                {/* Info */}
+                <div className="p-8 flex flex-col flex-1">
+                  <h2 className="text-xl font-bold text-[var(--foreground)] mb-2 group-hover:text-blue-600 transition-colors line-clamp-1">
+                    {product.name}
+                  </h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 line-clamp-2 leading-relaxed">
+                    {product.description}
+                  </p>
+
+                  <div className="mt-auto space-y-6">
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-black text-[var(--foreground)]">
+                        ${product.price.toLocaleString("es-AR")}
                       </span>
-                    </div>
 
-                    <p className="text-sm text-[var(--foreground)] opacity-70 font-text mb-4 hidden md:block">
-                      {product.description}
-                    </p>
-
-                    {/* Controles de compra */}
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center border border-[var(--border)] rounded overflow-hidden">
+                      {/* Quantity Controls */}
+                      <div className="flex items-center bg-gray-50 dark:bg-zinc-800 rounded-xl p-1 border border-[var(--border)]">
                         <button
                           onClick={() => handleQuantityChange(product.id, -1)}
-                          className="px-3 py-1 bg-[var(--background)] hover:bg-[var(--accent)] hover:bg-opacity-20 text-[var(--accent)] font-mono font-bold transition-colors"
+                          className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors"
                         >
-                          -
+                          <FaMinus size={10} />
                         </button>
-                        <span className="px-4 py-1 text-[var(--foreground)] font-mono min-w-[40px] text-center">
+                        <span className="w-8 text-center text-sm font-bold text-[var(--foreground)]">
                           {quantities[product.id] || 1}
                         </span>
                         <button
-                          onClick={() => handleQuantityChange(product.id, +1)}
-                          className="px-3 py-1 bg-[var(--background)] hover:bg-[var(--accent)] hover:bg-opacity-20 text-[var(--accent)] font-mono font-bold transition-colors"
+                          onClick={() => handleQuantityChange(product.id, 1)}
+                          className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors"
                         >
-                          +
+                          <FaPlus size={10} />
                         </button>
-                      </div>
-
-                      <div className="relative">
-                        <button
-                          onClick={() => handleAddToCart(product)}
-                          className="bg-[var(--accent)] text-[var(--foreground)] px-6 py-2 rounded-lg font-text font-semibold hover:opacity-90 transition-all shadow-sm"
-                        >
-                          Agregar al carrito
-                        </button>
-
-                        {tooltipVisible === product.id && (
-                          <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-[var(--accent)] text-[var(--foreground)] text-xs font-text px-3 py-1 rounded shadow-lg whitespace-nowrap z-10">
-                            ¡Agregado!
-                          </div>
-                        )}
                       </div>
                     </div>
 
+                    <div className="relative">
+                      <button
+                        onClick={() => handleAddToCart(product)}
+                        className={`w-full py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg ${tooltipVisible === product.id
+                          ? "bg-green-500 text-white shadow-green-500/25"
+                          : "bg-gray-900 dark:bg-zinc-800 text-white hover:bg-black dark:hover:bg-zinc-700 shadow-gray-900/20"
+                          }`}
+                      >
+                        {tooltipVisible === product.id ? (
+                          <>
+                            <FaCheckCircle />
+                            ¡Agregado!
+                          </>
+                        ) : (
+                          <>
+                            <FaShoppingBag size={16} />
+                            Agregar al carrito
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-    </main >
+    </main>
   );
 }

@@ -56,6 +56,7 @@ export interface User {
     email: string;
     is_admin: boolean;
     phone?: string;
+    avatar_url?: string;
     addresses?: Address[];
     created_at: string;
 }
@@ -369,6 +370,7 @@ export interface Address {
 export interface UserProfileUpdate {
     email?: string;
     phone?: string;
+    avatar_url?: string;
     addresses?: Address[];
     current_password?: string;
     new_password?: string;
