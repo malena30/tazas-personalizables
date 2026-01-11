@@ -16,6 +16,8 @@ import {
     FaBoxOpen,
     FaCreditCard
 } from "react-icons/fa";
+import OrderSkeleton from "@/components/OrderSkeleton";
+import Skeleton from "@/components/Skeleton";
 
 export default function MyOrdersPage() {
     const { user, loading: authLoading } = useAuth();
@@ -81,10 +83,17 @@ export default function MyOrdersPage() {
 
     if (authLoading || loading) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex items-center justify-center">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
-                    <p className="text-gray-500 font-medium">Cargando tus pedidos...</p>
+            <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 pt-32 pb-20">
+                <div className="max-w-5xl mx-auto px-6">
+                    <div className="mb-12">
+                        <Skeleton width={200} height={40} className="mb-4" />
+                        <Skeleton width={300} height={20} />
+                    </div>
+                    <div className="space-y-6">
+                        {[1, 2, 3].map((i) => (
+                            <OrderSkeleton key={i} />
+                        ))}
+                    </div>
                 </div>
             </div>
         );

@@ -57,31 +57,31 @@ export default function OrderSummary() {
     };
 
     return (
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-[var(--border)] overflow-hidden">
-            <div className="p-6 sm:p-8">
-                <h2 className="text-xl font-bold text-[var(--foreground)] mb-6">Resumen del Pedido</h2>
+        <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-2xl shadow-blue-500/5 border border-[var(--border)] overflow-hidden">
+            <div className="p-10">
+                <h2 className="text-2xl font-bold text-[var(--foreground)] mb-8">Resumen</h2>
 
                 {/* Items List */}
-                <div className="space-y-4 mb-8 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-6 mb-10 max-h-[400px] overflow-y-auto pr-4 custom-scrollbar">
                     {cart.map((item) => (
-                        <div key={item.id} className="flex gap-4">
-                            <div className="relative w-16 h-16 rounded-lg bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] overflow-hidden flex-shrink-0">
+                        <div key={item.id} className="flex gap-5 group">
+                            <div className="relative w-20 h-20 rounded-2xl bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] overflow-hidden flex-shrink-0">
                                 {item.image ? (
-                                    <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                                    <img src={item.image} alt={item.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-xl">☕</div>
+                                    <div className="w-full h-full flex items-center justify-center text-2xl">☕</div>
                                 )}
-                                <span className="absolute -top-2 -right-2 w-5 h-5 bg-blue-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-zinc-900">
+                                <span className="absolute -top-1 -right-1 w-6 h-6 bg-blue-600 text-white text-[10px] font-black rounded-lg flex items-center justify-center border-2 border-white dark:border-zinc-900 shadow-lg">
                                     {item.quantity}
                                 </span>
                             </div>
-                            <div className="flex-1 min-w-0">
-                                <h3 className="text-sm font-medium text-[var(--foreground)] truncate">{item.name}</h3>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                            <div className="flex-1 min-w-0 py-1">
+                                <h3 className="text-sm font-bold text-[var(--foreground)] truncate group-hover:text-blue-600 transition-colors">{item.name}</h3>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
                                     ${item.price.toLocaleString('es-AR')} c/u
                                 </p>
                             </div>
-                            <div className="text-sm font-bold text-[var(--foreground)]">
+                            <div className="text-sm font-black text-[var(--foreground)] py-1">
                                 ${(item.price * item.quantity).toLocaleString('es-AR')}
                             </div>
                         </div>
@@ -89,57 +89,63 @@ export default function OrderSummary() {
                 </div>
 
                 {/* Totals */}
-                <div className="space-y-3 pt-6 border-t border-[var(--border)]">
-                    <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                        <span>Subtotal</span>
-                        <span>${subtotal.toLocaleString('es-AR')}</span>
+                <div className="space-y-4 pt-8 border-t border-[var(--border)]">
+                    <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-500 dark:text-gray-400 font-medium">Subtotal</span>
+                        <span className="font-bold text-[var(--foreground)]">${subtotal.toLocaleString('es-AR')}</span>
                     </div>
-                    <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                        <span>Envío</span>
-                        <span>{shipping.cost > 0 ? `$${shipping.cost.toLocaleString('es-AR')}` : (shipping.method === 'correo' ? 'Calculando...' : 'Gratis')}</span>
+                    <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-500 dark:text-gray-400 font-medium">Envío</span>
+                        <span className={`font-bold ${shipping.cost > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-gray-300'}`}>
+                            {shipping.cost > 0 ? `$${shipping.cost.toLocaleString('es-AR')}` : (shipping.method === 'correo' ? 'Calculando...' : 'Gratis')}
+                        </span>
                     </div>
 
                     {payment === 'efectivo' && (
-                        <div className="flex justify-between text-sm text-green-600 dark:text-green-400 font-medium">
-                            <span>Descuento Efectivo (10%)</span>
-                            <span>-${(subtotal * 0.1).toLocaleString('es-AR')}</span>
+                        <div className="flex justify-between items-center text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/10 p-3 rounded-xl border border-green-100 dark:border-green-900/20">
+                            <span className="font-bold uppercase text-[10px] tracking-widest">Descuento Efectivo (10%)</span>
+                            <span className="font-black">-${(subtotal * 0.1).toLocaleString('es-AR')}</span>
                         </div>
                     )}
 
-                    <div className="flex justify-between items-center pt-4 border-t border-[var(--border)] mt-2">
-                        <span className="text-lg font-bold text-[var(--foreground)]">Total</span>
-                        <span className="text-2xl font-black text-blue-600 dark:text-blue-400">
-                            ${(payment === 'efectivo' ? total * 0.9 : total).toLocaleString('es-AR')}
-                        </span>
+                    <div className="flex justify-between items-center pt-6 border-t border-[var(--border)] mt-4">
+                        <span className="text-xl font-bold text-[var(--foreground)]">Total Final</span>
+                        <div className="text-right">
+                            <span className="block text-3xl font-black text-blue-600 dark:text-blue-400">
+                                ${(payment === 'efectivo' ? total * 0.9 : total).toLocaleString('es-AR')}
+                            </span>
+                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">IVA Incluido</span>
+                        </div>
                     </div>
                 </div>
 
                 <button
                     onClick={handleCheckout}
                     disabled={loading || cart.length === 0}
-                    className={`mt-8 w-full py-4 rounded-xl font-bold text-lg shadow-xl transition-all flex justify-center items-center gap-3 ${loading || cart.length === 0
-                        ? 'bg-gray-200 dark:bg-zinc-800 text-gray-400 cursor-not-allowed shadow-none'
-                        : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] shadow-blue-500/20'
+                    className={`mt-10 w-full py-5 rounded-[1.5rem] font-bold text-xl shadow-xl transition-all flex justify-center items-center gap-3 ${loading || cart.length === 0
+                        ? 'bg-gray-100 dark:bg-zinc-800 text-gray-400 cursor-not-allowed shadow-none'
+                        : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] shadow-blue-500/25'
                         }`}
                 >
                     {loading ? (
                         <>
-                            <span className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin"></span>
+                            <span className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin"></span>
                             <span>Procesando...</span>
                         </>
                     ) : (
                         <>
                             <span>Confirmar Compra</span>
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>
                         </>
                     )}
                 </button>
 
-                <p className="text-[10px] text-center text-gray-400 dark:text-gray-500 mt-4 px-4">
-                    Al confirmar la compra aceptás nuestros términos y condiciones. Tu pago es procesado de forma segura.
-                </p>
+                <div className="flex items-center justify-center gap-2 mt-8 text-gray-400">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                    <p className="text-[10px] font-bold uppercase tracking-widest">Pago Seguro Encriptado</p>
+                </div>
             </div>
         </div>
     );

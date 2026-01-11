@@ -34,6 +34,8 @@ import {
     FaTimesCircle,
     FaCheckCircle
 } from "react-icons/fa";
+import ProfileSkeleton from "@/components/ProfileSkeleton";
+import Skeleton from "@/components/Skeleton";
 
 export default function ProfilePage() {
     const { user, refreshUser } = useAuth();
@@ -207,7 +209,13 @@ export default function ProfilePage() {
     };
 
     if (!user) {
-        return null;
+        return (
+            <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 pt-32 pb-20 px-6">
+                <div className="max-w-6xl mx-auto">
+                    <ProfileSkeleton />
+                </div>
+            </div>
+        );
     }
 
     const menuItems = [
@@ -234,23 +242,23 @@ export default function ProfilePage() {
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Sidebar Navigation */}
                     <aside className="lg:w-64 flex-shrink-0">
-                        <nav className="bg-white dark:bg-zinc-900 rounded-3xl p-3 border border-[var(--border)] shadow-sm sticky top-32">
-                            <div className="space-y-1">
+                        <nav className="bg-white dark:bg-zinc-900 rounded-3xl p-2 md:p-3 border border-[var(--border)] shadow-sm sticky top-32 overflow-x-auto lg:overflow-x-visible no-scrollbar">
+                            <div className="flex lg:flex-col gap-1 min-w-max lg:min-w-0">
                                 {menuItems.map((item) => (
                                     <button
                                         key={item.id}
                                         onClick={() => setActiveTab(item.id as any)}
-                                        className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === item.id
+                                        className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all whitespace-nowrap ${activeTab === item.id
                                             ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
                                             : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-zinc-800"
                                             }`}
                                     >
                                         <div className="flex items-center gap-3">
                                             <item.icon size={18} />
-                                            {item.label}
+                                            <span className="lg:inline">{item.label}</span>
                                         </div>
                                         {item.count !== undefined && (
-                                            <span className={`px-2 py-0.5 rounded-lg text-[10px] ${activeTab === item.id
+                                            <span className={`ml-3 px-2 py-0.5 rounded-lg text-[10px] ${activeTab === item.id
                                                 ? "bg-white/20 text-white"
                                                 : "bg-gray-100 dark:bg-zinc-800 text-gray-500"
                                                 }`}>
@@ -292,26 +300,54 @@ export default function ProfilePage() {
                                         </h2>
                                     </div>
 
+                                    <div className="flex flex-col md:flex-row items-center gap-8 mb-12 pb-12 border-b border-[var(--border)]">
+                                        <div className="relative group">
+                                            <div className="w-32 h-32 rounded-[2.5rem] bg-gray-100 dark:bg-zinc-800 overflow-hidden border-4 border-white dark:border-zinc-900 shadow-xl group-hover:shadow-blue-500/20 transition-all duration-500">
+                                                {user.avatar_url ? (
+                                                    <img src={user.avatar_url} alt={user.username} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-4xl font-black">
+                                                        {user.username.charAt(0).toUpperCase()}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-white dark:bg-zinc-800 rounded-2xl shadow-lg border border-[var(--border)] flex items-center justify-center cursor-pointer hover:scale-110 hover:bg-blue-600 hover:text-white transition-all duration-300 group-hover:rotate-12">
+                                                <FaEdit size={14} />
+                                                <input type="file" className="hidden" accept="image/*" onChange={async (e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) {
+                                                        // Aquí iría la lógica de subida. Por ahora simulamos con FileReader
+                                                        const reader = new FileReader();
+                                                        reader.onloadend = async () => {
+                                                            try {
+                                                                setLoading(true);
+                                                                await updateUserProfile({ avatar_url: reader.result as string });
+                                                                await refreshUser();
+                                                                setSuccess("Avatar actualizado correctamente");
+                                                            } catch (err: any) {
+                                                                setError(err.message || "Error al actualizar avatar");
+                                                            } finally {
+                                                                setLoading(false);
+                                                            }
+                                                        };
+                                                        reader.readAsDataURL(file);
+                                                    }
+                                                }} />
+                                            </label>
+                                        </div>
+                                        <div className="text-center md:text-left">
+                                            <h3 className="text-2xl font-black text-[var(--foreground)]">{user.username}</h3>
+                                            <p className="text-gray-500 dark:text-gray-400 font-medium">{user.email}</p>
+                                            <div className="flex items-center gap-2 mt-3 justify-center md:justify-start">
+                                                <span className="px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-blue-100 dark:border-blue-900/30">
+                                                    Cliente Premium
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <form onSubmit={handleUpdatePersonalInfo} className="space-y-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            {/* Username (read-only) */}
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
-                                                    Usuario
-                                                </label>
-                                                <div className="relative">
-                                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-                                                        <FaUser size={14} />
-                                                    </div>
-                                                    <input
-                                                        type="text"
-                                                        value={user.username}
-                                                        disabled
-                                                        className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-[var(--border)] rounded-2xl text-[var(--foreground)] opacity-60 cursor-not-allowed text-sm"
-                                                    />
-                                                </div>
-                                            </div>
-
                                             {/* Email */}
                                             <div className="space-y-2">
                                                 <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
