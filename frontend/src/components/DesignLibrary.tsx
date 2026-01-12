@@ -111,7 +111,7 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
 
                     {!loading && !error && designs.length === 0 && (
                         <div className="text-center py-12">
-                            <p className="text-gray-500">No tienes diseños guardados aún</p>
+                            <p className="text-gray-500">No tienes diseños guardados</p>
                         </div>
                     )}
 

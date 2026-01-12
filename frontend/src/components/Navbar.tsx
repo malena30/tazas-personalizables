@@ -200,6 +200,14 @@ export default function Navbar() {
             {totalItems > 0 && (
               <span className="bg-blue-600 text-white text-xs font-black px-3 py-1 rounded-full">{totalItems} items</span>
             )}
+          {user?.is_admin && (
+            <Link href="/admin" onClick={() => setOpen(false)} className="text-purple-600 dark:text-purple-400 font-text font-semibold">
+               Admin Panel
+            </Link>
+          )}
+          <Link href="/cart" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text flex justify-between">
+            Carrito
+            {totalItems > 0 && <span className="text-[var(--accent)] font-mono font-bold">({totalItems})</span>}
           </Link>
 
           <button
