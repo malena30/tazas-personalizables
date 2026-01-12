@@ -3,10 +3,44 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 export const metadata: Metadata = {
-  title: "Tazas Personalizables",
-  description: "Crea tu propia taza personalizada",
+  title: {
+    default: "Tazas Personalizables | Crea tu diseño único",
+    template: "%s | Tazas.shop"
+  },
+  description: "La mejor plataforma para crear y comprar tazas personalizadas de alta calidad. Tu diseño, tu estilo, tu taza.",
+  keywords: ["tazas personalizadas", "regalos personalizados", "diseño de tazas", "tazas de cerámica", "tazas de plástico"],
+  authors: [{ name: "Tazas.shop Team" }],
+  creator: "Tazas.shop",
+  openGraph: {
+    type: "website",
+    locale: "es_AR",
+    url: "https://tazas.shop",
+    title: "Tazas Personalizables | Crea tu diseño único",
+    description: "Diseña tu propia taza en minutos con nuestro editor 3D. Calidad premium y envío a todo el país.",
+    siteName: "Tazas.shop",
+    images: [
+      {
+        url: "/og-image.jpg", // Asegúrate de que esta imagen exista en public/
+        width: 1200,
+        height: 630,
+        alt: "Tazas Personalizables",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tazas Personalizables | Crea tu diseño único",
+    description: "Diseña tu propia taza en minutos con nuestro editor 3D. Calidad premium y envío a todo el país.",
+    images: ["/og-image.jpg"],
+    creator: "@tazasshop",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -22,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="h-full flex flex-col">
         <AuthProvider>
+          <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GA_ID || ""} />
           <Navbar />
           <main className="flex-1 pt-20">
             {children}
