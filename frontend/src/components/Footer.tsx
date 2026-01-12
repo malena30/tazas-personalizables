@@ -26,15 +26,6 @@ export default function Footer() {
                 <FaFacebook size={18} />
               </a>
             </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-          {/* Columna 1 */}
-          <div>
-            <h3 className="font-title font-semibold text-[var(--foreground)] mb-4">Acerca de</h3>
-            <ul className="space-y-2 text-sm text-[var(--foreground)] opacity-60 font-text">
-              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Tazas Personalizables</a></li>
-              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Tendencias</a></li>
-              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Sustentabilidad</a></li>
-            </ul>
           </div>
 
           {/* Shop Column */}
@@ -45,10 +36,6 @@ export default function Footer() {
               <li><Link href="/customizer" className="hover:text-blue-600 transition-colors">Personalizar</Link></li>
               <li><Link href="/products?category=ceramica" className="hover:text-blue-600 transition-colors">Tazas de Cerámica</Link></li>
               <li><Link href="/products?category=plastico" className="hover:text-blue-600 transition-colors">Tazas de Plástico</Link></li>
-            <h3 className="font-title font-semibold text-[var(--foreground)] mb-4">Ayuda</h3>
-            <ul className="space-y-2 text-sm text-[var(--foreground)] opacity-60 font-text">
-              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Comprar</a></li>
-              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Resolución de problemas</a></li>
             </ul>
           </div>
 
@@ -60,10 +47,6 @@ export default function Footer() {
               <li><a href="#" className="hover:text-blue-600 transition-colors">Envíos y Devoluciones</a></li>
               <li><a href="#" className="hover:text-blue-600 transition-colors">Términos y Condiciones</a></li>
               <li><a href="#" className="hover:text-blue-600 transition-colors">Contacto</a></li>
-            <h3 className="font-title font-semibold text-[var(--foreground)] mb-4">Redes sociales</h3>
-            <ul className="space-y-2 text-sm text-[var(--foreground)] opacity-60 font-text">
-              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Instagram</a></li>
-              <li><a href="#" className="hover:text-[var(--accent)] transition-colors">Tik Tok</a></li>
             </ul>
           </div>
 

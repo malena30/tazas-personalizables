@@ -200,15 +200,14 @@ export default function Navbar() {
             {totalItems > 0 && (
               <span className="bg-blue-600 text-white text-xs font-black px-3 py-1 rounded-full">{totalItems} items</span>
             )}
+          </Link>
+
           {user?.is_admin && (
-            <Link href="/admin" onClick={() => setOpen(false)} className="text-purple-600 dark:text-purple-400 font-text font-semibold">
-               Admin Panel
+            <Link href="/admin" onClick={() => setOpen(false)} className="text-lg font-bold flex items-center gap-3 text-purple-600 dark:text-purple-400">
+              <span className="w-8 h-8 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-lg flex items-center justify-center">👑</span>
+              Admin Panel
             </Link>
           )}
-          <Link href="/cart" onClick={() => setOpen(false)} className="text-[var(--foreground)] font-text flex justify-between">
-            Carrito
-            {totalItems > 0 && <span className="text-[var(--accent)] font-mono font-bold">({totalItems})</span>}
-          </Link>
 
           <button
             onClick={toggleTheme}
