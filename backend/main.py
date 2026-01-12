@@ -21,6 +21,12 @@ from auth import (
 from admin_utils import get_admin_user
 from payments import create_preference, get_payment_info
 from cloudinary_utils import upload_base64_image
+from email_utils import (
+    send_email, 
+    get_welcome_template, 
+    get_order_confirmation_template, 
+    get_payment_success_template
+)
 
 app = FastAPI(title="Tazas Personalizables API")
 
@@ -57,6 +63,17 @@ async def register(user: UserRegister, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+    
+    # Enviar email de bienvenida
+    try:
+        send_email(
+            new_user.email, 
+            "¡Bienvenido a Tazas.shop!", 
+            get_welcome_template(new_user.username)
+        )
+    except Exception as e:
+        print(f"Error al enviar email de bienvenida: {e}")
+        
     return new_user
 
 @app.post("/auth/login", response_model=Token)
@@ -296,6 +313,17 @@ async def create_order(
     
     db.commit()
     db.refresh(db_order)
+    
+    # Enviar email de confirmación de orden
+    try:
+        send_email(
+            current_user.email,
+            f"Confirmación de Pedido #{db_order.id[:8]}",
+            get_order_confirmation_template(db_order.id, db_order.total_amount)
+        )
+    except Exception as e:
+        print(f"Error al enviar email de orden: {e}")
+        
     return db_order
 
 @app.get('/api/orders', response_model=List[OrderResponse])
@@ -334,6 +362,18 @@ async def mercadopago_webhook(request: Request, db: Session = Depends(get_db)):
                     if order:
                         if status == "approved":
                             order.status = "paid"
+                            # Enviar email de pago aprobado
+                            try:
+                                # Necesitamos el email del usuario
+                                user = db.query(User).filter(User.id == order.user_id).first()
+                                if user:
+                                    send_email(
+                                        user.email,
+                                        f"¡Pago Aprobado! Pedido #{order.id[:8]}",
+                                        get_payment_success_template(order.id)
+                                    )
+                            except Exception as e:
+                                print(f"Error al enviar email de pago: {e}")
                         elif status in ["rejected", "cancelled", "refunded"]:
                             order.status = "failed"
                         
