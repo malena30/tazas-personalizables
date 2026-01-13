@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { getOrders, OrderResponse } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
     FaShoppingBag,
     FaCalendarAlt,
@@ -183,10 +184,11 @@ export default function MyOrdersPage() {
                                             <div key={item.id} className="flex items-center gap-6 group">
                                                 <div className="w-24 h-24 bg-gray-50 dark:bg-zinc-800 rounded-2xl overflow-hidden flex-shrink-0 border border-[var(--border)] group-hover:scale-105 transition-transform">
                                                     {item.design?.thumbnail ? (
-                                                        <img
+                                                        <Image
                                                             src={item.design.thumbnail}
                                                             alt={item.design.name}
-                                                            className="w-full h-full object-contain p-2"
+                                                            fill
+                                                            className="object-contain p-2"
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-3xl">☕</div>

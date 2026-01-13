@@ -34,6 +34,7 @@ import {
     FaTimesCircle,
     FaCheckCircle
 } from "react-icons/fa";
+import Image from "next/image";
 import ProfileSkeleton from "@/components/ProfileSkeleton";
 import Skeleton from "@/components/Skeleton";
 
@@ -304,7 +305,7 @@ export default function ProfilePage() {
                                         <div className="relative group">
                                             <div className="w-32 h-32 rounded-[2.5rem] bg-gray-100 dark:bg-zinc-800 overflow-hidden border-4 border-white dark:border-zinc-900 shadow-xl group-hover:shadow-blue-500/20 transition-all duration-500">
                                                 {user.avatar_url ? (
-                                                    <img src={user.avatar_url} alt={user.username} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                                    <Image src={user.avatar_url} alt={user.username} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-4xl font-black">
                                                         {user.username.charAt(0).toUpperCase()}
@@ -812,10 +813,11 @@ export default function ProfilePage() {
                                             >
                                                 <div className="aspect-square bg-gray-50 dark:bg-zinc-800 relative flex items-center justify-center p-6 overflow-hidden">
                                                     {design.thumbnail ? (
-                                                        <img
+                                                        <Image
                                                             src={design.thumbnail}
                                                             alt={design.name}
-                                                            className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                                                            fill
+                                                            className="object-contain group-hover:scale-110 transition-transform duration-500"
                                                         />
                                                     ) : (
                                                         <div className="text-6xl opacity-20">☕</div>

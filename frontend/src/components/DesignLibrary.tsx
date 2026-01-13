@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { listDesigns, deleteDesign, toggleFavoriteDesign, Design } from '@/lib/api';
 
 interface DesignLibraryProps {
@@ -74,8 +75,8 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
                         <button
                             onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors ${showOnlyFavorites
-                                    ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
-                                    : 'bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200'
+                                ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+                                : 'bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200'
                                 }`}
                         >
                             {showOnlyFavorites ? '★ Solo Favoritos' : '☆ Mostrar Todos'}
@@ -125,12 +126,13 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
                                         className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                                     >
                                         {/* Thumbnail */}
-                                        <div className="aspect-square bg-gray-100 flex items-center justify-center">
+                                        <div className="aspect-square bg-gray-100 flex items-center justify-center relative">
                                             {design.thumbnail ? (
-                                                <img
+                                                <Image
                                                     src={design.thumbnail}
                                                     alt={design.name}
-                                                    className="w-full h-full object-cover"
+                                                    fill
+                                                    className="object-cover"
                                                 />
                                             ) : (
                                                 <div className="text-gray-400 text-4xl">🖼️</div>
@@ -143,8 +145,8 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
                                                     handleToggleFavorite(design.id);
                                                 }}
                                                 className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all ${design.is_favorite
-                                                        ? 'bg-yellow-400 text-white'
-                                                        : 'bg-white/80 text-gray-400 hover:text-yellow-500'
+                                                    ? 'bg-yellow-400 text-white'
+                                                    : 'bg-white/80 text-gray-400 hover:text-yellow-500'
                                                     }`}
                                             >
                                                 {design.is_favorite ? '★' : '☆'}

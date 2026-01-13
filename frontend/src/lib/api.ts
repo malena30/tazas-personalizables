@@ -470,6 +470,16 @@ export async function getProducts(): Promise<Product[]> {
     return response.json();
 }
 
+export async function getProduct(productId: string): Promise<Product> {
+    const response = await fetch(`${API_URL}/api/products/${productId}`);
+
+    if (!response.ok) {
+        throw new Error('Error al obtener el producto');
+    }
+
+    return response.json();
+}
+
 export async function getAllProducts(): Promise<Product[]> {
     const response = await fetch(`${API_URL}/api/products/all`, {
         headers: getAuthHeaders()

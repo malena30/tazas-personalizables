@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { MugCoverage, ImageFilters } from "@/types/customizer";
 
 interface ToolbarProps {
@@ -774,11 +775,14 @@ export default function Toolbar({
                                                 className="aspect-square bg-white border border-[var(--border)] rounded-lg hover:border-[var(--accent)] hover:shadow-md transition-all p-2 flex items-center justify-center group"
                                                 title={sticker.name}
                                             >
-                                                <img
-                                                    src={sticker.url}
-                                                    alt={sticker.name}
-                                                    className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform"
-                                                />
+                                                <div className="relative w-full h-full">
+                                                    <Image
+                                                        src={sticker.url}
+                                                        alt={sticker.name}
+                                                        fill
+                                                        className="object-contain group-hover:scale-110 transition-transform"
+                                                    />
+                                                </div>
                                             </button>
                                         ))}
                                     </div>
