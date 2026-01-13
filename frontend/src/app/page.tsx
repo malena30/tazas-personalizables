@@ -7,6 +7,7 @@ import TestimonialCard from "@/components/TestimonialCard";
 import SimpleMugHero from "@/components/SimpleMugHero";
 import ProductSkeleton from "@/components/ProductSkeleton";
 import { getProducts, Product } from "@/lib/api";
+import { FaPalette, FaShoppingBag, FaArrowRight, FaStar, FaShieldAlt, FaTruck } from "react-icons/fa";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -30,46 +31,49 @@ export default function Home() {
     <main className="w-full bg-[var(--background)] min-h-screen">
 
       {/* HERO SECTION */}
-      <section className="relative w-full min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-blob"></div>
-          <div className="absolute top-40 right-10 w-72 h-72 bg-yellow-300 dark:bg-yellow-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-          <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-300 dark:bg-pink-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+      <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[var(--background)]">
+        {/* Subtle background texture/elements */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[var(--accent)] rounded-full blur-[120px]"></div>
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[var(--accent)] rounded-full blur-[120px]"></div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+        <div className="relative max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-16 items-center">
           {/* Text Content */}
           <div className="text-center md:text-left z-10">
-            <h1 className="text-5xl md:text-7xl font-title font-extrabold text-[var(--foreground)] mb-6 leading-tight">
-              Diseña tu
-              <span className="block bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
-                Taza Perfecta
-              </span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full text-xs font-black uppercase tracking-widest mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <FaStar size={10} />
+              <span>Calidad Premium Garantizada</span>
+            </div>
+            <h1 className="text-6xl md:text-8xl font-title font-black text-[var(--foreground)] mb-8 leading-[0.9] tracking-tighter animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+              Tu Taza, <br />
+              <span className="text-[var(--accent)]">Tu Estilo.</span>
             </h1>
-            <p className="text-xl md:text-2xl text-[var(--foreground)] opacity-80 mb-8 font-text">
-              Personaliza con tus fotos, diseños o frases favoritas. Única como vos.
+            <p className="text-xl md:text-2xl text-[var(--foreground)] opacity-60 mb-12 font-text max-w-lg animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+              Personaliza cada detalle y crea una pieza única que hable de vos. Calidad excepcional en cada sorbo.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center md:justify-start animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
               <Link
                 href="/customizer"
-                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                className="px-10 py-5 bg-[var(--foreground)] text-[var(--background)] rounded-2xl font-black text-lg shadow-2xl shadow-black/10 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
               >
-                🎨 Diseñar Ahora
+                <FaPalette size={20} />
+                Diseñar Ahora
               </Link>
               <Link
-                href="#productos"
-                className="px-8 py-4 bg-white dark:bg-gray-800 text-[var(--foreground)] rounded-full font-semibold text-lg border-2 border-[var(--border)] hover:border-purple-600 hover:scale-105 transition-all duration-300"
+                href="/products"
+                className="px-10 py-5 bg-transparent text-[var(--foreground)] rounded-2xl font-black text-lg border-2 border-[var(--foreground)] hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-all flex items-center justify-center gap-3"
               >
-                Ver Productos
+                Ver Catálogo
+                <FaArrowRight size={16} />
               </Link>
             </div>
           </div>
 
           {/* Hero Image (3D) */}
-          <div className="relative z-10 flex justify-center">
-            <div className="relative w-full max-w-md">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full filter blur-3xl opacity-30 animate-pulse"></div>
+          <div className="relative z-10 flex justify-center animate-in fade-in zoom-in duration-1000 delay-200">
+            <div className="relative w-full max-w-lg">
+              <div className="absolute inset-0 bg-[var(--accent)]/20 rounded-full filter blur-[100px] animate-pulse"></div>
               <SimpleMugHero />
             </div>
           </div>
@@ -77,76 +81,78 @@ export default function Home() {
       </section>
 
       {/* STATS SECTION */}
-      <section className="w-full py-12 bg-white dark:bg-gray-900 border-y border-[var(--border)]">
+      <section className="w-full py-16 bg-white dark:bg-zinc-900 border-y border-[var(--border)]">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">+1.5k</p>
-              <p className="text-sm text-[var(--foreground)] opacity-60 uppercase tracking-widest mt-2">Clientes</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+            <div className="space-y-2">
+              <p className="text-5xl font-black text-[var(--foreground)] tracking-tighter">+1.5k</p>
+              <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">Clientes Felices</p>
             </div>
-            <div>
-              <p className="text-4xl font-bold text-purple-600 dark:text-purple-400">+500</p>
-              <p className="text-sm text-[var(--foreground)] opacity-60 uppercase tracking-widest mt-2">Diseños</p>
+            <div className="space-y-2">
+              <p className="text-5xl font-black text-[var(--accent)] tracking-tighter">+500</p>
+              <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">Diseños Únicos</p>
             </div>
-            <div>
-              <p className="text-4xl font-bold text-pink-600 dark:text-pink-400">24h</p>
-              <p className="text-sm text-[var(--foreground)] opacity-60 uppercase tracking-widest mt-2">Producción</p>
+            <div className="space-y-2">
+              <p className="text-5xl font-black text-[var(--foreground)] tracking-tighter">24h</p>
+              <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">Producción Express</p>
             </div>
-            <div>
-              <p className="text-4xl font-bold text-yellow-600 dark:text-yellow-400">100%</p>
-              <p className="text-sm text-[var(--foreground)] opacity-60 uppercase tracking-widest mt-2">Garantía</p>
+            <div className="space-y-2">
+              <p className="text-5xl font-black text-[var(--accent)] tracking-tighter">100%</p>
+              <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">Garantía Total</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* HOW IT WORKS SECTION */}
-      <section className="w-full py-20 px-6 bg-[var(--accent)]">
+      <section className="w-full py-32 px-6 bg-[var(--background)]">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-title font-bold text-center text-[var(--foreground)] mb-4">
-            ¿Cómo Funciona?
-          </h2>
-          <p className="text-center text-[var(--foreground)] opacity-70 text-lg mb-16">
-            Tres simples pasos para tu taza personalizada
-          </p>
+          <div className="text-center max-w-3xl mx-auto mb-24">
+            <h2 className="text-5xl md:text-6xl font-title font-black text-[var(--foreground)] tracking-tighter mb-6">
+              ¿Cómo <span className="text-[var(--accent)]">Funciona?</span>
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 text-xl leading-relaxed">
+              Tres simples pasos para transformar una idea en tu taza favorita.
+            </p>
+          </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-12">
             {/* Step 1 */}
-            <div className="text-center group">
-              <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-full flex items-center justify-center text-4xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                ✏️
+            <div className="relative p-10 bg-white dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)] group hover:border-[var(--accent)] transition-all duration-500">
+              <div className="w-16 h-16 mb-8 bg-[var(--foreground)] text-[var(--background)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl group-hover:scale-110 transition-transform duration-300">
+                01
               </div>
-              <h3 className="text-2xl font-bold text-[var(--foreground)] mb-3">
-                1. Diseña
+              <h3 className="text-2xl font-black text-[var(--foreground)] mb-4">
+                Diseña
               </h3>
-              <p className="text-[var(--foreground)] opacity-70">
-                Usa nuestro editor intuitivo para agregar textos, imágenes y elementos únicos
+              <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                Usa nuestro editor intuitivo para agregar textos, imágenes y elementos únicos que reflejen tu personalidad.
               </p>
             </div>
 
             {/* Step 2 */}
-            <div className="text-center group">
-              <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 rounded-full flex items-center justify-center text-4xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                🛒
+            <div className="relative p-10 bg-white dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)] group hover:border-[var(--accent)] transition-all duration-500">
+              <div className="w-16 h-16 mb-8 bg-[var(--accent)] text-[var(--background)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl group-hover:scale-110 transition-transform duration-300">
+                02
               </div>
-              <h3 className="text-2xl font-bold text-[var(--foreground)] mb-3">
-                2. Compra
+              <h3 className="text-2xl font-black text-[var(--foreground)] mb-4">
+                Compra
               </h3>
-              <p className="text-[var(--foreground)] opacity-70">
-                Agrega al carrito y completa tu pedido de forma segura con Mercado Pago
+              <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                Agrega al carrito y completa tu pedido de forma segura con Mercado Pago. Aceptamos todas las tarjetas.
               </p>
             </div>
 
             {/* Step 3 */}
-            <div className="text-center group">
-              <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-pink-500 to-pink-600 dark:from-pink-600 dark:to-pink-700 rounded-full flex items-center justify-center text-4xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                📦
+            <div className="relative p-10 bg-white dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)] group hover:border-[var(--accent)] transition-all duration-500">
+              <div className="w-16 h-16 mb-8 bg-[var(--foreground)] text-[var(--background)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl group-hover:scale-110 transition-transform duration-300">
+                03
               </div>
-              <h3 className="text-2xl font-bold text-[var(--foreground)] mb-3">
-                3. Recibe
+              <h3 className="text-2xl font-black text-[var(--foreground)] mb-4">
+                Recibe
               </h3>
-              <p className="text-[var(--foreground)] opacity-70">
-                Tu taza personalizada llega a tu casa en pocos días. ¡Listo para disfrutar!
+              <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                Tu taza personalizada llega a tu puerta en pocos días, protegida y lista para ser estrenada.
               </p>
             </div>
           </div>
@@ -154,14 +160,24 @@ export default function Home() {
       </section>
 
       {/* FEATURED PRODUCTS SECTION */}
-      <section id="productos" className="w-full py-20 px-6">
+      <section id="productos" className="w-full py-32 px-6 bg-white dark:bg-zinc-950">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-title font-bold text-center text-[var(--foreground)] mb-4">
-            Productos Destacados
-          </h2>
-          <p className="text-center text-[var(--foreground)] opacity-70 text-lg mb-16">
-            Las tazas más populares de nuestra tienda
-          </p>
+          <div className="flex flex-col md:flex-row items-end justify-between gap-8 mb-20">
+            <div className="max-w-2xl">
+              <h2 className="text-5xl md:text-6xl font-title font-black text-[var(--foreground)] tracking-tighter mb-6">
+                Productos <span className="text-[var(--accent)]">Destacados</span>
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400 text-xl leading-relaxed">
+                Una selección de nuestras piezas más queridas, listas para ser el lienzo de tu creatividad.
+              </p>
+            </div>
+            <Link
+              href="/products"
+              className="px-8 py-4 bg-[var(--foreground)] text-[var(--background)] rounded-2xl font-black text-sm hover:scale-[1.05] transition-all shadow-xl shadow-black/10"
+            >
+              Ver Todo el Catálogo
+            </Link>
+          </div>
 
           {loading ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -174,64 +190,65 @@ export default function Home() {
               {products.map((product) => (
                 <ProductCard
                   key={product.id}
+                  id={product.id}
                   name={product.name}
                   price={product.price}
                   image={product.image_url || ""}
                   description={product.description || ""}
+                  onAddToCart={() => { }}
                 />
               ))}
             </div>
           )}
-
-          <div className="mt-12 text-center">
-            <Link
-              href="/products"
-              className="inline-block px-8 py-3 border-2 border-[var(--border)] rounded-full font-semibold hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-all"
-            >
-              Ver Todo el Catálogo
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* FAQ SECTION */}
-      <section className="w-full py-20 px-6 bg-[var(--accent)]">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-4xl font-title font-bold text-center text-[var(--foreground)] mb-12">
-            Preguntas Frecuentes
-          </h2>
-          <div className="space-y-4">
-            {[
-              { q: "¿Cuánto tarda el envío?", a: "El tiempo de producción es de 24-48h. El envío suele tardar entre 2 y 5 días hábiles dependiendo de tu ubicación." },
-              { q: "¿Las tazas son aptas para microondas?", a: "¡Sí! Todas nuestras tazas de cerámica premium son aptas para microondas y lavavajillas." },
-              { q: "¿Puedo subir mis propias fotos?", a: "Absolutamente. Nuestro personalizador te permite subir imágenes en alta resolución para obtener el mejor resultado." },
-              { q: "¿Hacen ventas por mayor?", a: "Sí, ofrecemos descuentos especiales para eventos corporativos, souvenirs o revendedores a partir de 12 unidades." }
-            ].map((item, i) => (
-              <details key={i} className="group bg-[var(--background)] rounded-xl border border-[var(--border)] overflow-hidden">
-                <summary className="p-6 cursor-pointer font-bold text-[var(--foreground)] flex justify-between items-center list-none">
-                  {item.q}
-                  <span className="text-xl group-open:rotate-180 transition-transform">↓</span>
-                </summary>
-                <div className="px-6 pb-6 text-[var(--foreground)] opacity-70">
-                  {item.a}
-                </div>
-              </details>
-            ))}
+      {/* TRUST SECTION */}
+      <section className="w-full py-24 px-6 bg-[var(--background)] border-y border-[var(--border)]">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl flex items-center justify-center shrink-0">
+              <FaTruck size={24} />
+            </div>
+            <div>
+              <h4 className="font-black text-[var(--foreground)] text-lg">Envío Nacional</h4>
+              <p className="text-sm text-gray-500">Llegamos a todo el país con seguimiento en tiempo real.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl flex items-center justify-center shrink-0">
+              <FaShieldAlt size={24} />
+            </div>
+            <div>
+              <h4 className="font-black text-[var(--foreground)] text-lg">Pago 100% Seguro</h4>
+              <p className="text-sm text-gray-500">Tus datos están protegidos con encriptación de grado bancario.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl flex items-center justify-center shrink-0">
+              <FaStar size={24} />
+            </div>
+            <div>
+              <h4 className="font-black text-[var(--foreground)] text-lg">Calidad Premium</h4>
+              <p className="text-sm text-gray-500">Solo usamos materiales de alta gama para resultados duraderos.</p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* TESTIMONIALS SECTION */}
-      <section className="w-full py-20 px-6 bg-gradient-to-b from-[var(--background)] to-[var(--accent)]">
+      <section className="w-full py-32 px-6 bg-white dark:bg-zinc-950">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-title font-bold text-center text-[var(--foreground)] mb-4">
-            Lo que dicen nuestros clientes
-          </h2>
-          <p className="text-center text-[var(--foreground)] opacity-70 text-lg mb-16">
-            Más de 1,000 clientes satisfechos
-          </p>
+          <div className="text-center max-w-3xl mx-auto mb-24">
+            <h2 className="text-5xl md:text-6xl font-title font-black text-[var(--foreground)] tracking-tighter mb-6">
+              Lo que dicen nuestros <span className="text-[var(--accent)]">clientes</span>
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 text-xl leading-relaxed">
+              Más de 1,000 personas ya disfrutan de sus tazas personalizadas.
+            </p>
+          </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-12">
             <TestimonialCard
               name="María González"
               rating={5}
@@ -251,76 +268,36 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NEWSLETTER SECTION */}
-      <section className="w-full py-20 px-6">
-        <div className="max-w-4xl mx-auto bg-gradient-to-br from-blue-600 to-purple-700 rounded-3xl p-12 text-center text-white shadow-2xl">
-          <h2 className="text-3xl md:text-4xl font-title font-bold mb-4">¡No te pierdas nada!</h2>
-          <p className="text-white/80 mb-8">Suscribite para recibir ofertas exclusivas y nuevos templates de diseño.</p>
-          <form className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
-            <input
-              type="email"
-              placeholder="Tu email"
-              className="flex-1 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
-            />
-            <button className="px-8 py-4 bg-white text-purple-600 rounded-full font-bold hover:bg-purple-50 transition-all">
-              Suscribirme
-            </button>
-          </form>
-        </div>
-      </section>
-
       {/* FINAL CTA SECTION */}
-      <section className="w-full py-24 px-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-800 dark:via-purple-800 dark:to-pink-800">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-6xl font-title font-bold text-white mb-6">
-            ¿Listo para crear tu taza ideal?
+      <section className="w-full py-32 px-6">
+        <div className="max-w-5xl mx-auto bg-[var(--foreground)] rounded-[4rem] p-16 md:p-24 text-center text-[var(--background)] shadow-2xl shadow-black/20 relative overflow-hidden">
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent)]/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[var(--accent)]/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2"></div>
+
+          <h2 className="text-5xl md:text-7xl font-title font-black mb-8 relative z-10 tracking-tighter leading-none">
+            ¿Listo para crear tu <br />
+            <span className="text-[var(--accent)]">taza ideal?</span>
           </h2>
-          <p className="text-xl text-white/90 mb-10">
-            Empieza a diseñar ahora y tené tu taza única en pocos días
+          <p className="text-xl md:text-2xl text-[var(--background)] opacity-60 mb-12 relative z-10 max-w-2xl mx-auto">
+            Empieza a diseñar ahora y tené tu taza única en pocos días. El regalo perfecto está a un clic.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center relative z-10">
             <Link
               href="/customizer"
-              className="px-10 py-5 bg-white text-purple-600 rounded-full font-bold text-xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300"
+              className="px-12 py-6 bg-[var(--accent)] text-[var(--background)] rounded-2xl font-black text-xl shadow-2xl shadow-black/10 hover:scale-[1.05] active:scale-[0.95] transition-all"
             >
-              Comenzar a Diseñar →
+              Comenzar a Diseñar
             </Link>
             <Link
               href="/products"
-              className="px-10 py-5 bg-transparent border-2 border-white text-white rounded-full font-bold text-xl hover:bg-white hover:text-purple-600 transition-all duration-300"
+              className="px-12 py-6 bg-transparent border-2 border-[var(--background)] text-[var(--background)] rounded-2xl font-black text-xl hover:bg-[var(--background)] hover:text-[var(--foreground)] transition-all"
             >
               Ver Catálogo
             </Link>
           </div>
         </div>
       </section>
-
-      {/* Add animations to globals.css */}
-      <style jsx>{`
-        @keyframes blob {
-          0% {
-            transform: translate(0px, 0px) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-          100% {
-            transform: translate(0px, 0px) scale(1);
-          }
-        }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
     </main>
   );
 }

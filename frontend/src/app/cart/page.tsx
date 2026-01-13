@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function CartPage() {
   const { user } = useAuth();
@@ -103,10 +104,11 @@ export default function CartPage() {
                       {/* Imagen */}
                       <div className="w-full sm:w-40 h-40 bg-gray-50 dark:bg-zinc-800 rounded-3xl overflow-hidden flex-shrink-0 border border-[var(--border)] relative">
                         {item.image ? (
-                          <img
+                          <Image
                             src={item.image}
                             alt={item.name}
-                            className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 ease-out"
+                            fill
+                            className="object-contain group-hover:scale-110 transition-transform duration-700 ease-out"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-5xl">☕</div>

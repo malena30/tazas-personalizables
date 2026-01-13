@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
     getAdminStats,
     getAdminOrders,
@@ -561,9 +562,9 @@ export default function AdminPanel() {
                                         <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group">
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 bg-gray-100 dark:bg-zinc-800 rounded-xl overflow-hidden flex-shrink-0 border border-[var(--border)]">
+                                                    <div className="w-12 h-12 bg-gray-100 dark:bg-zinc-800 rounded-xl overflow-hidden flex-shrink-0 border border-[var(--border)] relative">
                                                         {p.image_url ? (
-                                                            <img src={p.image_url} alt={p.name} className="w-full h-full object-contain" />
+                                                            <Image src={p.image_url} alt={p.name} fill className="object-contain" />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center text-xl">☕</div>
                                                         )}
@@ -643,7 +644,7 @@ export default function AdminPanel() {
                             <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start">
                                 <div className="relative w-40 h-40 bg-gray-50 dark:bg-zinc-800 rounded-2xl border-2 border-dashed border-[var(--border)] flex items-center justify-center overflow-hidden group">
                                     {productForm.image_url ? (
-                                        <img src={productForm.image_url} alt="Preview" className="w-full h-full object-contain" />
+                                        <Image src={productForm.image_url} alt="Preview" fill className="object-contain" />
                                     ) : (
                                         <div className="text-center p-4">
                                             <FaBoxOpen className="mx-auto text-3xl text-gray-300 mb-2" />

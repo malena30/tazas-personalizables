@@ -6,6 +6,7 @@ import { useCheckout } from "@/context/CheckoutContext";
 import { useCartStore } from "@/store/cartStore";
 import { createOrder } from "@/lib/api";
 import Image from "next/image";
+import { FaShoppingBag, FaArrowRight, FaLock, FaShieldAlt } from "react-icons/fa";
 
 export default function OrderSummary() {
     const { subtotal, shipping, total, buyer, payment } = useCheckout();
@@ -67,7 +68,7 @@ export default function OrderSummary() {
                         <div key={item.id} className="flex gap-5 group">
                             <div className="relative w-20 h-20 rounded-2xl bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] overflow-hidden flex-shrink-0">
                                 {item.image ? (
-                                    <img src={item.image} alt={item.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                                    <Image src={item.image} alt={item.name} fill className="object-contain group-hover:scale-110 transition-transform duration-500" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-2xl">☕</div>
                                 )}

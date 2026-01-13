@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -77,21 +78,21 @@ export default function Navbar() {
 
         {/* LOGO */}
         <Link href="/" className="text-2xl font-title font-black text-[var(--foreground)] tracking-tighter flex items-center gap-2">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+          <div className="w-10 h-10 bg-[var(--foreground)] rounded-xl flex items-center justify-center text-[var(--background)] shadow-lg shadow-black/10">
             <FaShoppingBag size={18} />
           </div>
-          <span>Tazas<span className="text-blue-600">.shop</span></span>
+          <span>Tazas<span className="text-[var(--accent)]">.shop</span></span>
         </Link>
 
         {/* MENÚ DESKTOP */}
         <div className="hidden md:flex gap-8 text-sm text-[var(--foreground)] items-center font-text font-bold">
-          <Link href="/" className="hover:text-blue-600 transition-colors">Inicio</Link>
-          <Link href="/products" className="hover:text-blue-600 transition-colors">Productos</Link>
-          <Link href="/customizer" className="hover:text-blue-600 transition-colors">Personalizar</Link>
+          <Link href="/" className="hover:text-[var(--accent)] transition-colors">Inicio</Link>
+          <Link href="/products" className="hover:text-[var(--accent)] transition-colors">Productos</Link>
+          <Link href="/customizer" className="hover:text-[var(--accent)] transition-colors">Personalizar</Link>
           {user && (
             <>
-              <Link href="/orders" className="hover:text-blue-600 transition-colors">Mis Pedidos</Link>
-              <Link href="/profile" className="hover:text-blue-600 transition-colors">Mi Perfil</Link>
+              <Link href="/orders" className="hover:text-[var(--accent)] transition-colors">Mis Pedidos</Link>
+              <Link href="/profile" className="hover:text-[var(--accent)] transition-colors">Mi Perfil</Link>
             </>
           )}
           {user?.is_admin && (
@@ -107,7 +108,7 @@ export default function Navbar() {
           <Link href="/cart" className="relative p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-all">
             <FaShoppingBag size={20} />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-lg shadow-blue-500/20">
+              <span className="absolute -top-1 -right-1 bg-[var(--accent)] text-[var(--background)] text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-lg shadow-black/10">
                 {totalItems}
               </span>
             )}
@@ -127,13 +128,15 @@ export default function Navbar() {
             <div className="flex items-center gap-4 ml-2">
               <Link href="/profile" className="flex items-center gap-2 group">
                 {user.avatar_url ? (
-                  <img src={user.avatar_url} alt={user.username} className="w-8 h-8 rounded-full object-cover border-2 border-blue-600" />
+                  <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-[var(--accent)]">
+                    <Image src={user.avatar_url} alt={user.username} fill className="object-cover" />
+                  </div>
                 ) : (
-                  <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-full flex items-center justify-center border border-blue-200 dark:border-blue-800">
+                  <div className="w-8 h-8 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full flex items-center justify-center border border-[var(--accent)]/20">
                     <FaUserCircle size={20} />
                   </div>
                 )}
-                <span className="text-sm group-hover:text-blue-600 transition-colors">{user.username}</span>
+                <span className="text-sm group-hover:text-[var(--accent)] transition-colors">{user.username}</span>
               </Link>
               <button
                 onClick={handleLogout}
