@@ -1,3 +1,7 @@
+import os
+import sentry_sdk
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session, joinedload
@@ -28,6 +32,23 @@ from email_utils import (
     get_payment_success_template
 )
 
+# Inicializar Sentry
+SENTRY_DSN = os.getenv("SENTRY_DSN")
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[
+            FastApiIntegration(),
+            SqlalchemyIntegration(),
+        ],
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        traces_sample_rate=1.0,
+        # Set profiles_sample_rate to 1.0 to profile 100%
+        # of transactions.
+        profiles_sample_rate=1.0,
+    )
+
 app = FastAPI(title="Tazas Personalizables API")
 
 # Configurar CORS para permitir requests desde el frontend
@@ -42,6 +63,11 @@ app.add_middleware(
 @app.get('/')
 async def root():
     return {'message': 'Backend iniciado correctamente 🚀'}
+
+@app.get("/api/debug-sentry")
+async def trigger_error():
+    division_by_zero = 1 / 0
+    return division_by_zero
 
 # --- AUTH ENDPOINTS ---
 

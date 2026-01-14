@@ -5,6 +5,7 @@
   "dependencies": {
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",
+    "@sentry/nextjs": "^10.34.0",
     "@types/three": "^0.181.0",
     "konva": "^10.0.12",
     "next": "^16.0.3",
