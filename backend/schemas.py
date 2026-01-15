@@ -28,14 +28,25 @@ class DesignResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True  # Para compatibilidad con SQLAlchemy
+from pydantic import BaseModel, Field, field_validator
+import re
 
 # Schema para registro de usuario
 class UserRegister(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
     email: str = Field(..., pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$') # Regex simple para email
-    password: str = Field(..., min_length=6)
+    password: str = Field(..., min_length=8)
+
+    @field_validator('password')
+    @classmethod
+    def password_complexity(cls, v: str) -> str:
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('La contraseña debe contener al menos una letra mayúscula')
+        if not re.search(r'\d', v):
+            raise ValueError('La contraseña debe contener al menos un número')
+        if not re.search(r'[@$!%*?&]', v):
+            raise ValueError('La contraseña debe contener al menos un carácter especial (@$!%*?&)')
+        return v
 
 # Schema para login
 class UserLogin(BaseModel):
@@ -162,7 +173,20 @@ class UserProfileUpdate(BaseModel):
     phone: Optional[str] = None
     addresses: Optional[List[Address]] = None
     current_password: Optional[str] = None  # Requerido si cambia contraseña
-    new_password: Optional[str] = Field(None, min_length=6)
+    new_password: Optional[str] = Field(None, min_length=8)
+
+    @field_validator('new_password')
+    @classmethod
+    def new_password_complexity(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return v
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('La contraseña debe contener al menos una letra mayúscula')
+        if not re.search(r'\d', v):
+            raise ValueError('La contraseña debe contener al menos un número')
+        if not re.search(r'[@$!%*?&]', v):
+            raise ValueError('La contraseña debe contener al menos un carácter especial (@$!%*?&)')
+        return v
 
 class UserStats(BaseModel):
     """Estadísticas del usuario para su perfil"""

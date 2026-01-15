@@ -2,12 +2,16 @@ import os
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
-from fastapi import FastAPI, Depends, HTTPException, status, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Request, Response
+from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 from typing import List, Optional
 from datetime import timedelta
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 import database
 from database import get_db, Design, User, Order, OrderItem, Product
 from schemas import (
@@ -49,12 +53,36 @@ if SENTRY_DSN:
         profiles_sample_rate=1.0,
     )
 
+# Configurar Rate Limiting
+limiter = Limiter(key_func=get_remote_address)
 app = FastAPI(title="Tazas Personalizables API")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# Middleware para Forzar HTTPS (solo si no es localhost)
+@app.middleware("http")
+async def force_https_middleware(request: Request, call_next):
+    if os.getenv("ENV") == "production" and request.url.scheme == "http":
+        url = request.url.replace(scheme="https")
+        return RedirectResponse(url, status_code=301)
+    return await call_next(request)
+
+# Middleware para Headers de Seguridad
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    response.headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' data: https:; script-src 'self'; style-src 'self' 'unsafe-inline';"
+    return response
 
 # Configurar CORS para permitir requests desde el frontend
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Frontend dev server
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -72,7 +100,8 @@ async def trigger_error():
 # --- AUTH ENDPOINTS ---
 
 @app.post("/auth/register", response_model=UserResponse, status_code=201)
-async def register(user: UserRegister, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+async def register(request: Request, user: UserRegister, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.username == user.username).first()
     if db_user:
         raise HTTPException(status_code=400, detail="El usuario ya existe")
@@ -103,7 +132,8 @@ async def register(user: UserRegister, db: Session = Depends(get_db)):
     return new_user
 
 @app.post("/auth/login", response_model=Token)
-async def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+async def login(request: Request, user_credentials: UserLogin, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == user_credentials.username).first()
     if not user or not verify_password(user_credentials.password, user.hashed_password):
         raise HTTPException(
