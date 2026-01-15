@@ -7,9 +7,11 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import get_db, User
 
+import os
+
 # Configuración
-# IMPORTANTE: En producción, usar variable de entorno
-SECRET_KEY = "super-secret-key-change-this-in-production"
+# IMPORTANTE: En producción, DEBE usarse la variable de entorno SECRET_KEY
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-this-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 7 días
 
