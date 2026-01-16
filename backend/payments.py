@@ -4,7 +4,9 @@ import os
 # En producción, esto debería estar en una variable de entorno
 # Por ahora usamos un token de prueba (Sandbox)
 # NOTA: Este es un token de prueba genérico para desarrollo
-MP_ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN", "APP_USR-6317423111705644-042414-47f8b97a34015183f3a9f85319a0e10d-415944059")
+MP_ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
 sdk = mercadopago.SDK(MP_ACCESS_TOKEN)
 
@@ -32,13 +34,13 @@ def create_preference(order, items):
     preference_data = {
         "items": mp_items,
         "back_urls": {
-            "success": "http://localhost:3000/checkout/success",
-            "failure": "http://localhost:3000/checkout/failure",
-            "pending": "http://localhost:3000/checkout/success"
+            "success": f"{FRONTEND_URL}/checkout/success",
+            "failure": f"{FRONTEND_URL}/checkout/failure",
+            "pending": f"{FRONTEND_URL}/checkout/success"
         },
         "auto_return": "approved",
         "external_reference": str(order.id),
-        "notification_url": "https://your-webhook-url.com/api/payments/webhook", # Necesitarás ngrok para probar esto localmente
+        "notification_url": f"{BACKEND_URL}/api/payments/webhook",
     }
 
     preference_response = sdk.preference().create(preference_data)
