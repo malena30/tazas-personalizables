@@ -9,9 +9,9 @@ load_dotenv()
 # Se puede configurar vía CLOUDINARY_URL en el .env
 # Ejemplo: CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME
 cloudinary.config(
-    cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME", "dly8v8v8v"), # Placeholder
-    api_key = os.getenv("CLOUDINARY_API_KEY", "123456789012345"), # Placeholder
-    api_secret = os.getenv("CLOUDINARY_API_SECRET", "abcdefghijklmnopqrstuvwxyz"), # Placeholder
+    cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key = os.getenv("CLOUDINARY_API_KEY"),
+    api_secret = os.getenv("CLOUDINARY_API_SECRET"),
     secure = True
 )
 

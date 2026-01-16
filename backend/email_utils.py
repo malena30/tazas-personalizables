@@ -53,7 +53,7 @@ def get_welcome_template(username):
         <h2 style="color: #2563eb;">¡Bienvenido a Tazas.shop, {username}!</h2>
         <p>Estamos encantados de tenerte con nosotros. Ahora puedes empezar a diseñar tus propias tazas personalizadas.</p>
         <div style="margin: 30px 0;">
-            <a href="http://localhost:3000/customizer" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Comenzar a Diseñar</a>
+            <a href="{os.getenv('FRONTEND_URL', 'http://localhost:3000')}/customizer" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Comenzar a Diseñar</a>
         </div>
         <p style="color: #666; font-size: 14px;">Si tienes alguna duda, responde a este correo.</p>
     </div>
