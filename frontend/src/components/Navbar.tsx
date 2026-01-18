@@ -70,9 +70,9 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`w-full fixed top-0 left-0 z-50 transition-all duration-300 ${scrolled
-      ? "bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-b border-[var(--border)] py-3"
-      : "bg-transparent py-5"
+    <nav className={`w-full fixed top-0 left-0 z-50 transition-all duration-300 border-b ${scrolled
+      ? "bg-[var(--background)]/90 backdrop-blur-xl border-[var(--border)] py-3 shadow-sm"
+      : "bg-[var(--background)] border-[var(--border)] py-5"
       }`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
 
