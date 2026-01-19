@@ -31,7 +31,6 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
             setDesigns(data);
         } catch (err) {
             setError('Error al cargar los diseños');
-            console.error(err);
         } finally {
             setLoading(false);
         }
@@ -42,7 +41,7 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
             const updatedDesign = await toggleFavoriteDesign(id);
             setDesigns(designs.map(d => d.id === id ? updatedDesign : d));
         } catch (err) {
-            console.error('Error toggling favorite:', err);
+            // Error handling already done or not needed for user
         }
     };
 
@@ -54,7 +53,6 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
             setDesigns(designs.filter(d => d.id !== id));
         } catch (err) {
             alert('Error al eliminar el diseño');
-            console.error(err);
         }
     };
 

@@ -50,7 +50,6 @@ export default function OrderSummary() {
                 router.push(`/checkout/success?orderId=${order.id}`);
             }
         } catch (error: any) {
-            console.error("Error al crear la orden:", error);
             alert(error.message || "Hubo un error al procesar tu pedido");
         } finally {
             setLoading(false);

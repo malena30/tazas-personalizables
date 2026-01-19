@@ -359,87 +359,65 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
 
     // Actualizar texturas cuando cambian los elementos
     useEffect(() => {
+        let isMounted = true;
         const updateTextures = async () => {
-            if (!konvaStageRef.current) return;
+            if (!konvaStageRef.current || !isMounted) return;
 
             const stage = konvaStageRef.current;
             const layer = stage.getLayers()[0];
+            const children = layer.getChildren();
+            const bgRect = children[0];
+            if (!bgRect) return;
 
-            // Función auxiliar para capturar textura
             const captureTexture = (filterFn: (el: CanvasElement) => boolean) => {
-                // Ocultamos el fondo blanco para la captura
-                // Asumimos que el primer hijo es el Rect de fondo
-                const children = layer.getChildren();
-                const bgRect = children[0];
-                // Verificación de seguridad
-                if (!bgRect) return null;
-
                 const originalBgVisible = bgRect.visible();
-                bgRect.visible(false); // Fondo transparente para las texturas
+                bgRect.visible(false);
 
-                // Filtrar elementos usando ID para robustez
                 elements.forEach((el) => {
-                    // Buscar nodo por ID iterando directamente
                     const node = children.find((c: any) => c.id() === el.id);
-                    if (node) {
-                        if (filterFn(el)) {
-                            node.visible(true);
-                        } else {
-                            node.visible(false);
-                        }
-                    }
+                    if (node) node.visible(filterFn(el));
                 });
 
-                // Renderizar y crear textura
                 stage.batchDraw();
-                const canvas = stage.toCanvas({ pixelRatio: 1.5 }); // Optimizado de 2 a 1.5
+                const canvas = stage.toCanvas({ pixelRatio: 1 }); // Optimizado para rendimiento
                 const texture = new THREE.CanvasTexture(canvas);
                 texture.flipY = true;
                 texture.minFilter = THREE.LinearFilter;
-                texture.magFilter = THREE.LinearFilter;
-                texture.generateMipmaps = false; // Ahorra memoria y tiempo
+                texture.generateMipmaps = false;
                 texture.needsUpdate = true;
                 texture.colorSpace = THREE.SRGBColorSpace;
 
-                // Restaurar visibilidad
                 bgRect.visible(originalBgVisible);
+                return texture;
+            };
+
+            const hasFront = elements.some(e => e.coverage === 'front' || !e.coverage);
+            const hasFrontBack = elements.some(e => e.coverage === 'front-back');
+            const hasFull = elements.some(e => e.coverage === 'full');
+
+            const newTextures = {
+                front: hasFront ? captureTexture(e => e.coverage === 'front' || !e.coverage) : null,
+                frontBack: hasFrontBack ? captureTexture(e => e.coverage === 'front-back') : null,
+                full: hasFull ? captureTexture(e => e.coverage === 'full') : null
+            };
+
+            if (isMounted) {
+                setTextures(newTextures);
+                // Restaurar visibilidad de todos los nodos
                 elements.forEach((el) => {
                     const node = children.find((c: any) => c.id() === el.id);
                     if (node) node.visible(true);
                 });
-
-                return texture;
-            };
-
-            // Capturar Front
-            const frontTex = elements.some(e => e.coverage === 'front' || !e.coverage)
-                ? captureTexture(e => e.coverage === 'front' || !e.coverage)
-                : null;
-
-            // Capturar Front-Back
-            const frontBackTex = elements.some(e => e.coverage === 'front-back')
-                ? captureTexture(e => e.coverage === 'front-back')
-                : null;
-
-            // Capturar Full
-            const fullTex = elements.some(e => e.coverage === 'full')
-                ? captureTexture(e => e.coverage === 'full')
-                : null;
-
-            // Restaurar todo visible
-            stage.batchDraw();
-
-            setTextures({
-                front: frontTex,
-                frontBack: frontBackTex,
-                full: fullTex
-            });
+                stage.batchDraw();
+            }
         };
 
-        // Debounce pequeño para evitar bloqueos
-        const timeout = setTimeout(updateTextures, 50);
-        return () => clearTimeout(timeout);
-    }, [elements, selectedId]); // selectedId incluído para quitar transformadores si es necesario (aunque Transformer es otro nodo)
+        const timeout = setTimeout(updateTextures, 32); // ~30fps throttle
+        return () => {
+            isMounted = false;
+            clearTimeout(timeout);
+        };
+    }, [elements, selectedId]);
 
     useImperativeHandle(ref, () => ({
         toDataURL: (options: any) => {
