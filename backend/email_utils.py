@@ -19,14 +19,6 @@ def send_email(to_email, subject, html_content):
     Si no hay credenciales configuradas, solo imprime en consola (modo desarrollo).
     """
     if not SMTP_USER or not SMTP_PASSWORD:
-        print("\n" + "="*50)
-        print(f"SIMULACIÓN DE EMAIL (Desarrollo)")
-        print(f"Para: {to_email}")
-        print(f"Asunto: {subject}")
-        print("-" * 20)
-        print("Contenido HTML (Resumen):")
-        print(html_content[:200] + "...")
-        print("="*50 + "\n")
         return True
 
     try:
@@ -43,8 +35,7 @@ def send_email(to_email, subject, html_content):
         server.send_message(msg)
         server.quit()
         return True
-    except Exception as e:
-        print(f"Error al enviar email: {e}")
+    except Exception:
         return False
 
 def get_welcome_template(username):

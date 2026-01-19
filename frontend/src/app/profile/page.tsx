@@ -93,7 +93,7 @@ export default function ProfilePage() {
             const designsData = await listDesigns();
             setDesigns(designsData);
         } catch (err: any) {
-            console.error("Error al cargar diseños:", err);
+            // Error handled by UI or ignored
         }
     };
 
@@ -113,7 +113,7 @@ export default function ProfilePage() {
             const ordersData = await getOrders();
             setOrders(ordersData);
         } catch (err: any) {
-            console.error("Error al cargar órdenes:", err);
+            // Error handled by UI or ignored
         }
     };
 
@@ -122,7 +122,7 @@ export default function ProfilePage() {
             const statsData = await getUserStats();
             setStats(statsData);
         } catch (err: any) {
-            console.error("Error al cargar estadísticas:", err);
+            // Error handled by UI or ignored
         }
     };
 

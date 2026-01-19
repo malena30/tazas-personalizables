@@ -31,7 +31,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     setToken(savedToken);
                     setUser(userData);
                 } catch (error) {
-                    console.warn('Sesión expirada o inválida:', error);
                     localStorage.removeItem('auth_token');
                     localStorage.removeItem('auth_user');
                 }
@@ -54,7 +53,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             localStorage.setItem('auth_token', accessToken);
             localStorage.setItem('auth_user', JSON.stringify(userData));
         } catch (error: any) {
-            console.error('Login error:', error);
             throw error;
         }
     };
@@ -65,7 +63,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             // Auto login después del registro
             await login(username, password);
         } catch (error: any) {
-            console.error('Register error:', error);
             throw error;
         }
     };
@@ -84,7 +81,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 setUser(userData);
                 localStorage.setItem('auth_user', JSON.stringify(userData));
             } catch (error) {
-                console.error('Error refreshing user:', error);
             }
         }
     };

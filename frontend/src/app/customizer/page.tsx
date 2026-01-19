@@ -163,49 +163,42 @@ export default function CustomizerPage() {
         ));
     };
 
-    // Sincronizar color de texto cuando cambia y hay un texto seleccionado
+    // Sincronizar propiedades del elemento seleccionado
     useEffect(() => {
-        if (selectedId) {
-            const selectedElement = elements.find(el => el.id === selectedId);
-            if (selectedElement && selectedElement.type === 'text') {
-                setElements(elements.map(el =>
-                    el.id === selectedId ? { ...el, color: textColor } : el
-                ));
-            }
-        }
-    }, [textColor]);
+        if (!selectedId) return;
 
-    // Sincronizar tamaño de fuente cuando cambia y hay un texto seleccionado
-    useEffect(() => {
-        if (selectedId) {
-            const selectedElement = elements.find(el => el.id === selectedId);
-            if (selectedElement && selectedElement.type === 'text') {
-                setElements(elements.map(el =>
-                    el.id === selectedId ? { ...el, fontSize: fontSize } : el
-                ));
-            }
-        }
-    }, [fontSize]);
+        setElements(prev => prev.map(el => {
+            if (el.id !== selectedId) return el;
 
-    // Sincronizar fuente cuando cambia y hay un texto seleccionado
-    useEffect(() => {
-        if (selectedId) {
-            const selectedElement = elements.find(el => el.id === selectedId);
-            if (selectedElement && selectedElement.type === 'text') {
-                setElements(elements.map(el =>
-                    el.id === selectedId ? { ...el, fontFamily: fontFamily } : el
-                ));
+            if (el.type === 'text') {
+                return {
+                    ...el,
+                    color: textColor,
+                    fontSize: fontSize,
+                    fontFamily: fontFamily,
+                    stroke: stroke || undefined,
+                    strokeWidth: strokeWidth,
+                    shadowColor: shadowColor || undefined,
+                    shadowBlur: shadowBlur,
+                    shadowOpacity: shadowOpacity,
+                    shadowOffsetX: shadowOffsetX,
+                    shadowOffsetY: shadowOffsetY,
+                    curvature: curvature
+                };
             }
-        }
-    }, [fontFamily]);
+            return el;
+        }));
+    }, [selectedId, textColor, fontSize, fontFamily, stroke, strokeWidth, shadowColor, shadowBlur, shadowOpacity, shadowOffsetX, shadowOffsetY, curvature]);
 
-    // Sincronizar propiedades avanzadas cuando cambia la selección
+    // Sincronizar estados locales cuando cambia la selección
     useEffect(() => {
-        if (selectedId) {
-            const selectedElement = elements.find(el => el.id === selectedId);
-            if (selectedElement && selectedElement.type === 'text') {
-                // Si el elemento tiene estas propiedades, actualizar el estado
-                // Si no, resetear a valores por defecto
+        if (!selectedId) return;
+        const selectedElement = elements.find(el => el.id === selectedId);
+        if (selectedElement) {
+            if (selectedElement.type === 'text') {
+                setTextColor(selectedElement.color || "#000000");
+                setFontSize(selectedElement.fontSize || 24);
+                setFontFamily(selectedElement.fontFamily || "Inter");
                 setStroke(selectedElement.stroke || "");
                 setStrokeWidth(selectedElement.strokeWidth || 1);
                 setShadowColor(selectedElement.shadowColor || "");
@@ -214,113 +207,12 @@ export default function CustomizerPage() {
                 setShadowOffsetX(selectedElement.shadowOffsetX || 3);
                 setShadowOffsetY(selectedElement.shadowOffsetY || 3);
                 setCurvature(selectedElement.curvature || 0);
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedId]); // Solo sincronizar cuando cambia la selección, NO cuando cambia elements
-
-    // Auto-cambiar de pestaña al seleccionar un elemento
-    useEffect(() => {
-        if (selectedId) {
-            const selectedElement = elements.find(el => el.id === selectedId);
-            if (selectedElement) {
-                if (selectedElement.type === 'text') {
-                    setActiveTab('texto');
-                } else if (selectedElement.type === 'image') {
-                    setActiveTab('imagen');
-                }
+                setActiveTab('texto');
+            } else if (selectedElement.type === 'image') {
+                setActiveTab('imagen');
             }
         }
     }, [selectedId]);
-
-    // Handlers para actualizar propiedades avanzadas en el elemento seleccionado
-    useEffect(() => {
-        if (selectedId) {
-            setElements(prev => prev.map(el => {
-                if (el.id === selectedId && el.type === 'text') {
-                    return { ...el, stroke: stroke || undefined };
-                }
-                return el;
-            }));
-        }
-    }, [stroke]);
-
-    useEffect(() => {
-        if (selectedId) {
-            setElements(prev => prev.map(el => {
-                if (el.id === selectedId && el.type === 'text') {
-                    return { ...el, strokeWidth: strokeWidth };
-                }
-                return el;
-            }));
-        }
-    }, [strokeWidth]);
-
-    useEffect(() => {
-        if (selectedId) {
-            setElements(prev => prev.map(el => {
-                if (el.id === selectedId && el.type === 'text') {
-                    return { ...el, shadowColor: shadowColor || undefined };
-                }
-                return el;
-            }));
-        }
-    }, [shadowColor]);
-
-    useEffect(() => {
-        if (selectedId) {
-            setElements(prev => prev.map(el => {
-                if (el.id === selectedId && el.type === 'text') {
-                    return { ...el, shadowBlur: shadowBlur };
-                }
-                return el;
-            }));
-        }
-    }, [shadowBlur]);
-
-    useEffect(() => {
-        if (selectedId) {
-            setElements(prev => prev.map(el => {
-                if (el.id === selectedId && el.type === 'text') {
-                    return { ...el, shadowOpacity: shadowOpacity };
-                }
-                return el;
-            }));
-        }
-    }, [shadowOpacity]);
-
-    useEffect(() => {
-        if (selectedId) {
-            setElements(prev => prev.map(el => {
-                if (el.id === selectedId && el.type === 'text') {
-                    return { ...el, shadowOffsetX: shadowOffsetX };
-                }
-                return el;
-            }));
-        }
-    }, [shadowOffsetX]);
-
-    useEffect(() => {
-        if (selectedId) {
-            setElements(prev => prev.map(el => {
-                if (el.id === selectedId && el.type === 'text') {
-                    return { ...el, shadowOffsetY: shadowOffsetY };
-                }
-                return el;
-            }));
-        }
-    }, [shadowOffsetY]);
-
-    useEffect(() => {
-        if (selectedId) {
-            setElements(prev => prev.map(el => {
-                if (el.id === selectedId && el.type === 'text') {
-                    return { ...el, curvature: curvature };
-                }
-                return el;
-            }));
-        }
-    }, [curvature]);
 
 
 
@@ -377,7 +269,7 @@ export default function CustomizerPage() {
                     mimeType: 'image/png',
                 });
             } catch (err) {
-                console.warn('No se pudo generar thumbnail');
+                // Ignore thumbnail generation error
             }
 
             const designData = {
@@ -401,7 +293,6 @@ export default function CustomizerPage() {
             setShowSaveModal(false);
             setDesignName('');
         } catch (error) {
-            console.error('Error al guardar:', error);
             alert('Error al guardar el diseño');
         }
     };
@@ -432,7 +323,7 @@ export default function CustomizerPage() {
                     setShowSaveModal(true);
                 }
             } catch (e) {
-                console.error("Error restaurando diseño pendiente:", e);
+                // Ignore parsing error
             }
         }
     }, [user]); // Re-ejecutar cuando el usuario se loguea

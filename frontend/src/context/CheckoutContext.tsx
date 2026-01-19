@@ -71,14 +71,14 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
             try {
                 setBuyer(JSON.parse(savedBuyer));
             } catch (e) {
-                console.error("Error parsing saved buyer", e);
+                // Silently fail or handle error
             }
         }
         if (savedShipping) {
             try {
                 setShipping(JSON.parse(savedShipping));
             } catch (e) {
-                console.error("Error parsing saved shipping", e);
+                // Silently fail or handle error
             }
         }
         if (savedPayment) setPayment(savedPayment);

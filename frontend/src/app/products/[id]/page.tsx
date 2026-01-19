@@ -30,7 +30,7 @@ export default function ProductDetailPage() {
             const data = await getProduct(id as string);
             setProduct(data);
         } catch (error) {
-            console.error("Error loading product:", error);
+            // Error handled by showing "Producto no encontrado"
         } finally {
             setLoading(false);
         }
@@ -175,8 +175,8 @@ export default function ProductDetailPage() {
                                 <button
                                     onClick={handleAddToCart}
                                     className={`flex-1 py-4 rounded-2xl font-black flex items-center justify-center gap-3 transition-all shadow-xl ${added
-                                            ? "bg-green-500 text-white shadow-green-500/20"
-                                            : "bg-[var(--foreground)] text-[var(--background)] hover:scale-[1.02] active:scale-[0.98] shadow-black/10"
+                                        ? "bg-green-500 text-white shadow-green-500/20"
+                                        : "bg-[var(--foreground)] text-[var(--background)] hover:scale-[1.02] active:scale-[0.98] shadow-black/10"
                                         }`}
                                 >
                                     {added ? (

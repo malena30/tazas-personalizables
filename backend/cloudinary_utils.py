@@ -29,8 +29,7 @@ def upload_base64_image(base64_string, folder="tazas_designs"):
             resource_type = "image"
         )
         return upload_result.get("secure_url")
-    except Exception as e:
-        print(f"Error al subir a Cloudinary: {e}")
+    except Exception:
         # En caso de error, devolvemos el base64 original para no romper la funcionalidad
         # aunque la DB crezca, el sistema sigue funcionando.
         return base64_string

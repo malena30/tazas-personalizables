@@ -12,7 +12,6 @@ from datetime import timedelta
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-import database
 from database import get_db, Design, User, Order, OrderItem, Product
 from schemas import (
     DesignCreate, DesignUpdate, DesignResponse, 
@@ -126,8 +125,8 @@ async def register(request: Request, user: UserRegister, db: Session = Depends(g
             "¡Bienvenido a Tazas.shop!", 
             get_welcome_template(new_user.username)
         )
-    except Exception as e:
-        print(f"Error al enviar email de bienvenida: {e}")
+    except Exception:
+        pass
         
     return new_user
 
@@ -363,8 +362,8 @@ async def create_order(
         try:
             checkout_url = create_preference(db_order, order_items)
             db_order.checkout_url = checkout_url
-        except Exception as e:
-            print(f"Error creando preferencia de MP: {e}")
+        except Exception:
+            pass
             # No fallamos la orden si MP falla, pero el usuario no tendrá link
     
     db.commit()
@@ -377,8 +376,8 @@ async def create_order(
             f"Confirmación de Pedido #{db_order.id[:8]}",
             get_order_confirmation_template(db_order.id, db_order.total_amount)
         )
-    except Exception as e:
-        print(f"Error al enviar email de orden: {e}")
+    except Exception:
+        pass
         
     return db_order
 
@@ -400,7 +399,6 @@ async def list_orders(
 async def mercadopago_webhook(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
-        print(f"Webhook recibido: {data}")
         
         topic = data.get("type") or data.get("topic")
         
@@ -428,18 +426,16 @@ async def mercadopago_webhook(request: Request, db: Session = Depends(get_db)):
                                         f"¡Pago Aprobado! Pedido #{order.id[:8]}",
                                         get_payment_success_template(order.id)
                                     )
-                            except Exception as e:
-                                print(f"Error al enviar email de pago: {e}")
+                            except Exception:
+                                pass
                         elif status in ["rejected", "cancelled", "refunded"]:
                             order.status = "failed"
                         
                         db.commit()
-                        print(f"Orden {order_id} actualizada a estado: {order.status}")
         
         return {"status": "ok"}
-    except Exception as e:
-        print(f"Error procesando webhook: {e}")
-        return {"status": "error", "message": str(e)}
+    except Exception:
+        return {"status": "error"}
 
 # --- ADMIN ENDPOINTS ---
 

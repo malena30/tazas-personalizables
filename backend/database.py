@@ -75,7 +75,7 @@ class Order(Base):
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = Column(String, ForeignKey("users.id"), nullable=True)
-    total_amount = Column(JSON, nullable=False) # Guardamos como float pero SQLAlchemy lo maneja
+    total_amount = Column(Float, nullable=False)
     status = Column(String, default="pending") # pending, paid, shipped
     shipping_address = Column(JSON, nullable=False)
     payment_method = Column(String, nullable=False)
@@ -93,8 +93,8 @@ class OrderItem(Base):
     order_id = Column(String, ForeignKey("orders.id"), nullable=False)
     design_id = Column(String, ForeignKey("designs.id"), nullable=True)
     product_id = Column(String, nullable=True) # ID de producto de catálogo
-    quantity = Column(JSON, nullable=False) # Integer
-    price = Column(JSON, nullable=False) # Float
+    quantity = Column(Integer, nullable=False)
+    price = Column(Float, nullable=False)
 
     order = relationship("Order", back_populates="items")
     design = relationship("Design")

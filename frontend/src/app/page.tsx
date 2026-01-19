@@ -19,7 +19,6 @@ export default function Home() {
         const data = await getProducts();
         setProducts(data.slice(0, 4)); // Mostrar solo los primeros 4
       } catch (error) {
-        console.error("Error loading products:", error);
       } finally {
         setLoading(false);
       }
