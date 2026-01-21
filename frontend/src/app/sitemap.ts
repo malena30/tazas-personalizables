@@ -1,10 +1,7 @@
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://tazas.shop'
-
-    // En una app real, podrías obtener los IDs de productos de la API
-    // para generar rutas dinámicas como /products/1, /products/2, etc.
+    const baseUrl = 'https://tazas.shop';
 
     return [
         {
@@ -26,10 +23,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.9,
         },
         {
-            url: `${baseUrl}/login`,
+            url: `${baseUrl}/terms`,
             lastModified: new Date(),
             changeFrequency: 'yearly',
-            priority: 0.5,
+            priority: 0.3,
         },
-    ]
+        {
+            url: `${baseUrl}/privacy`,
+            lastModified: new Date(),
+            changeFrequency: 'yearly',
+            priority: 0.3,
+        },
+    ];
 }

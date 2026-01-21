@@ -4,35 +4,36 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import CookieBanner from "@/components/CookieBanner";
 
 export const metadata: Metadata = {
   title: {
-    default: "Tazas Personalizables | Crea tu diseño único",
+    default: "Tazas Personalizables | Crea tu diseño único en 3D",
     template: "%s | Tazas.shop"
   },
-  description: "La mejor plataforma para crear y comprar tazas personalizadas de alta calidad. Tu diseño, tu estilo, tu taza.",
-  keywords: ["tazas personalizadas", "regalos personalizados", "diseño de tazas", "tazas de cerámica", "tazas de plástico"],
+  description: "Diseña y compra tazas personalizadas de alta calidad con nuestro editor 3D. Regalos únicos, cerámica premium y envío a toda Argentina.",
+  keywords: ["tazas personalizadas", "regalos personalizados", "diseño de tazas", "tazas de cerámica", "tazas 3D", "tazas con foto"],
   authors: [{ name: "Tazas.shop Team" }],
   creator: "Tazas.shop",
   openGraph: {
     type: "website",
     locale: "es_AR",
     url: "https://tazas.shop",
-    title: "Tazas Personalizables | Crea tu diseño único",
-    description: "Diseña tu propia taza en minutos con nuestro editor 3D. Calidad premium y envío a todo el país.",
+    title: "Tazas Personalizables | Crea tu diseño único en 3D",
+    description: "Diseña tu propia taza en minutos con nuestro editor 3D. Calidad premium y envío a todo el país. ¡Regalá algo único!",
     siteName: "Tazas.shop",
     images: [
       {
-        url: "/og-image.jpg", // Asegúrate de que esta imagen exista en public/
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Tazas Personalizables",
+        alt: "Tazas Personalizables - Tazas.shop",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tazas Personalizables | Crea tu diseño único",
+    title: "Tazas Personalizables | Crea tu diseño único en 3D",
     description: "Diseña tu propia taza en minutos con nuestro editor 3D. Calidad premium y envío a todo el país.",
     images: ["/og-image.jpg"],
     creator: "@tazasshop",
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </main>
           <Footer />
+          <CookieBanner />
         </AuthProvider>
       </body>
     </html>
