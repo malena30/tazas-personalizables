@@ -1,27 +1,40 @@
+import os
 from sqlalchemy import create_engine, Column, String, DateTime, JSON, ForeignKey, Boolean, Float, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.dialects.postgresql import JSONB
 from datetime import datetime
 import uuid
 
-import os
-
 # Configuración de la base de datos
-# En producción se debe usar DATABASE_URL (ej: PostgreSQL)
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./designs.db")
 
 # Corregir prefijo para SQLAlchemy si es necesario (Heroku/Railway usan postgres://)
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
+# Configuración del motor (Engine)
 engine_args = {}
+
 if DATABASE_URL.startswith("sqlite"):
     engine_args["connect_args"] = {"check_same_thread": False}
+else:
+    # Configuraciones recomendadas para PostgreSQL en producción
+    engine_args.update({
+        "pool_size": 10,
+        "max_overflow": 20,
+        "pool_recycle": 3600,
+        "pool_pre_ping": True,
+    })
 
 engine = create_engine(DATABASE_URL, **engine_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
+# Helper para usar JSONB en Postgres y JSON en otros (SQLite)
+def SmartJSON():
+    return JSONB if DATABASE_URL.startswith("postgresql") else JSON
 
 # Modelo de Usuario
 class User(Base):
@@ -33,7 +46,7 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
     phone = Column(String, nullable=True)
-    addresses = Column(JSON, default=list, nullable=True)  # Lista de direcciones
+    addresses = Column(SmartJSON(), default=list, nullable=True)  # Lista de direcciones
     created_at = Column(DateTime, default=datetime.utcnow)
     
     designs = relationship("Design", back_populates="owner")
@@ -61,7 +74,7 @@ class Design(Base):
     user_id = Column(String, ForeignKey("users.id"), nullable=True)
     name = Column(String, nullable=False)
     mug_color = Column(String, nullable=False)
-    elements = Column(JSON, nullable=False)  # Array de CanvasElement
+    elements = Column(SmartJSON(), nullable=False)  # Array de CanvasElement
     thumbnail = Column(String, nullable=True)
     is_favorite = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -77,7 +90,7 @@ class Order(Base):
     user_id = Column(String, ForeignKey("users.id"), nullable=True)
     total_amount = Column(Float, nullable=False)
     status = Column(String, default="pending") # pending, paid, shipped
-    shipping_address = Column(JSON, nullable=False)
+    shipping_address = Column(SmartJSON(), nullable=False)
     payment_method = Column(String, nullable=False)
     checkout_url = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
