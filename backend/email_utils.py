@@ -1,42 +1,64 @@
 import os
 import smtplib
+import resend
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Configuración de Email (SMTP por defecto para máxima compatibilidad)
+# Configuración de Email
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
 SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USER = os.getenv("SMTP_USER", "")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
-EMAIL_FROM = os.getenv("EMAIL_FROM", "hola@tazas.shop")
+EMAIL_FROM = os.getenv("EMAIL_FROM", "onboarding@resend.dev") # Default Resend domain
+
+if RESEND_API_KEY:
+    resend.api_key = RESEND_API_KEY
 
 def send_email(to_email, subject, html_content):
     """
     Envía un correo electrónico en formato HTML.
-    Si no hay credenciales configuradas, solo imprime en consola (modo desarrollo).
+    Prioriza Resend si hay una API Key, de lo contrario usa SMTP.
+    Si no hay credenciales, solo simula el envío.
     """
-    if not SMTP_USER or not SMTP_PASSWORD:
-        return True
+    # 1. Intentar con Resend (Recomendado para producción)
+    if RESEND_API_KEY:
+        try:
+            resend.Emails.send({
+                "from": EMAIL_FROM,
+                "to": to_email,
+                "subject": subject,
+                "html": html_content
+            })
+            return True
+        except Exception:
+            # Si falla Resend, intentamos con SMTP si está configurado
+            pass
 
-    try:
-        msg = MIMEMultipart()
-        msg['From'] = EMAIL_FROM
-        msg['To'] = to_email
-        msg['Subject'] = subject
+    # 2. Intentar con SMTP (Fallback)
+    if SMTP_USER and SMTP_PASSWORD:
+        try:
+            msg = MIMEMultipart()
+            msg['From'] = EMAIL_FROM
+            msg['To'] = to_email
+            msg['Subject'] = subject
 
-        msg.attach(MIMEText(html_content, 'html'))
+            msg.attach(MIMEText(html_content, 'html'))
 
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
-        server.login(SMTP_USER, SMTP_PASSWORD)
-        server.send_message(msg)
-        server.quit()
-        return True
-    except Exception:
-        return False
+            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+            server.starttls()
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            server.send_message(msg)
+            server.quit()
+            return True
+        except Exception:
+            return False
+
+    # 3. Modo Simulación (Desarrollo)
+    return True
 
 def get_welcome_template(username):
     return f"""
