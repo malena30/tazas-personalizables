@@ -71,7 +71,15 @@ export async function registerUser(data: UserRegister): Promise<User> {
     });
     if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.detail || 'Error al registrarse');
+        let errorMessage = 'Error al registrarse';
+        if (error.detail) {
+            if (Array.isArray(error.detail)) {
+                errorMessage = error.detail.map((err: any) => err.msg).join(', ');
+            } else {
+                errorMessage = error.detail;
+            }
+        }
+        throw new Error(errorMessage);
     }
     return response.json();
 }
@@ -84,7 +92,15 @@ export async function loginUser(data: UserLogin): Promise<AuthResponse> {
     });
     if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.detail || 'Error al iniciar sesión');
+        let errorMessage = 'Error al iniciar sesión';
+        if (error.detail) {
+            if (Array.isArray(error.detail)) {
+                errorMessage = error.detail.map((err: any) => err.msg).join(', ');
+            } else {
+                errorMessage = error.detail;
+            }
+        }
+        throw new Error(errorMessage);
     }
     return response.json();
 }
