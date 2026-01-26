@@ -1,5 +1,7 @@
 import mercadopago
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # En producción, esto debería estar en una variable de entorno
 # Por ahora usamos un token de prueba (Sandbox)
