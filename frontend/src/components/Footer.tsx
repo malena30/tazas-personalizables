@@ -15,7 +15,7 @@ export default function Footer() {
               <div className="w-10 h-10 bg-[var(--foreground)] rounded-xl flex items-center justify-center text-[var(--background)] shadow-lg shadow-black/10">
                 <FaShoppingBag size={18} />
               </div>
-              <span>Tazas<span className="text-[var(--accent)]">.shop</span></span>
+              <span>KYATHOS <span className="text-[var(--accent)] font-text font-light text-lg tracking-widest uppercase">tazas</span></span>
             </Link>
             <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-xs">
               Transformamos tus ideas en piezas únicas. Calidad premium y personalización sin límites para tus momentos especiales.
@@ -84,7 +84,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-[var(--border)] pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black uppercase tracking-widest text-gray-400">
-          <p>© {new Date().getFullYear()} Tazas.shop S.R.L. Hecho con ❤️ en Argentina.</p>
+          <p>© {new Date().getFullYear()} KYATHOS tazas. Hecho con ❤️ en Argentina.</p>
           <div className="flex gap-8">
             <Link href="/privacy" className="hover:text-[var(--accent)] transition-colors">Privacidad</Link>
             <Link href="/terms" className="hover:text-[var(--accent)] transition-colors">Términos</Link>

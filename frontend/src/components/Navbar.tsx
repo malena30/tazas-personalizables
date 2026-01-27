@@ -60,8 +60,8 @@ export default function Navbar() {
 
   return (
     <nav className={`w-full fixed top-0 left-0 z-50 transition-all duration-300 border-b ${scrolled
-      ? "bg-[var(--background)]/90 backdrop-blur-xl border-[var(--border)] py-3 shadow-sm"
-      : "bg-[var(--background)] border-[var(--border)] py-5"
+      ? "bg-[var(--cream-dark)]/90 backdrop-blur-xl border-[var(--border)] py-3 shadow-sm"
+      : "bg-[var(--cream-dark)] border-[var(--border)] py-5"
       }`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
 
@@ -70,7 +70,7 @@ export default function Navbar() {
           <div className="w-10 h-10 bg-[var(--foreground)] rounded-xl flex items-center justify-center text-[var(--background)] shadow-lg shadow-black/10">
             <FaShoppingBag size={18} />
           </div>
-          <span>Tazas<span className="text-[var(--accent)]">.shop</span></span>
+          <span>KYATHOS <span className="text-[var(--accent)] font-text font-light text-lg tracking-widest uppercase">tazas</span></span>
         </Link>
 
         {/* MENÚ DESKTOP */}

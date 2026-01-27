@@ -8,20 +8,20 @@ import CookieBanner from "@/components/CookieBanner";
 
 export const metadata: Metadata = {
   title: {
-    default: "Tazas Personalizables | Crea tu diseño único en 3D",
-    template: "%s | Tazas.shop"
+    default: "KYATHOS tazas | Crea tu diseño único en 3D",
+    template: "%s | KYATHOS tazas"
   },
-  description: "Diseña y compra tazas personalizadas de alta calidad con nuestro editor 3D. Regalos únicos, cerámica premium y envío a toda Argentina.",
+  description: "Diseña y compra tazas personalizadas de alta calidad con nuestro editor 3D. Lo cotidiano, con intención. Cerámica premium y envío a toda Argentina.",
   keywords: ["tazas personalizadas", "regalos personalizados", "diseño de tazas", "tazas de cerámica", "tazas 3D", "tazas con foto"],
-  authors: [{ name: "Tazas.shop Team" }],
-  creator: "Tazas.shop",
+  authors: [{ name: "KYATHOS Team" }],
+  creator: "KYATHOS tazas",
   openGraph: {
     type: "website",
     locale: "es_AR",
-    url: "https://tazas.shop",
-    title: "Tazas Personalizables | Crea tu diseño único en 3D",
+    url: "https://kyathos.shop",
+    title: "KYATHOS tazas | Crea tu diseño único en 3D",
     description: "Diseña tu propia taza en minutos con nuestro editor 3D. Calidad premium y envío a todo el país. ¡Regalá algo único!",
-    siteName: "Tazas.shop",
+    siteName: "KYATHOS tazas",
     images: [
       {
         url: "/og-image.jpg",
@@ -33,10 +33,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tazas Personalizables | Crea tu diseño único en 3D",
+    title: "KYATHOS tazas | Crea tu diseño único en 3D",
     description: "Diseña tu propia taza en minutos con nuestro editor 3D. Calidad premium y envío a todo el país.",
     images: ["/og-image.jpg"],
-    creator: "@tazasshop",
+    creator: "@kyathostazas",
   },
   robots: {
     index: true,
@@ -50,10 +50,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Pacifico&family=Dancing+Script:wght@400;500;600;700&family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Lobster&family=Abril+Fatface&family=Comfortaa:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=Permanent+Marker&family=Righteous&family=Fredoka+One&family=Cinzel:wght@400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
       </head>
       <body className="h-full flex flex-col">
         <AuthProvider>
