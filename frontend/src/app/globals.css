@@ -1,133 +1,157 @@
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
+@theme {
+    /* Colors */
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-accent: var(--accent);
+    --color-border: var(--border);
+    --color-gold: var(--gold);
+    --color-stone: var(--stone);
+    --color-cream: var(--cream);
+    --color-cream-dark: var(--cream-dark);
 
-/* Variables */
-:root {
-  /* 🌞 Modo Claro (Default) */
-  --background: #FAF7F2;
-  /* Crema suave */
-  --foreground: #1C1C1C;
-  /* Negro casi puro */
-  --accent: #D4A373;
-  /* Dorado/Bronce suave */
-  --border: #EDEAE7;
-  /* Gris crema muy suave */
-  --hover-bg: #F5EFE7;
-  /* Crema un poco más oscuro */
-
-  /* Colores Pastel para estados */
-  --red-pastel: #FCA5A5;
-  --green-pastel: #86EFAC;
-  --gray-pastel: #E5E7EB;
-
-  /* Typography */
-  --font-title: "Space Grotesk", sans-serif;
-  --font-text: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    /* Fonts */
+    --font-title: "Cormorant Garamond", serif;
+    --font-text: "Inter", system-ui, -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
-/* 🌙 Modo Oscuro */
-html.dark {
-  --background: #121212;
-  /* Negro profundo */
-  --foreground: #FAF7F2;
-  /* Crema suave */
-  --accent: #E0B38D;
-  /* Crema/Dorado más brillante */
-  --border: #2A2A2A;
-  /* Gris oscuro */
-  --hover-bg: #1E1E1E;
-  /* Negro un poco más claro */
+@layer base {
+    :root {
+        /* 🌤️ Modo claro */
+        --background: #FAFAF8;
+        /* Marble White */
+        --foreground: #1C1C1C;
+        /* Ink Black */
+        --stone: #CFC8BD;
+        /* Warm Stone */
+        --border: #CFC8BD;
+        /* Warm Stone */
+        --accent: #6E7F6A;
+        /* Olive Ash */
+        --gold: #B8A96A;
+        /* Muted Gold */
+        --cream: #FAF7F2;
+        /* Crema claro */
+        --cream-dark: #D4A373;
+        /* Crema oscuro / Terracota suave original */
+
+        /* Typography Variables */
+        --font-title: "Cormorant Garamond", serif;
+        --font-text: "Inter", system-ui, -apple-system, sans-serif;
+        --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    /* 🌑 Modo oscuro (Activado por clase .dark) */
+    .dark {
+        --background: #0E0F0F;
+        /* Obsidian */
+        --foreground: #EDEBE7;
+        /* Soft Ivory */
+        --stone: #2A2A2A;
+        /* Charcoal Stone */
+        --border: #2A2A2A;
+        /* Charcoal Stone */
+        --accent: #7A8F83;
+        /* Desaturated Olive */
+        --gold: #C2B36E;
+        /* Antique Gold */
+        --cream: #1C1C1C;
+        --cream-dark: #1C1C1C;
+    }
+
+    body {
+        background-color: var(--background);
+        color: var(--foreground);
+        font-family: var(--font-text);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        margin: 0;
+        padding: 0;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: var(--font-title);
+        font-weight: 600;
+        margin: 0;
+    }
 }
 
-/* Ensure full height layout */
-html,
-body {
-  height: 100%;
+@layer utilities {
+    .font-title {
+        font-family: var(--font-title);
+    }
+
+    .font-text {
+        font-family: var(--font-text);
+    }
+
+    .font-mono {
+        font-family: var(--font-mono);
+    }
+
+    .text-accent {
+        color: var(--accent);
+    }
+
+    .bg-accent {
+        background-color: var(--accent);
+    }
+
+    .border-color {
+        border-color: var(--border);
+    }
+
+    .text-gold {
+        color: var(--gold);
+    }
+
+    .bg-gold {
+        background-color: var(--gold);
+    }
+
+    .bg-cream {
+        background-color: var(--cream);
+    }
+
+    .bg-cream-dark {
+        background-color: var(--cream-dark);
+    }
 }
 
-/* Body defaults */
-body {
-  @apply bg-[var(--background)] text-[var(--foreground)] antialiased;
-  font-family: var(--font-text);
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-/* Custom input base styles */
-.input {
-  width: 100%;
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  outline: none;
-  transition: 0.2s;
-  background-color: var(--background);
-  color: var(--foreground);
+::-webkit-scrollbar-track {
+    background: var(--background);
 }
 
-.input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 3px rgba(212, 163, 115, 0.4);
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 10px;
 }
 
-/* Typography Utilities */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.font-title {
-  font-family: var(--font-title);
-  font-weight: 600;
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
 }
 
-.font-text {
-  font-family: var(--font-text);
+/* Transitions */
+* {
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.font-mono {
-  font-family: var(--font-mono);
-}
-
-/* Color Utilities */
-.text-accent {
-  color: var(--accent);
-}
-
-.bg-accent {
-  background-color: var(--accent);
-}
-
-.border-color {
-  border-color: var(--border);
-}
-
-/* Animations */
-@keyframes shimmer {
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-.animate-shimmer {
-  animation: shimmer 2s infinite;
-}
-
-@keyframes slide-up {
-  from {
-    transform: translateY(100px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out;
+/* Fix for Next.js Image component in some layouts */
+img {
+    max-width: 100%;
+    height: auto;
 }

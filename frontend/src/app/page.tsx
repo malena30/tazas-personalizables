@@ -45,8 +45,8 @@ export default function Home() {
               <span>Calidad Premium Garantizada</span>
             </div>
             <h1 className="text-6xl md:text-8xl font-title font-black text-[var(--foreground)] mb-8 leading-[0.9] tracking-tighter animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-              Tu Taza, <br />
-              <span className="text-[var(--accent)]">Tu Estilo.</span>
+              Lo cotidiano, <br />
+              <span className="text-[var(--accent)]">con intención.</span>
             </h1>
             <p className="text-xl md:text-2xl text-[var(--foreground)] opacity-60 mb-12 font-text max-w-lg animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
               Personaliza cada detalle y crea una pieza única que hable de vos. Calidad excepcional en cada sorbo.

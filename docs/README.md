@@ -1,4 +1,4 @@
-# README: Tazas Personalizables
+# README: KYATHOS tazas
 
 > **Aplicación web completa** para diseñar, personalizar y comprar tazas personalizadas con editor 3D en tiempo real.
 

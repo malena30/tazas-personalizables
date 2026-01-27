@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: ['/admin/', '/profile/', '/checkout/'],
         },
-        sitemap: 'https://tazas.shop/sitemap.xml',
+        sitemap: 'https://kyathos.shop/sitemap.xml',
     }
 }
