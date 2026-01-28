@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   price: number;
   image: string;
@@ -19,8 +19,8 @@ interface CartState {
   cart: CartItem[];
   shippingCost: number;
   addToCart: (product: Product & { quantity?: number; designId?: string }) => void;
-  removeFromCart: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  removeFromCart: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   setShippingCost: (cost: number) => void;
 }

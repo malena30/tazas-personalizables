@@ -449,9 +449,15 @@ export async function toggleFavoriteDesign(designId: string): Promise<Design> {
 export interface Product {
     id: string;
     name: string;
+    slug?: string;
     description?: string;
     price: number;
     image_url?: string;
+    gallery_urls?: string[];
+    material?: string;
+    capacity?: string;
+    care_instructions?: string;
+    finish?: string;
     stock?: number;
     is_active: boolean;
     created_at: string;
@@ -460,18 +466,30 @@ export interface Product {
 
 export interface ProductCreate {
     name: string;
+    slug?: string;
     description?: string;
     price: number;
     image_url?: string;
+    gallery_urls?: string[];
+    material?: string;
+    capacity?: string;
+    care_instructions?: string;
+    finish?: string;
     stock?: number;
     is_active?: boolean;
 }
 
 export interface ProductUpdate {
     name?: string;
+    slug?: string;
     description?: string;
     price?: number;
     image_url?: string;
+    gallery_urls?: string[];
+    material?: string;
+    capacity?: string;
+    care_instructions?: string;
+    finish?: string;
     stock?: number;
     is_active?: boolean;
 }
@@ -488,6 +506,16 @@ export async function getProducts(): Promise<Product[]> {
 
 export async function getProduct(productId: string): Promise<Product> {
     const response = await fetch(`${API_URL}/api/products/${productId}`);
+
+    if (!response.ok) {
+        throw new Error('Error al obtener el producto');
+    }
+
+    return response.json();
+}
+
+export async function getProductBySlug(slug: string): Promise<Product> {
+    const response = await fetch(`${API_URL}/api/products/slug/${slug}`);
 
     if (!response.ok) {
         throw new Error('Error al obtener el producto');

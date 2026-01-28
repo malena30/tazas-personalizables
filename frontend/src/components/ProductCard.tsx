@@ -4,6 +4,7 @@ import { FaPalette, FaShoppingBag } from "react-icons/fa";
 
 interface ProductCardProps {
     id: string | number;
+    slug?: string;
     name: string;
     price: number;
     image: string;
@@ -11,11 +12,12 @@ interface ProductCardProps {
     onAddToCart: () => void;
 }
 
-export default function ProductCard({ id, name, price, image, description, onAddToCart }: ProductCardProps) {
+export default function ProductCard({ id, slug, name, price, image, description, onAddToCart }: ProductCardProps) {
+    const linkHref = slug ? `/products/${slug}` : `/products/${id}`;
     return (
         <div className="group bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] overflow-hidden hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 hover:-translate-y-2 flex flex-col">
             {/* Image Container */}
-            <Link href={`/products/${id}`} className="relative aspect-square bg-gray-50 dark:bg-zinc-800/50 overflow-hidden block">
+            <Link href={linkHref} className="relative aspect-square bg-gray-50 dark:bg-zinc-800/50 overflow-hidden block">
                 <div className="absolute inset-0 flex items-center justify-center p-8">
                     {image ? (
                         <div className="relative w-full h-full">
@@ -41,7 +43,7 @@ export default function ProductCard({ id, name, price, image, description, onAdd
 
             {/* Info */}
             <div className="p-8 flex flex-col flex-1">
-                <Link href={`/products/${id}`}>
+                <Link href={linkHref}>
                     <h2 className="text-xl font-bold text-[var(--foreground)] mb-2 group-hover:text-[var(--accent)] transition-colors line-clamp-1">
                         {name}
                     </h2>

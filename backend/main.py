@@ -568,6 +568,19 @@ async def get_products(
     products = db.query(Product).filter(Product.is_active == True).offset(skip).limit(limit).all()
     return products
 
+@app.get("/api/products/slug/{slug}", response_model=ProductResponse)
+async def get_product_by_slug(
+    slug: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Obtener un producto por su slug (público).
+    """
+    product = db.query(Product).filter(Product.slug == slug, Product.is_active == True).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+    return product
+
 @app.get("/api/products/all", response_model=List[ProductResponse])
 async def get_all_products(
     skip: int = 0,
@@ -596,9 +609,15 @@ async def create_product(
 
     new_product = Product(
         name=product.name,
+        slug=product.slug,
         description=product.description,
         price=product.price,
         image_url=image_url,
+        gallery_urls=product.gallery_urls,
+        material=product.material,
+        capacity=product.capacity,
+        care_instructions=product.care_instructions,
+        finish=product.finish,
         stock=product.stock,
         is_active=product.is_active
     )

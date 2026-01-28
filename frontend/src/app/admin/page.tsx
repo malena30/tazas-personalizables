@@ -61,9 +61,15 @@ export default function AdminPanel() {
     const [showProductModal, setShowProductModal] = useState(false);
     const [productForm, setProductForm] = useState<ProductCreate>({
         name: "",
+        slug: "",
         description: "",
         price: 0,
         image_url: "",
+        gallery_urls: [],
+        material: "",
+        capacity: "",
+        care_instructions: "",
+        finish: "",
         stock: 0,
         is_active: true
     });
@@ -145,9 +151,15 @@ export default function AdminPanel() {
         try {
             const updateData: ProductUpdate = {
                 name: productForm.name || undefined,
+                slug: productForm.slug || undefined,
                 description: productForm.description || undefined,
                 price: productForm.price || undefined,
                 image_url: productForm.image_url || undefined,
+                gallery_urls: productForm.gallery_urls,
+                material: productForm.material || undefined,
+                capacity: productForm.capacity || undefined,
+                care_instructions: productForm.care_instructions || undefined,
+                finish: productForm.finish || undefined,
                 stock: productForm.stock || undefined,
                 is_active: productForm.is_active
             };
@@ -175,9 +187,15 @@ export default function AdminPanel() {
         setEditingProduct(product);
         setProductForm({
             name: product.name,
+            slug: product.slug || "",
             description: product.description || "",
             price: product.price,
             image_url: product.image_url || "",
+            gallery_urls: product.gallery_urls || [],
+            material: product.material || "",
+            capacity: product.capacity || "",
+            care_instructions: product.care_instructions || "",
+            finish: product.finish || "",
             stock: product.stock || 0,
             is_active: product.is_active
         });
@@ -187,9 +205,15 @@ export default function AdminPanel() {
     const resetProductForm = () => {
         setProductForm({
             name: "",
+            slug: "",
             description: "",
             price: 0,
             image_url: "",
+            gallery_urls: [],
+            material: "",
+            capacity: "",
+            care_instructions: "",
+            finish: "",
             stock: 0,
             is_active: true
         });
@@ -671,15 +695,27 @@ export default function AdminPanel() {
                                     </label>
                                 </div>
                                 <div className="flex-1 space-y-4 w-full">
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nombre del Producto</label>
-                                        <input
-                                            type="text"
-                                            value={productForm.name}
-                                            onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                                            className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-3 text-[var(--foreground)] focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                            placeholder="Ej: Taza Cerámica Premium"
-                                        />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nombre</label>
+                                            <input
+                                                type="text"
+                                                value={productForm.name}
+                                                onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                                                className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-3 text-[var(--foreground)] focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                                placeholder="Ej: Taza Cerámica Premium"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Slug (URL)</label>
+                                            <input
+                                                type="text"
+                                                value={productForm.slug}
+                                                onChange={(e) => setProductForm({ ...productForm, slug: e.target.value })}
+                                                className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-3 text-[var(--foreground)] focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                                placeholder="ej: taza-ceramica-premium"
+                                            />
+                                        </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
@@ -709,8 +745,64 @@ export default function AdminPanel() {
                                 <textarea
                                     value={productForm.description}
                                     onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
-                                    className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-3 text-[var(--foreground)] focus:ring-2 focus:ring-blue-500 outline-none min-h-[100px] resize-none transition-all"
+                                    className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-3 text-[var(--foreground)] focus:ring-2 focus:ring-blue-500 outline-none min-h-[80px] resize-none transition-all"
                                     placeholder="Describe las características del producto..."
+                                />
+                            </div>
+
+                            <div className="space-y-4">
+                                <h4 className="text-sm font-black uppercase tracking-widest text-[var(--foreground)]">Detalles Técnicos</h4>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Material</label>
+                                        <input
+                                            type="text"
+                                            value={productForm.material}
+                                            onChange={(e) => setProductForm({ ...productForm, material: e.target.value })}
+                                            className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-2 text-sm text-[var(--foreground)] outline-none"
+                                            placeholder="Cerámica Premium"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Capacidad</label>
+                                        <input
+                                            type="text"
+                                            value={productForm.capacity}
+                                            onChange={(e) => setProductForm({ ...productForm, capacity: e.target.value })}
+                                            className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-2 text-sm text-[var(--foreground)] outline-none"
+                                            placeholder="325ml / 11oz"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Acabado</label>
+                                        <input
+                                            type="text"
+                                            value={productForm.finish}
+                                            onChange={(e) => setProductForm({ ...productForm, finish: e.target.value })}
+                                            className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-2 text-sm text-[var(--foreground)] outline-none"
+                                            placeholder="Brillante / Mate"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Cuidados</label>
+                                        <input
+                                            type="text"
+                                            value={productForm.care_instructions}
+                                            onChange={(e) => setProductForm({ ...productForm, care_instructions: e.target.value })}
+                                            className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-2 text-sm text-[var(--foreground)] outline-none"
+                                            placeholder="Apto Microondas"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Galería de Imágenes (URLs separadas por coma)</label>
+                                <textarea
+                                    value={productForm.gallery_urls?.join(", ")}
+                                    onChange={(e) => setProductForm({ ...productForm, gallery_urls: e.target.value.split(",").map(s => s.trim()).filter(Boolean) })}
+                                    className="w-full bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-xl px-4 py-3 text-[var(--foreground)] focus:ring-2 focus:ring-blue-500 outline-none min-h-[60px] resize-none transition-all text-xs font-mono"
+                                    placeholder="https://url1.jpg, https://url2.jpg..."
                                 />
                             </div>
 

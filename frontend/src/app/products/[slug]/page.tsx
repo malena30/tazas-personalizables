@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getProduct, Product } from "@/lib/api";
+import { getProductBySlug, Product } from "@/lib/api";
 import { useCartStore } from "@/store/cartStore";
-import { FaPlus, FaMinus, FaShoppingBag, FaPalette, FaCheckCircle, FaArrowLeft, FaShieldAlt, FaTruck, FaUndo } from "react-icons/fa";
+import { FaPlus, FaMinus, FaShoppingBag, FaPalette, FaCheckCircle, FaArrowLeft, FaShieldAlt, FaTruck, FaUndo, FaInfoCircle } from "react-icons/fa";
 import Image from "next/image";
 import ProductSkeleton from "@/components/ProductSkeleton";
 
 export default function ProductDetailPage() {
-    const { id } = useParams();
+    const { slug } = useParams();
     const router = useRouter();
     const addToCart = useCartStore((state) => state.addToCart);
 
@@ -17,20 +17,22 @@ export default function ProductDetailPage() {
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
     const [added, setAdded] = useState(false);
+    const [activeImage, setActiveImage] = useState<string | null>(null);
 
     useEffect(() => {
-        if (id) {
+        if (slug) {
             loadProduct();
         }
-    }, [id]);
+    }, [slug]);
 
     const loadProduct = async () => {
         try {
             setLoading(true);
-            const data = await getProduct(id as string);
+            const data = await getProductBySlug(slug as string);
             setProduct(data);
+            setActiveImage(data.image_url || null);
         } catch (error) {
-            // Error handled by showing "Producto no encontrado"
+            console.error("Error loading product:", error);
         } finally {
             setLoading(false);
         }
@@ -40,7 +42,7 @@ export default function ProductDetailPage() {
         if (!product) return;
 
         addToCart({
-            id: Number(product.id) || 1,
+            id: product.id,
             name: product.name,
             description: product.description || "",
             price: product.price,
@@ -74,6 +76,10 @@ export default function ProductDetailPage() {
         );
     }
 
+    const gallery = product.gallery_urls && product.gallery_urls.length > 0
+        ? [product.image_url, ...product.gallery_urls].filter(Boolean) as string[]
+        : [product.image_url].filter(Boolean) as string[];
+
     return (
         <main className="min-h-screen bg-[var(--background)] pt-32 pb-20">
             <div className="max-w-7xl mx-auto px-6">
@@ -88,14 +94,14 @@ export default function ProductDetailPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
                     {/* Gallery */}
                     <div className="space-y-6">
-                        <div className="aspect-square bg-white dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)] overflow-hidden flex items-center justify-center p-12 shadow-sm">
-                            {product.image_url ? (
+                        <div className="aspect-square bg-white dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)] overflow-hidden flex items-center justify-center p-8 shadow-sm relative">
+                            {activeImage ? (
                                 <div className="relative w-full h-full">
                                     <Image
-                                        src={product.image_url}
+                                        src={activeImage}
                                         alt={product.name}
                                         fill
-                                        className="object-contain"
+                                        className="object-contain animate-in fade-in duration-500"
                                         priority
                                     />
                                 </div>
@@ -104,17 +110,30 @@ export default function ProductDetailPage() {
                             )}
                         </div>
 
-                        <div className="grid grid-cols-4 gap-4">
-                            {[1, 2, 3, 4].map((i) => (
-                                <div key={i} className="aspect-square bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)] opacity-50 hover:opacity-100 transition-opacity cursor-pointer"></div>
-                            ))}
-                        </div>
+                        {gallery.length > 1 && (
+                            <div className="grid grid-cols-4 gap-4">
+                                {gallery.map((img, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => setActiveImage(img)}
+                                        className={`aspect-square bg-white dark:bg-zinc-900 rounded-2xl border transition-all overflow-hidden relative ${activeImage === img ? 'border-[var(--accent)] ring-2 ring-[var(--accent)]/20' : 'border-[var(--border)] opacity-60 hover:opacity-100'
+                                            }`}
+                                    >
+                                        <Image src={img} alt={`${product.name} ${i}`} fill className="object-cover" />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Info */}
                     <div className="flex flex-col">
                         <div className="mb-8">
-                            <h1 className="text-4xl md:text-5xl font-title font-black text-[var(--foreground)] tracking-tighter mb-4">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+                                <FaShieldAlt size={10} />
+                                <span>Calidad Premium</span>
+                            </div>
+                            <h1 className="text-4xl md:text-6xl font-title font-black text-[var(--foreground)] tracking-tighter mb-4">
                                 {product.name}
                             </h1>
                             <div className="flex items-center gap-4">
@@ -128,26 +147,32 @@ export default function ProductDetailPage() {
                         </div>
 
                         <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed mb-10">
-                            {product.description || "Esta taza premium es perfecta para tu café de la mañana o como un regalo especial. Fabricada con los mejores materiales para garantizar durabilidad y un acabado excepcional."}
+                            {product.description || "Esta pieza única combina diseño contemporáneo con la calidez de lo cotidiano. Ideal para quienes buscan un objeto con intención en cada detalle."}
                         </p>
 
                         {/* Technical Details */}
-                        <div className="grid grid-cols-2 gap-6 mb-12">
-                            <div className="p-4 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Material</p>
-                                <p className="font-bold text-[var(--foreground)]">Cerámica Premium</p>
-                            </div>
-                            <div className="p-4 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Capacidad</p>
-                                <p className="font-bold text-[var(--foreground)]">325ml / 11oz</p>
-                            </div>
-                            <div className="p-4 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Apto para</p>
-                                <p className="font-bold text-[var(--foreground)]">Microondas y Lavavajillas</p>
-                            </div>
-                            <div className="p-4 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Acabado</p>
-                                <p className="font-bold text-[var(--foreground)]">Brillante / Mate</p>
+                        <div className="space-y-6 mb-12">
+                            <h3 className="text-sm font-black uppercase tracking-widest text-[var(--foreground)] flex items-center gap-2">
+                                <FaInfoCircle className="text-[var(--accent)]" />
+                                Detalles Técnicos
+                            </h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Material</p>
+                                    <p className="font-bold text-[var(--foreground)]">{product.material || "Cerámica Premium"}</p>
+                                </div>
+                                <div className="p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Capacidad</p>
+                                    <p className="font-bold text-[var(--foreground)]">{product.capacity || "325ml / 11oz"}</p>
+                                </div>
+                                <div className="p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Acabado</p>
+                                    <p className="font-bold text-[var(--foreground)]">{product.finish || "Esmaltado Brillante"}</p>
+                                </div>
+                                <div className="p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Cuidados</p>
+                                    <p className="font-bold text-[var(--foreground)] text-sm">{product.care_instructions || "Apto Microondas y Lavavajillas"}</p>
+                                </div>
                             </div>
                         </div>
 

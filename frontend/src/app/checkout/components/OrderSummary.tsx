@@ -33,7 +33,7 @@ export default function OrderSummary() {
             const orderData = {
                 items: cart.map(item => ({
                     design_id: item.designId || undefined,
-                    product_id: !item.designId ? String(item.id) : undefined,
+                    product_id: !item.designId ? item.id : undefined,
                     quantity: item.quantity,
                     price: item.price
                 })),
