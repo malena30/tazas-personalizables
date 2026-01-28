@@ -52,6 +52,7 @@ export default function Footer() {
               <li><Link href="/terms" className="hover:text-[var(--accent)] transition-colors">Términos y Condiciones</Link></li>
               <li><Link href="/privacy" className="hover:text-[var(--accent)] transition-colors">Política de Privacidad</Link></li>
               <li><Link href="/faq" className="hover:text-[var(--accent)] transition-colors">Preguntas Frecuentes</Link></li>
+              <li><Link href="/contact" className="hover:text-[var(--accent)] transition-colors">Contacto</Link></li>
             </ul>
           </div>
 
@@ -65,7 +66,7 @@ export default function Footer() {
                 </div>
                 <div className="text-sm">
                   <p className="text-gray-400 mb-1">Email</p>
-                  <a href="mailto:hola@tazas.shop" className="font-bold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors">hola@tazas.shop</a>
+                  <a href="mailto:hola@kyathos.shop" className="font-bold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors">hola@kyathos.shop</a>
                 </div>
               </li>
               <li className="flex items-start gap-4">

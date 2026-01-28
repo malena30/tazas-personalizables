@@ -202,18 +202,30 @@ class UserStats(BaseModel):
 class ProductCreate(BaseModel):
     """Schema para crear un producto"""
     name: str = Field(..., min_length=1, max_length=200)
+    slug: Optional[str] = None
     description: Optional[str] = None
     price: float = Field(..., gt=0)
     image_url: Optional[str] = None
+    gallery_urls: Optional[List[str]] = []
+    material: Optional[str] = None
+    capacity: Optional[str] = None
+    care_instructions: Optional[str] = None
+    finish: Optional[str] = None
     stock: Optional[int] = Field(default=0, ge=0)
     is_active: bool = True
 
 class ProductUpdate(BaseModel):
     """Schema para actualizar un producto"""
     name: Optional[str] = Field(None, min_length=1, max_length=200)
+    slug: Optional[str] = None
     description: Optional[str] = None
     price: Optional[float] = Field(None, gt=0)
     image_url: Optional[str] = None
+    gallery_urls: Optional[List[str]] = None
+    material: Optional[str] = None
+    capacity: Optional[str] = None
+    care_instructions: Optional[str] = None
+    finish: Optional[str] = None
     stock: Optional[int] = Field(None, ge=0)
     is_active: Optional[bool] = None
 
@@ -221,9 +233,15 @@ class ProductResponse(BaseModel):
     """Schema para respuesta de producto"""
     id: str
     name: str
+    slug: Optional[str]
     description: Optional[str]
     price: float
     image_url: Optional[str]
+    gallery_urls: Optional[List[str]]
+    material: Optional[str]
+    capacity: Optional[str]
+    care_instructions: Optional[str]
+    finish: Optional[str]
     stock: Optional[int]
     is_active: bool
     created_at: datetime

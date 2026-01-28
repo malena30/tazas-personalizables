@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
 
 interface UIProduct {
-  id: number;
+  id: string;
+  slug?: string;
   name: string;
   description: string;
   price: number;
@@ -19,7 +20,7 @@ interface UIProduct {
 export default function ProductsPage() {
   const router = useRouter();
   const addToCart = useCartStore((state) => state.addToCart);
-  const [tooltipVisible, setTooltipVisible] = useState<number | null>(null);
+  const [tooltipVisible, setTooltipVisible] = useState<string | null>(null);
   const [products, setProducts] = useState<UIProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -33,7 +34,8 @@ export default function ProductsPage() {
       setLoading(true);
       const productsData = await getProducts();
       const cartProducts = productsData.map((p) => ({
-        id: Number(p.id) || 1,
+        id: p.id,
+        slug: p.slug,
         name: p.name,
         description: p.description || "",
         price: p.price,
@@ -95,6 +97,7 @@ export default function ProductsPage() {
               <ProductCard
                 key={product.id}
                 id={product.id}
+                slug={product.slug}
                 name={product.name}
                 price={product.price}
                 image={product.image}

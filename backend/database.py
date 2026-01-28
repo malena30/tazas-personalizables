@@ -61,9 +61,15 @@ class Product(Base):
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     name = Column(String, nullable=False)
+    slug = Column(String, unique=True, index=True, nullable=True) # Nullable for migration, then set to unique
     description = Column(String, nullable=True)
     price = Column(Float, nullable=False)
     image_url = Column(String, nullable=True)
+    gallery_urls = Column(SmartJSON(), default=list, nullable=True) # Array de URLs de fotos reales
+    material = Column(String, nullable=True)
+    capacity = Column(String, nullable=True)
+    care_instructions = Column(String, nullable=True)
+    finish = Column(String, nullable=True)
     stock = Column(Integer, default=0, nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
