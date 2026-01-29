@@ -361,54 +361,58 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
     useEffect(() => {
         let isMounted = true;
         const updateTextures = async () => {
-            if (!konvaStageRef.current || !isMounted) return;
+            try {
+                if (!konvaStageRef.current || !isMounted) return;
 
-            const stage = konvaStageRef.current;
-            const layer = stage.getLayers()[0];
-            const children = layer.getChildren();
-            const bgRect = children[0];
-            if (!bgRect) return;
+                const stage = konvaStageRef.current;
+                const layer = stage.getLayers()[0];
+                const children = layer.getChildren();
+                const bgRect = children[0];
+                if (!bgRect) return;
 
-            const captureTexture = (filterFn: (el: CanvasElement) => boolean) => {
-                const originalBgVisible = bgRect.visible();
-                bgRect.visible(false);
+                const captureTexture = (filterFn: (el: CanvasElement) => boolean) => {
+                    const originalBgVisible = bgRect.visible();
+                    bgRect.visible(false);
 
-                elements.forEach((el) => {
-                    const node = children.find((c: any) => c.id() === el.id);
-                    if (node) node.visible(filterFn(el));
-                });
+                    elements.forEach((el) => {
+                        const node = children.find((c: any) => c.id() === el.id);
+                        if (node) node.visible(filterFn(el));
+                    });
 
-                stage.batchDraw();
-                const canvas = stage.toCanvas({ pixelRatio: 1 }); // Optimizado para rendimiento
-                const texture = new THREE.CanvasTexture(canvas);
-                texture.flipY = true;
-                texture.minFilter = THREE.LinearFilter;
-                texture.generateMipmaps = false;
-                texture.needsUpdate = true;
-                texture.colorSpace = THREE.SRGBColorSpace;
+                    stage.batchDraw();
+                    const canvas = stage.toCanvas({ pixelRatio: 1 }); // Optimizado para rendimiento
+                    const texture = new THREE.CanvasTexture(canvas);
+                    texture.flipY = true;
+                    texture.minFilter = THREE.LinearFilter;
+                    texture.generateMipmaps = false;
+                    texture.needsUpdate = true;
+                    texture.colorSpace = THREE.SRGBColorSpace;
 
-                bgRect.visible(originalBgVisible);
-                return texture;
-            };
+                    bgRect.visible(originalBgVisible);
+                    return texture;
+                };
 
-            const hasFront = elements.some(e => e.coverage === 'front' || !e.coverage);
-            const hasFrontBack = elements.some(e => e.coverage === 'front-back');
-            const hasFull = elements.some(e => e.coverage === 'full');
+                const hasFront = elements.some(e => e.coverage === 'front' || !e.coverage);
+                const hasFrontBack = elements.some(e => e.coverage === 'front-back');
+                const hasFull = elements.some(e => e.coverage === 'full');
 
-            const newTextures = {
-                front: hasFront ? captureTexture(e => e.coverage === 'front' || !e.coverage) : null,
-                frontBack: hasFrontBack ? captureTexture(e => e.coverage === 'front-back') : null,
-                full: hasFull ? captureTexture(e => e.coverage === 'full') : null
-            };
+                const newTextures = {
+                    front: hasFront ? captureTexture(e => e.coverage === 'front' || !e.coverage) : null,
+                    frontBack: hasFrontBack ? captureTexture(e => e.coverage === 'front-back') : null,
+                    full: hasFull ? captureTexture(e => e.coverage === 'full') : null
+                };
 
-            if (isMounted) {
-                setTextures(newTextures);
-                // Restaurar visibilidad de todos los nodos
-                elements.forEach((el) => {
-                    const node = children.find((c: any) => c.id() === el.id);
-                    if (node) node.visible(true);
-                });
-                stage.batchDraw();
+                if (isMounted) {
+                    setTextures(newTextures);
+                    // Restaurar visibilidad de todos los nodos
+                    elements.forEach((el) => {
+                        const node = children.find((c: any) => c.id() === el.id);
+                        if (node) node.visible(true);
+                    });
+                    stage.batchDraw();
+                }
+            } catch (err) {
+                console.error("Error updating mug textures:", err);
             }
         };
 
@@ -525,21 +529,22 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
 
                 <Canvas
                     shadows
+                    className="w-full h-full"
                     camera={{ position: [0, 1, 6], fov: 60 }}
                     gl={{ preserveDrawingBuffer: true }}
                 >
                     {/* Luces ... */}
-                    <ambientLight intensity={1.2} />
+                    <ambientLight intensity={1.5} />
                     <directionalLight
                         position={[5, 5, 5]}
-                        intensity={1.5}
+                        intensity={1.8}
                         castShadow
                         shadow-mapSize-width={1024}
                         shadow-mapSize-height={1024}
                     />
-                    <pointLight position={[-5, 5, -5]} intensity={1} />
-                    <pointLight position={[0, -2, 3]} intensity={0.8} />
-                    <hemisphereLight intensity={0.5} />
+                    <pointLight position={[-5, 5, -5]} intensity={1.2} />
+                    <pointLight position={[0, -2, 3]} intensity={1} />
+                    <hemisphereLight intensity={0.6} />
 
                     <Mug
                         mugColor={mugColor}
@@ -558,7 +563,7 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
 
                     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]} receiveShadow>
                         <planeGeometry args={[10, 10]} />
-                        <meshStandardMaterial color="#ffff" roughness={0.8} />
+                        <meshStandardMaterial color="#ffffff" roughness={0.8} />
                     </mesh>
                 </Canvas>
             </div>

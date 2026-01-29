@@ -227,7 +227,7 @@ export default function CustomizerPage() {
 
             // Agregar al carrito
             addToCart({
-                id: Date.now(), // ID único basado en timestamp
+                id: Date.now().toString(), // ID único basado en timestamp
                 name: "Taza Personalizada",
                 price: 3500, // Precio de la taza personalizada
                 image: uri, // Imagen del diseño
@@ -391,6 +391,14 @@ export default function CustomizerPage() {
                                     }
                                 }
                             }}
+                            elements={elements}
+                            onReorderElements={(newElements) => {
+                                // Reparar zIndex basado en la nueva posición del array
+                                const updated = newElements.map((el, i) => ({ ...el, zIndex: i }));
+                                setElements(updated);
+                            }}
+                            onSelectElement={setSelectedId}
+                            selectedId={selectedId}
                         />
                     )}
 
