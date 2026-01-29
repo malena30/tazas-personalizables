@@ -46,6 +46,10 @@ interface ToolbarProps {
     onMugCoverageChange: (coverage: MugCoverage) => void;
     imageFilters?: ImageFilters;
     onImageFiltersChange: (filters: any) => void;
+    elements: any[];
+    onReorderElements: (newElements: any[]) => void;
+    onSelectElement: (id: string) => void;
+    selectedId: string | null;
 }
 
 type Tab = 'producto' | 'capas' | 'imagen' | 'texto' | 'stickers' | 'plantillas' | null;
@@ -90,7 +94,11 @@ export default function Toolbar({
     mugCoverage,
     onMugCoverageChange,
     imageFilters,
-    onImageFiltersChange
+    onImageFiltersChange,
+    elements,
+    onReorderElements,
+    onSelectElement,
+    selectedId
 }: ToolbarProps) {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -211,60 +219,97 @@ export default function Toolbar({
 
                         {/* TAB: Capas */}
                         {activeTab === 'capas' && (
-                            <>
-                                {hasSelection ? (
-                                    <>
-                                        <div className="p-4 bg-[var(--accent)] bg-opacity-10 border border-[var(--accent)] rounded-lg">
-                                            <p className="text-sm font-semibold text-[var(--foreground)]">
-                                                ✅ Elemento seleccionado
-                                            </p>
-                                            <p className="text-xs text-[var(--foreground)] opacity-70 mt-1">
-                                                Organizá el orden de tus elementos
-                                            </p>
-                                        </div>
-
-                                        <div>
-                                            <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-2">
-                                                Organizar Orden
-                                            </h3>
-                                            <div className="grid grid-cols-2 gap-2">
-                                                <button
-                                                    onClick={onBringToFront}
-                                                    className="px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded font-text text-sm hover:bg-[var(--hover-bg)] transition-colors text-[var(--foreground)]"
-                                                >
-                                                    ⬆️ Traer al frente
-                                                </button>
-                                                <button
-                                                    onClick={onSendToBack}
-                                                    className="px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded font-text text-sm hover:bg-[var(--hover-bg)] transition-colors text-[var(--foreground)]"
-                                                >
-                                                    ⬇️ Enviar atrás
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <hr className="border-[var(--border)]" />
-
-                                        <div>
-                                            <h3 className="text-sm font-title font-semibold text-red-600 mb-2">
-                                                Eliminar Elemento
-                                            </h3>
-                                            <button
-                                                onClick={onDelete}
-                                                className="w-full px-4 py-2 bg-red-600 text-white rounded-lg font-text font-semibold hover:bg-red-700 transition-colors"
+                            <div className="space-y-4">
+                                {elements.length > 0 ? (
+                                    <div className="flex flex-col gap-2">
+                                        {[...elements].reverse().map((element, index) => (
+                                            <div
+                                                key={element.id}
+                                                draggable
+                                                onDragStart={(e) => {
+                                                    e.dataTransfer.setData('text/plain', (elements.length - 1 - index).toString());
+                                                    e.currentTarget.style.opacity = '0.5';
+                                                }}
+                                                onDragEnd={(e) => {
+                                                    e.currentTarget.style.opacity = '1';
+                                                }}
+                                                onDragOver={(e) => e.preventDefault()}
+                                                onDrop={(e) => {
+                                                    e.preventDefault();
+                                                    const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                                                    const toIndex = elements.length - 1 - index;
+                                                    if (fromIndex !== toIndex) {
+                                                        const newElements = [...elements];
+                                                        const [movedItem] = newElements.splice(fromIndex, 1);
+                                                        newElements.splice(toIndex, 0, movedItem);
+                                                        onReorderElements(newElements);
+                                                    }
+                                                }}
+                                                onClick={() => onSelectElement(element.id)}
+                                                className={`group flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedId === element.id
+                                                        ? 'bg-[var(--accent)] bg-opacity-10 border-[var(--accent)] shadow-sm'
+                                                        : 'bg-white border-[var(--border)] hover:border-[var(--accent)] hover:bg-gray-50'
+                                                    }`}
                                             >
-                                                🗑️ Eliminar
-                                            </button>
-                                        </div>
-                                    </>
+                                                <div className="flex items-center gap-3">
+                                                    {/* Drag Handle */}
+                                                    <div className="text-gray-400 cursor-grab active:cursor-grabbing">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                                        </svg>
+                                                    </div>
+
+                                                    {/* Type Icon */}
+                                                    <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center text-lg">
+                                                        {element.type === 'text' ? 'T' : element.type === 'emoji' ? element.emoji : '🖼️'}
+                                                    </div>
+
+                                                    {/* Info */}
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-semibold text-[var(--foreground)] truncate max-w-[120px]">
+                                                            {element.type === 'text' ? element.content : element.type === 'image' ? 'Imagen' : 'Emoji'}
+                                                        </span>
+                                                        <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">
+                                                            Capa {elements.length - index}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Actions */}
+                                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            onSelectElement(element.id);
+                                                            onDelete();
+                                                        }}
+                                                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                                                        title="Eliminar capa"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                                            <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 ) : (
-                                    <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                        <p className="text-sm text-yellow-800">
-                                            💡 Seleccioná un elemento en la taza para organizarlo
+                                    <div className="text-center py-10 px-4 bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg">
+                                        <span className="text-3xl block mb-2">🧊</span>
+                                        <p className="text-sm text-gray-500 font-text">
+                                            No hay capas todavía.<br />Agregá algún elemento para empezar.
                                         </p>
                                     </div>
                                 )}
-                            </>
+
+                                {elements.length > 1 && (
+                                    <p className="text-[10px] text-gray-400 text-center uppercase tracking-widest font-bold mt-4">
+                                        💡 Arrastrá para reordenar
+                                    </p>
+                                )}
+                            </div>
                         )}
 
                         {/* TAB: Imagen */}
