@@ -1,6 +1,6 @@
 "use client";
 
-import { FaRegTrashAlt, FaPlus, FaMinus, FaArrowRight, FaShoppingBag } from "react-icons/fa";
+import { LuTrash2, LuPlus, LuMinus, LuArrowRight, LuShoppingBag, LuX } from "react-icons/lu";
 import { useCartStore } from "@/store/cartStore";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -76,7 +76,7 @@ export default function CartPage() {
         {cart.length === 0 ? (
           <div className="bg-white dark:bg-zinc-900 rounded-[3rem] p-20 text-center border border-[var(--border)] shadow-sm animate-in fade-in slide-in-from-bottom-8 duration-700">
             <div className="w-32 h-32 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-8">
-              <FaShoppingBag className="text-5xl text-blue-600 dark:text-blue-400" />
+              <LuShoppingBag className="text-5xl text-blue-600 dark:text-blue-400" />
             </div>
             <h2 className="text-3xl font-bold text-[var(--foreground)] mb-4">Tu carrito está vacío</h2>
             <p className="text-gray-500 dark:text-gray-400 mb-10 max-w-md mx-auto text-lg leading-relaxed">
@@ -87,7 +87,7 @@ export default function CartPage() {
               className="inline-flex items-center gap-3 bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/25 hover:scale-105 active:scale-95"
             >
               Explorar Productos
-              <FaArrowRight size={16} />
+              <LuArrowRight size={16} />
             </Link>
           </div>
         ) : (
@@ -134,7 +134,7 @@ export default function CartPage() {
                             className="p-3 text-gray-400 hover:text-red-500 transition-all rounded-2xl hover:bg-red-50 dark:hover:bg-red-900/20"
                             title="Eliminar"
                           >
-                            <FaRegTrashAlt size={20} />
+                            <LuTrash2 size={20} />
                           </button>
                         </div>
 
@@ -147,7 +147,7 @@ export default function CartPage() {
                               }
                               className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors"
                             >
-                              <FaMinus size={12} />
+                              <LuMinus size={12} />
                             </button>
                             <span className="w-12 text-center font-black text-lg text-[var(--foreground)]">
                               {item.quantity}
@@ -156,7 +156,7 @@ export default function CartPage() {
                               onClick={() => updateQuantity(item.id, item.quantity + 1)}
                               className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors"
                             >
-                              <FaPlus size={12} />
+                              <LuPlus size={12} />
                             </button>
                           </div>
                           <div className="text-right">
@@ -178,7 +178,7 @@ export default function CartPage() {
                   onClick={clearCart}
                   className="text-gray-400 hover:text-red-500 flex items-center gap-2 text-sm font-bold transition-all px-6 py-3 rounded-2xl hover:bg-red-50 dark:hover:bg-red-900/10"
                 >
-                  <FaRegTrashAlt size={16} />
+                  <LuTrash2 size={16} />
                   Vaciar mi carrito
                 </button>
               </div>
@@ -224,7 +224,7 @@ export default function CartPage() {
                           <option>Tierra del Fuego</option>
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-400">
-                          <FaPlus size={10} className="rotate-45" />
+                          <LuPlus size={10} className="rotate-45" />
                         </div>
                       </div>
 
@@ -253,7 +253,7 @@ export default function CartPage() {
                       className="w-full mt-10 bg-blue-600 text-white py-5 rounded-[1.5rem] font-bold text-xl shadow-xl shadow-blue-500/25 hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
                     >
                       Finalizar Compra
-                      <FaArrowRight size={18} />
+                      <LuArrowRight size={18} />
                     </button>
 
                     <div className="flex items-center justify-center gap-2 mt-6 text-gray-400">

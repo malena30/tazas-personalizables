@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FaArrowLeft, FaGavel } from "react-icons/fa";
+import { LuArrowLeft, LuGavel } from "react-icons/lu";
 
 export default function TermsPage() {
     return (
@@ -11,13 +11,13 @@ export default function TermsPage() {
                     href="/"
                     className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[var(--accent)] transition-colors mb-12"
                 >
-                    <FaArrowLeft size={12} />
+                    <LuArrowLeft size={12} />
                     Volver al inicio
                 </Link>
 
                 <div className="flex items-center gap-4 mb-10">
                     <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center">
-                        <FaGavel size={24} />
+                        <LuGavel size={24} />
                     </div>
                     <h1 className="text-4xl font-title font-black text-[var(--foreground)] tracking-tighter">
                         Términos y Condiciones

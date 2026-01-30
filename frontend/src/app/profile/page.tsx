@@ -16,24 +16,23 @@ import {
     OrderResponse,
 } from "@/lib/api";
 import {
-    FaUser,
-    FaMapMarkerAlt,
-    FaChartBar,
-    FaPalette,
-    FaShoppingBag,
-    FaLock,
-    FaPlus,
-    FaTrashAlt,
-    FaEdit,
-    FaExternalLinkAlt,
-    FaChevronRight,
-    FaSave,
-    FaKey,
-    FaEnvelope,
-    FaPhone,
-    FaTimesCircle,
-    FaCheckCircle
-} from "react-icons/fa";
+    LuUser,
+    LuMapPin,
+    LuActivity,
+    LuPalette,
+    LuShoppingBag,
+    LuLock,
+    LuPlus,
+    LuTrash2,
+    LuPencil,
+    LuExternalLink,
+    LuChevronRight,
+    LuSave,
+    LuMail,
+    LuPhone,
+    LuInfo,
+    LuCheck
+} from "react-icons/lu";
 import Image from "next/image";
 import ProfileSkeleton from "@/components/ProfileSkeleton";
 import Skeleton from "@/components/Skeleton";
@@ -220,11 +219,11 @@ export default function ProfilePage() {
     }
 
     const menuItems = [
-        { id: "info", label: "Información", icon: FaUser },
-        { id: "addresses", label: "Direcciones", icon: FaMapMarkerAlt, count: addresses.length },
-        { id: "stats", label: "Estadísticas", icon: FaChartBar },
-        { id: "designs", label: "Mis Diseños", icon: FaPalette, count: designs.length },
-        { id: "orders", label: "Mis Pedidos", icon: FaShoppingBag, count: orders.length },
+        { id: "info", label: "Información", icon: LuUser },
+        { id: "addresses", label: "Direcciones", icon: LuMapPin, count: addresses.length },
+        { id: "stats", label: "Estadísticas", icon: LuActivity },
+        { id: "designs", label: "Mis Diseños", icon: LuPalette, count: designs.length },
+        { id: "orders", label: "Mis Pedidos", icon: LuShoppingBag, count: orders.length },
     ];
 
     return (
@@ -277,13 +276,13 @@ export default function ProfilePage() {
                         {/* Alerts */}
                         {error && (
                             <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl text-red-600 dark:text-red-400 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
-                                <FaTimesCircle />
+                                <LuInfo />
                                 {error}
                             </div>
                         )}
                         {success && (
                             <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl text-green-600 dark:text-green-400 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
-                                <FaCheckCircle />
+                                <LuCheck />
                                 {success}
                             </div>
                         )}
@@ -294,7 +293,7 @@ export default function ProfilePage() {
                                 <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
                                     <div className="flex items-center gap-3 mb-8">
                                         <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                                            <FaUser size={20} />
+                                            <LuUser size={20} />
                                         </div>
                                         <h2 className="text-xl font-bold text-[var(--foreground)]">
                                             Información Personal
@@ -313,7 +312,7 @@ export default function ProfilePage() {
                                                 )}
                                             </div>
                                             <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-white dark:bg-zinc-800 rounded-2xl shadow-lg border border-[var(--border)] flex items-center justify-center cursor-pointer hover:scale-110 hover:bg-blue-600 hover:text-white transition-all duration-300 group-hover:rotate-12">
-                                                <FaEdit size={14} />
+                                                <LuPencil size={14} />
                                                 <input type="file" className="hidden" accept="image/*" onChange={async (e) => {
                                                     const file = e.target.files?.[0];
                                                     if (file) {
@@ -356,7 +355,7 @@ export default function ProfilePage() {
                                                 </label>
                                                 <div className="relative">
                                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-                                                        <FaEnvelope size={14} />
+                                                        <LuMail size={14} />
                                                     </div>
                                                     <input
                                                         type="email"
@@ -374,7 +373,7 @@ export default function ProfilePage() {
                                                 </label>
                                                 <div className="relative">
                                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-                                                        <FaPhone size={14} />
+                                                        <LuPhone size={14} />
                                                     </div>
                                                     <input
                                                         type="tel"
@@ -391,7 +390,7 @@ export default function ProfilePage() {
                                         <div className="pt-8 mt-8 border-t border-[var(--border)]">
                                             <div className="flex items-center gap-3 mb-6">
                                                 <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
-                                                    <FaLock size={18} />
+                                                    <LuLock size={18} />
                                                 </div>
                                                 <h3 className="text-lg font-bold text-[var(--foreground)]">
                                                     Seguridad
@@ -446,7 +445,7 @@ export default function ProfilePage() {
                                                 {loading ? (
                                                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                                 ) : (
-                                                    <FaSave size={16} />
+                                                    <LuSave size={16} />
                                                 )}
                                                 Guardar Cambios
                                             </button>
@@ -462,7 +461,7 @@ export default function ProfilePage() {
                                 {orders.length === 0 ? (
                                     <div className="bg-white dark:bg-zinc-900 p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
                                         <div className="w-20 h-20 bg-gray-50 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                                            <FaShoppingBag size={32} className="text-gray-300" />
+                                            <LuShoppingBag size={32} className="text-gray-300" />
                                         </div>
                                         <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
                                             No tienes órdenes todavía
@@ -482,7 +481,7 @@ export default function ProfilePage() {
                                         <div className="flex items-center justify-between mb-8">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                                                    <FaShoppingBag size={20} />
+                                                    <LuShoppingBag size={20} />
                                                 </div>
                                                 <h2 className="text-xl font-bold text-[var(--foreground)]">
                                                     Mis Pedidos
@@ -493,7 +492,7 @@ export default function ProfilePage() {
                                                 className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors"
                                             >
                                                 Ver todos los detalles
-                                                <FaExternalLinkAlt size={12} />
+                                                <LuExternalLink size={12} />
                                             </button>
                                         </div>
 
@@ -506,7 +505,7 @@ export default function ProfilePage() {
                                                 >
                                                     <div className="flex items-center gap-4">
                                                         <div className="w-12 h-12 bg-white dark:bg-zinc-900 rounded-xl flex items-center justify-center border border-[var(--border)]">
-                                                            <FaShoppingBag className="text-gray-400" />
+                                                            <LuShoppingBag className="text-gray-400" />
                                                         </div>
                                                         <div>
                                                             <p className="text-sm font-bold text-[var(--foreground)]">
@@ -527,7 +526,7 @@ export default function ProfilePage() {
                                                                 {order.status === 'paid' ? 'Pagado' : 'Pendiente'}
                                                             </p>
                                                         </div>
-                                                        <FaChevronRight size={14} className="text-gray-300 group-hover:text-blue-500 transition-colors" />
+                                                        <LuChevronRight size={14} className="text-gray-300 group-hover:text-blue-500 transition-colors" />
                                                     </div>
                                                 </div>
                                             ))}
@@ -550,7 +549,7 @@ export default function ProfilePage() {
                                     <div className="flex items-center justify-between mb-8">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
-                                                <FaMapMarkerAlt size={20} />
+                                                <LuMapPin size={20} />
                                             </div>
                                             <h2 className="text-xl font-bold text-[var(--foreground)]">
                                                 Mis Direcciones
@@ -578,7 +577,7 @@ export default function ProfilePage() {
                                                         </p>
                                                         {addr.phone && (
                                                             <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 mt-3 flex items-center gap-1">
-                                                                <FaPhone size={8} />
+                                                                <LuPhone size={8} />
                                                                 {addr.phone}
                                                             </p>
                                                         )}
@@ -588,7 +587,7 @@ export default function ProfilePage() {
                                                         className="p-2 text-gray-400 hover:text-red-500 transition-colors"
                                                         title="Eliminar"
                                                     >
-                                                        <FaTrashAlt size={14} />
+                                                        <LuTrash2 size={14} />
                                                     </button>
                                                 </div>
                                             ))}
@@ -605,7 +604,7 @@ export default function ProfilePage() {
                                                 {loading ? (
                                                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                                 ) : (
-                                                    <FaSave size={16} />
+                                                    <LuSave size={16} />
                                                 )}
                                                 Guardar Cambios
                                             </button>
@@ -617,7 +616,7 @@ export default function ProfilePage() {
                                 <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
                                     <div className="flex items-center gap-3 mb-8">
                                         <div className="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400">
-                                            <FaPlus size={18} />
+                                            <LuPlus size={18} />
                                         </div>
                                         <h2 className="text-xl font-bold text-[var(--foreground)]">
                                             Agregar Nueva Dirección
@@ -710,7 +709,7 @@ export default function ProfilePage() {
                                             onClick={handleAddAddress}
                                             className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gray-900 dark:bg-zinc-800 text-white rounded-2xl font-bold hover:bg-black dark:hover:bg-zinc-700 transition-all"
                                         >
-                                            <FaPlus size={14} />
+                                            <LuPlus size={14} />
                                             Agregar a mi lista
                                         </button>
                                     </div>
@@ -724,7 +723,7 @@ export default function ProfilePage() {
                                 {/* Total Spent */}
                                 <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-3xl text-white shadow-lg shadow-emerald-500/20 relative overflow-hidden group">
                                     <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                                        <FaChartBar size={120} />
+                                        <LuActivity size={120} />
                                     </div>
                                     <div className="relative z-10">
                                         <p className="text-emerald-100 text-xs font-bold uppercase tracking-wider mb-2">Total Gastado</p>
@@ -739,7 +738,7 @@ export default function ProfilePage() {
                                 {/* Total Orders */}
                                 <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-8 rounded-3xl text-white shadow-lg shadow-blue-500/20 relative overflow-hidden group">
                                     <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                                        <FaShoppingBag size={120} />
+                                        <LuShoppingBag size={120} />
                                     </div>
                                     <div className="relative z-10">
                                         <p className="text-blue-100 text-xs font-bold uppercase tracking-wider mb-2">Órdenes Totales</p>
@@ -754,7 +753,7 @@ export default function ProfilePage() {
                                 {/* Total Designs */}
                                 <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-8 rounded-3xl text-white shadow-lg shadow-purple-500/20 relative overflow-hidden group">
                                     <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                                        <FaPalette size={120} />
+                                        <LuPalette size={120} />
                                     </div>
                                     <div className="relative z-10">
                                         <p className="text-purple-100 text-xs font-bold uppercase tracking-wider mb-2">Diseños Creados</p>
@@ -771,7 +770,7 @@ export default function ProfilePage() {
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-900/20 flex items-center justify-center text-pink-600 dark:text-pink-400">
-                                            <FaPalette size={20} />
+                                            <LuPalette size={20} />
                                         </div>
                                         <h2 className="text-xl font-bold text-[var(--foreground)]">
                                             Mis Diseños Guardados
@@ -781,7 +780,7 @@ export default function ProfilePage() {
                                         onClick={() => router.push("/customizer")}
                                         className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 text-sm"
                                     >
-                                        <FaPlus size={12} />
+                                        <LuPlus size={12} />
                                         Crear Nuevo
                                     </button>
                                 </div>
@@ -789,7 +788,7 @@ export default function ProfilePage() {
                                 {designs.length === 0 ? (
                                     <div className="bg-white dark:bg-zinc-900 p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
                                         <div className="w-20 h-20 bg-gray-50 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                                            <FaPalette size={32} className="text-gray-300" />
+                                            <LuPalette size={32} className="text-gray-300" />
                                         </div>
                                         <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
                                             Aún no tienes diseños guardados
@@ -828,14 +827,14 @@ export default function ProfilePage() {
                                                             className="p-3 bg-white text-blue-600 rounded-2xl hover:bg-blue-50 transition-all transform translate-y-4 group-hover:translate-y-0 duration-300 shadow-lg"
                                                             title="Editar diseño"
                                                         >
-                                                            <FaEdit size={18} />
+                                                            <LuPencil size={18} />
                                                         </button>
                                                         <button
                                                             onClick={() => handleDeleteDesign(design.id)}
                                                             className="p-3 bg-white text-red-600 rounded-2xl hover:bg-red-50 transition-all transform translate-y-4 group-hover:translate-y-0 duration-300 delay-75 shadow-lg"
                                                             title="Eliminar diseño"
                                                         >
-                                                            <FaTrashAlt size={18} />
+                                                            <LuTrash2 size={18} />
                                                         </button>
                                                     </div>
                                                 </div>

@@ -7,7 +7,7 @@ import TestimonialCard from "@/components/TestimonialCard";
 import SimpleMugHero from "@/components/SimpleMugHero";
 import ProductSkeleton from "@/components/ProductSkeleton";
 import { getProducts, Product } from "@/lib/api";
-import { FaPalette, FaShoppingBag, FaArrowRight, FaStar, FaShieldAlt, FaTruck } from "react-icons/fa";
+import { LuPalette, LuShoppingBag, LuArrowRight, LuStar, LuShieldCheck, LuTruck } from "react-icons/lu";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -41,7 +41,7 @@ export default function Home() {
           {/* Text Content */}
           <div className="text-center md:text-left z-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full text-xs font-black uppercase tracking-widest mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <FaStar size={10} />
+              <LuStar size={10} />
               <span>Calidad Premium Garantizada</span>
             </div>
             <h1 className="text-6xl md:text-8xl font-title font-black text-[var(--foreground)] mb-8 leading-[0.9] tracking-tighter animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
@@ -56,7 +56,7 @@ export default function Home() {
                 href="/customizer"
                 className="px-10 py-5 bg-[var(--foreground)] text-[var(--background)] rounded-2xl font-black text-lg shadow-2xl shadow-black/10 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
               >
-                <FaPalette size={20} />
+                <LuPalette size={20} />
                 Diseñar Ahora
               </Link>
               <Link
@@ -64,7 +64,7 @@ export default function Home() {
                 className="px-10 py-5 bg-transparent text-[var(--foreground)] rounded-2xl font-black text-lg border-2 border-[var(--foreground)] hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-all flex items-center justify-center gap-3"
               >
                 Ver Catálogo
-                <FaArrowRight size={16} />
+                <LuArrowRight size={16} />
               </Link>
             </div>
           </div>
@@ -207,7 +207,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl flex items-center justify-center shrink-0">
-              <FaTruck size={24} />
+              <LuTruck size={24} />
             </div>
             <div>
               <h4 className="font-black text-[var(--foreground)] text-lg">Envío Nacional</h4>
@@ -216,7 +216,7 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl flex items-center justify-center shrink-0">
-              <FaShieldAlt size={24} />
+              <LuShieldCheck size={24} />
             </div>
             <div>
               <h4 className="font-black text-[var(--foreground)] text-lg">Pago 100% Seguro</h4>
@@ -225,7 +225,7 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl flex items-center justify-center shrink-0">
-              <FaStar size={24} />
+              <LuStar size={24} />
             </div>
             <div>
               <h4 className="font-black text-[var(--foreground)] text-lg">Calidad Premium</h4>

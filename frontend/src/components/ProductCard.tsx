@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { FaPalette, FaShoppingBag } from "react-icons/fa";
+import { LuPalette, LuShoppingBag } from "react-icons/lu";
 
 interface ProductCardProps {
     id: string | number;
@@ -36,7 +36,7 @@ export default function ProductCard({ id, slug, name, price, image, description,
                 {/* Quick Actions Overlay */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 backdrop-blur-[2px]">
                     <div className="p-4 bg-white text-[var(--foreground)] rounded-2xl transform translate-y-4 group-hover:translate-y-0 duration-300 shadow-lg">
-                        <FaPalette size={20} />
+                        <LuPalette size={20} />
                     </div>
                 </div>
             </Link>
@@ -64,7 +64,7 @@ export default function ProductCard({ id, slug, name, price, image, description,
                         }}
                         className="p-4 bg-[var(--foreground)] text-[var(--background)] rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-lg shadow-black/10"
                     >
-                        <FaShoppingBag size={18} />
+                        <LuShoppingBag size={18} />
                     </button>
                 </div>
             </div>

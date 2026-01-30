@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FaArrowLeft, FaShieldAlt } from "react-icons/fa";
+import { LuArrowLeft, LuShieldCheck } from "react-icons/lu";
 
 export default function PrivacyPage() {
     return (
@@ -11,13 +11,13 @@ export default function PrivacyPage() {
                     href="/"
                     className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[var(--accent)] transition-colors mb-12"
                 >
-                    <FaArrowLeft size={12} />
+                    <LuArrowLeft size={12} />
                     Volver al inicio
                 </Link>
 
                 <div className="flex items-center gap-4 mb-10">
                     <div className="w-12 h-12 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-2xl flex items-center justify-center">
-                        <FaShieldAlt size={24} />
+                        <LuShieldCheck size={24} />
                     </div>
                     <h1 className="text-4xl font-title font-black text-[var(--foreground)] tracking-tighter">
                         Política de Privacidad

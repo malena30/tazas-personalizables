@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { FaChevronDown, FaChevronUp, FaQuestionCircle, FaTruck, FaPalette, FaCreditCard, FaShieldAlt } from "react-icons/fa";
+import { LuChevronDown, LuChevronUp, LuCircleHelp, LuTruck, LuPalette, LuCreditCard, LuShieldCheck } from "react-icons/lu";
 
 const faqs = [
     {
         category: "Envíos",
-        icon: <FaTruck className="text-blue-600" />,
+        icon: <LuTruck className="text-blue-600" />,
         questions: [
             {
                 q: "¿Cuánto tarda en llegar mi pedido?",
@@ -25,7 +25,7 @@ const faqs = [
     },
     {
         category: "Personalización",
-        icon: <FaPalette className="text-purple-600" />,
+        icon: <LuPalette className="text-purple-600" />,
         questions: [
             {
                 q: "¿Cómo diseño mi taza?",
@@ -39,7 +39,7 @@ const faqs = [
     },
     {
         category: "Pagos y Seguridad",
-        icon: <FaCreditCard className="text-green-600" />,
+        icon: <LuCreditCard className="text-green-600" />,
         questions: [
             {
                 q: "¿Qué medios de pago aceptan?",
@@ -53,7 +53,7 @@ const faqs = [
     },
     {
         category: "Garantía y Devoluciones",
-        icon: <FaShieldAlt className="text-red-600" />,
+        icon: <LuShieldCheck className="text-red-600" />,
         questions: [
             {
                 q: "¿Qué pasa si mi taza llega rota?",
@@ -81,7 +81,7 @@ export default function FAQPage() {
                 {/* Header */}
                 <div className="text-center mb-16">
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-6">
-                        <FaQuestionCircle />
+                        <LuCircleHelp />
                         <span>Centro de Ayuda</span>
                     </div>
                     <h1 className="text-5xl md:text-6xl font-title font-black text-[var(--foreground)] tracking-tighter mb-6">
@@ -125,7 +125,7 @@ export default function FAQPage() {
                                                 </span>
                                                 <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bg-[var(--accent)] text-white' : 'bg-gray-100 dark:bg-zinc-800 text-gray-400 group-hover:bg-[var(--accent)]/10 group-hover:text-[var(--accent)]'
                                                     }`}>
-                                                    {isOpen ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+                                                    {isOpen ? <LuChevronUp size={12} /> : <LuChevronDown size={12} />}
                                                 </div>
                                             </button>
 

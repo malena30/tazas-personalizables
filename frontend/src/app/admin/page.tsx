@@ -21,22 +21,22 @@ import {
     ProductUpdate,
 } from "@/lib/api";
 import {
-    FaTachometerAlt,
-    FaMagic,
-    FaShoppingBag,
-    FaUsers,
-    FaBoxOpen,
-    FaChartLine,
-    FaPlus,
-    FaSearch,
-    FaEllipsisV,
-    FaTrashAlt,
-    FaEdit,
-    FaCheckCircle,
-    FaClock,
-    FaTimesCircle,
-    FaArrowLeft
-} from "react-icons/fa";
+    LuLayoutDashboard,
+    LuWand2,
+    LuShoppingBag,
+    LuUsers,
+    LuPackage,
+    LuActivity,
+    LuPlus,
+    LuSearch,
+    LuMoreVertical,
+    LuTrash2,
+    LuPencil,
+    LuCheckCircle,
+    LuClock,
+    LuAlertCircle,
+    LuArrowLeft
+} from "react-icons/lu";
 
 export default function AdminPanel() {
     const { user } = useAuth();
@@ -235,10 +235,10 @@ export default function AdminPanel() {
     }
 
     const menuItems = [
-        { id: "dashboard", label: "Dashboard", icon: <FaTachometerAlt /> },
-        { id: "orders", label: "Órdenes", icon: <FaShoppingBag /> },
-        { id: "users", label: "Usuarios", icon: <FaUsers /> },
-        { id: "products", label: "Productos", icon: <FaBoxOpen /> },
+        { id: "dashboard", label: "Dashboard", icon: <LuLayoutDashboard /> },
+        { id: "orders", label: "Órdenes", icon: <LuShoppingBag /> },
+        { id: "users", label: "Usuarios", icon: <LuUsers /> },
+        { id: "products", label: "Productos", icon: <LuPackage /> },
     ];
 
     return (
@@ -275,7 +275,7 @@ export default function AdminPanel() {
                         onClick={() => router.push("/")}
                         className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition-colors"
                     >
-                        <FaArrowLeft size={12} />
+                        <LuArrowLeft size={12} />
                         Volver a la tienda
                     </button>
                 </div>
@@ -305,7 +305,7 @@ export default function AdminPanel() {
                             }}
                             className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2"
                         >
-                            <FaPlus size={14} />
+                            <LuPlus size={14} />
                             Nuevo Producto
                         </button>
                     )}
@@ -313,7 +313,7 @@ export default function AdminPanel() {
 
                 {error && (
                     <div className="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl text-red-600 dark:text-red-400 flex items-center gap-3">
-                        <FaTimesCircle />
+                        <LuAlertCircle />
                         {error}
                     </div>
                 )}
@@ -326,7 +326,7 @@ export default function AdminPanel() {
                             <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="w-12 h-12 bg-green-50 dark:bg-green-900/20 rounded-xl flex items-center justify-center text-green-600 dark:text-green-400 group-hover:scale-110 transition-transform">
-                                        <FaChartLine size={20} />
+                                        <LuActivity size={20} />
                                     </div>
                                     <span className="text-xs font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-lg">
                                         +12%
@@ -345,7 +345,7 @@ export default function AdminPanel() {
                             <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
-                                        <FaShoppingBag size={20} />
+                                        <LuShoppingBag size={20} />
                                     </div>
                                 </div>
                                 <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Órdenes</div>
@@ -366,7 +366,7 @@ export default function AdminPanel() {
                             <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-xl flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
-                                        <FaUsers size={20} />
+                                        <LuUsers size={20} />
                                     </div>
                                 </div>
                                 <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Usuarios</div>
@@ -382,7 +382,7 @@ export default function AdminPanel() {
                             <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="w-12 h-12 bg-orange-50 dark:bg-orange-900/20 rounded-xl flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
-                                        <FaMagic size={20} />
+                                        <LuWand2 size={20} />
                                     </div>
                                 </div>
                                 <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Diseños</div>
@@ -423,7 +423,7 @@ export default function AdminPanel() {
                     <div className="space-y-6">
                         <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-zinc-900 p-4 rounded-2xl border border-[var(--border)] shadow-sm">
                             <div className="relative flex-1 w-full">
-                                <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                                <LuSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                                 <input
                                     type="text"
                                     placeholder="Buscar por ID o usuario..."
@@ -486,9 +486,9 @@ export default function AdminPanel() {
                                                             ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
                                                             : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
                                                         }`}>
-                                                        {order.status === 'paid' && <FaCheckCircle size={10} />}
-                                                        {order.status === 'pending' && <FaClock size={10} />}
-                                                        {order.status === 'failed' && <FaTimesCircle size={10} />}
+                                                        {order.status === 'paid' && <LuCheckCircle size={10} />}
+                                                        {order.status === 'pending' && <LuClock size={10} />}
+                                                        {order.status === 'failed' && <LuAlertCircle size={10} />}
                                                         {order.status === 'paid' ? 'Pagado' : order.status === 'pending' ? 'Pendiente' : 'Fallido'}
                                                     </span>
                                                 </td>
@@ -542,10 +542,10 @@ export default function AdminPanel() {
                                         <td className="px-6 py-4">
                                             <div className="flex gap-4 text-xs">
                                                 <span className="flex items-center gap-1 text-gray-500">
-                                                    <FaShoppingBag size={10} /> {u.order_count}
+                                                    <LuShoppingBag size={10} /> {u.order_count}
                                                 </span>
                                                 <span className="flex items-center gap-1 text-gray-500">
-                                                    <FaMagic size={10} /> {u.design_count}
+                                                    <LuWand2 size={10} /> {u.design_count}
                                                 </span>
                                             </div>
                                         </td>
@@ -624,14 +624,14 @@ export default function AdminPanel() {
                                                         className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                                                         title="Editar"
                                                     >
-                                                        <FaEdit size={16} />
+                                                        <LuPencil size={16} />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDeleteProduct(p.id)}
                                                         className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                                         title="Eliminar"
                                                     >
-                                                        <FaTrashAlt size={16} />
+                                                        <LuTrash2 size={16} />
                                                     </button>
                                                 </div>
                                             </td>
@@ -659,7 +659,7 @@ export default function AdminPanel() {
                                 onClick={() => setShowProductModal(false)}
                                 className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-400 transition-colors"
                             >
-                                <FaTimesCircle size={24} />
+                                <LuAlertCircle size={24} />
                             </button>
                         </div>
 
@@ -671,7 +671,7 @@ export default function AdminPanel() {
                                         <Image src={productForm.image_url} alt="Preview" fill className="object-contain" />
                                     ) : (
                                         <div className="text-center p-4">
-                                            <FaBoxOpen className="mx-auto text-3xl text-gray-300 mb-2" />
+                                            <LuPackage className="mx-auto text-3xl text-gray-300 mb-2" />
                                             <span className="text-[10px] font-bold text-gray-400 uppercase">Sin Imagen</span>
                                         </div>
                                     )}

@@ -10,11 +10,18 @@ import { saveDesign, updateDesign, Design } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { templates } from "@/data/templates";
-
+import { LuFolderHeart, LuSave, LuShoppingCart, LuShoppingBag, LuCircleCheck } from "react-icons/lu";
 // Importación dinámica de Mug3DViewer para evitar errores de SSR con Three.js y Konva
 const Mug3DViewer = dynamic(() => import("@/components/Mug3DViewer"), {
     ssr: false,
-    loading: () => <div className="w-full h-[500px] bg-gray-100 animate-pulse rounded-lg flex items-center justify-center">Cargando visor 3D...</div>
+    loading: () => (
+        <div className="w-full h-[400px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">
+            <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+                <p className="text-gray-600 font-semibold">Cargando visor 3D...</p>
+            </div>
+        </div>
+    )
 });
 
 export default function CustomizerPage() {
@@ -443,7 +450,7 @@ export default function CustomizerPage() {
                                 onClick={() => setShowLibrary(true)}
                                 className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-text font-semibold transition-colors"
                             >
-                                📁 Mis Diseños
+                                <LuFolderHeart size={18} /> Mis Diseños
                             </button>
                             <button
                                 onClick={() => setShowSaveModal(true)}
@@ -453,10 +460,10 @@ export default function CustomizerPage() {
                                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                     }`}
                             >
-                                💾 Guardar
+                                <LuSave size={18} /> Guardar
                             </button>
                             <div className="flex items-center gap-2">
-                                <span className="text-2xl">🛒</span>
+                                <LuShoppingCart size={24} className="text-[var(--accent)]" />
                                 <div>
                                     <p className="text-lg font-title font-bold text-[var(--foreground)]">$3.500</p>
                                     <p className="text-xs text-[var(--foreground)] opacity-60">Taza personalizada</p>
@@ -471,7 +478,10 @@ export default function CustomizerPage() {
                                 : 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
                                 }`}
                         >
-                            Añadir al carrito
+                            <span className="flex items-center gap-2">
+                                <LuShoppingBag size={20} />
+                                Añadir al carrito
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -480,11 +490,7 @@ export default function CustomizerPage() {
             {/* Tooltip de confirmación */}
             {showTooltip && (
                 <div className="fixed bottom-24 right-8 bg-[var(--accent)] text-[var(--foreground)] px-6 py-4 rounded-lg shadow-lg font-text font-semibold animate-slide-up flex items-center gap-3 z-50">
-                    <div className="bg-white rounded-full p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[var(--accent)]" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                    </div>
+                    <LuCircleCheck className="h-4 w-4 text-[var(--accent)]" />
                     ¡Taza agregada al carrito! ($3.500)
                 </div>
             )}

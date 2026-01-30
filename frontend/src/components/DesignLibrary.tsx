@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { LuX, LuStar, LuTrash2, LuImage, LuCheck } from 'react-icons/lu';
 import { listDesigns, deleteDesign, toggleFavoriteDesign, Design } from '@/lib/api';
 
 interface DesignLibraryProps {
@@ -77,13 +78,13 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
                                 : 'bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200'
                                 }`}
                         >
-                            {showOnlyFavorites ? '★ Solo Favoritos' : '☆ Mostrar Todos'}
+                            {showOnlyFavorites ? <><LuStar size={14} fill="currentColor" /> Solo Favoritos</> : <><LuStar size={14} /> Mostrar Todos</>}
                         </button>
                         <button
                             onClick={onClose}
                             className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
                         >
-                            ✕
+                            <LuX />
                         </button>
                     </div>
                 </div>
@@ -133,7 +134,7 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
                                                     className="object-cover"
                                                 />
                                             ) : (
-                                                <div className="text-gray-400 text-4xl">🖼️</div>
+                                                <LuImage size={48} className="text-gray-300" />
                                             )}
 
                                             {/* Favorite Toggle Overlay */}
@@ -147,7 +148,7 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
                                                     : 'bg-white/80 text-gray-400 hover:text-yellow-500'
                                                     }`}
                                             >
-                                                {design.is_favorite ? '★' : '☆'}
+                                                {design.is_favorite ? <LuStar fill="currentColor" size={16} /> : <LuStar size={16} />}
                                             </button>
                                         </div>
 
@@ -172,7 +173,7 @@ export default function DesignLibrary({ isOpen, onClose, onLoadDesign }: DesignL
                                                     onClick={() => handleDelete(design.id)}
                                                     className="px-3 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 text-sm font-semibold"
                                                 >
-                                                    🗑️
+                                                    <LuTrash2 size={18} />
                                                 </button>
                                             </div>
                                         </div>
