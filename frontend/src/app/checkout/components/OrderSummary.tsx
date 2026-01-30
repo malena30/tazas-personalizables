@@ -6,7 +6,7 @@ import { useCheckout } from "@/context/CheckoutContext";
 import { useCartStore } from "@/store/cartStore";
 import { createOrder } from "@/lib/api";
 import Image from "next/image";
-import { FaShoppingBag, FaArrowRight, FaLock, FaShieldAlt } from "react-icons/fa";
+import { LuShoppingBag, LuArrowRight, LuLock, LuShieldCheck } from "react-icons/lu";
 
 export default function OrderSummary() {
     const { subtotal, shipping, total, buyer, payment } = useCheckout();
@@ -135,9 +135,7 @@ export default function OrderSummary() {
                     ) : (
                         <>
                             <span>Confirmar Compra</span>
-                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
+                            <LuArrowRight className="w-6 h-6" />
                         </>
                     )}
                 </button>

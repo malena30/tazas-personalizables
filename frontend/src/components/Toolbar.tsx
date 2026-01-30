@@ -3,6 +3,24 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { MugCoverage, ImageFilters } from "@/types/customizer";
+import {
+    LuCoffee,
+    LuLayers,
+    LuImage,
+    LuType,
+    LuSticker,
+    LuLayoutTemplate,
+    LuX,
+    LuGripVertical,
+    LuTrash2,
+    LuUpload,
+    LuTrash,
+    LuPlus,
+    LuChevronUp,
+    LuChevronDown,
+    LuBox,
+    LuPencil
+} from "react-icons/lu";
 
 interface ToolbarProps {
     onAddImage: (imageUrl: string) => void;
@@ -127,13 +145,13 @@ export default function Toolbar({
         }
     };
 
-    const tabs: { id: Tab; label: string; icon: string }[] = [
-        { id: 'producto', label: 'Producto', icon: '☕' },
-        { id: 'capas', label: 'Capas', icon: '📚' },
-        { id: 'imagen', label: 'Imagen', icon: '🖼️' },
-        { id: 'texto', label: 'Texto', icon: 'T' },
-        { id: 'stickers', label: 'Stickers', icon: '😀' },
-        { id: 'plantillas', label: 'Plantillas', icon: '📋' }
+    const tabs: { id: Tab; label: string; icon: any }[] = [
+        { id: 'producto', label: 'Producto', icon: <LuCoffee size={24} /> },
+        { id: 'capas', label: 'Capas', icon: <LuLayers size={24} /> },
+        { id: 'imagen', label: 'Imagen', icon: <LuImage size={24} /> },
+        { id: 'texto', label: 'Texto', icon: <LuType size={24} /> },
+        { id: 'stickers', label: 'Stickers', icon: <LuSticker size={24} /> },
+        { id: 'plantillas', label: 'Plantillas', icon: <LuLayoutTemplate size={24} /> }
     ];
 
     return (
@@ -150,7 +168,7 @@ export default function Toolbar({
                             : 'bg-[var(--background)] text-[var(--foreground)] opacity-60 hover:opacity-100 hover:bg-[var(--hover-bg)]'
                             }`}
                     >
-                        <span className="text-2xl">{tab.icon}</span>
+                        <span className="flex items-center justify-center">{tab.icon}</span>
                         <span className="text-xs font-text">{tab.label}</span>
                     </button>
                 ))}
@@ -168,7 +186,7 @@ export default function Toolbar({
                                 onClick={() => onTabChange(null)}
                                 className="text-[var(--foreground)] opacity-60 hover:opacity-100 text-xl"
                             >
-                                ✕
+                                <LuX />
                             </button>
                         </div>
                     </div>
@@ -247,21 +265,19 @@ export default function Toolbar({
                                                 }}
                                                 onClick={() => onSelectElement(element.id)}
                                                 className={`group flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedId === element.id
-                                                        ? 'bg-[var(--accent)] bg-opacity-10 border-[var(--accent)] shadow-sm'
-                                                        : 'bg-white border-[var(--border)] hover:border-[var(--accent)] hover:bg-gray-50'
+                                                    ? 'bg-[var(--accent)] bg-opacity-10 border-[var(--accent)] shadow-sm'
+                                                    : 'bg-white border-[var(--border)] hover:border-[var(--accent)] hover:bg-gray-50'
                                                     }`}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     {/* Drag Handle */}
                                                     <div className="text-gray-400 cursor-grab active:cursor-grabbing">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                                            <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                                        </svg>
+                                                        <LuGripVertical size={18} />
                                                     </div>
 
                                                     {/* Type Icon */}
                                                     <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center text-lg">
-                                                        {element.type === 'text' ? 'T' : element.type === 'emoji' ? element.emoji : '🖼️'}
+                                                        {element.type === 'text' ? <LuType size={16} /> : element.type === 'emoji' ? element.emoji : <LuImage size={16} />}
                                                     </div>
 
                                                     {/* Info */}
@@ -286,10 +302,7 @@ export default function Toolbar({
                                                         className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
                                                         title="Eliminar capa"
                                                     >
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                                                            <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                                                        </svg>
+                                                        <LuTrash2 size={16} />
                                                     </button>
                                                 </div>
                                             </div>
@@ -297,7 +310,7 @@ export default function Toolbar({
                                     </div>
                                 ) : (
                                     <div className="text-center py-10 px-4 bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg">
-                                        <span className="text-3xl block mb-2">🧊</span>
+                                        <LuBox size={32} className="mx-auto mb-2 text-gray-300" />
                                         <p className="text-sm text-gray-500 font-text">
                                             No hay capas todavía.<br />Agregá algún elemento para empezar.
                                         </p>
@@ -330,7 +343,7 @@ export default function Toolbar({
                                         onClick={() => fileInputRef.current?.click()}
                                         className="w-full bg-[var(--accent)] text-[var(--foreground)] px-4 py-3 rounded-lg font-text font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                                     >
-                                        📷 Subir Imagen
+                                        <LuUpload size={20} /> Subir Imagen
                                     </button>
                                 </div>
 
@@ -490,7 +503,7 @@ export default function Toolbar({
                                         onClick={onAddText}
                                         className="w-full bg-[var(--accent)] text-[var(--foreground)] px-4 py-3 rounded-lg font-text font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                                     >
-                                        ✏️ Agregar Texto
+                                        <LuPencil size={18} /> Agregar Texto
                                     </button>
                                 </div>
 
@@ -804,8 +817,8 @@ export default function Toolbar({
                         {activeTab === 'stickers' && (
                             <div className="space-y-6">
                                 <div>
-                                    <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-3">
-                                        Stickers Ilustrados
+                                    <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-3 inline-flex items-center gap-2">
+                                        <LuSticker size={18} /> Stickers Ilustrados
                                     </h3>
                                     <div className="grid grid-cols-3 gap-3">
                                         {[
@@ -836,8 +849,8 @@ export default function Toolbar({
                                 <hr className="border-[var(--border)]" />
 
                                 <div>
-                                    <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-3">
-                                        Emojis Rápidos
+                                    <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-3 inline-flex items-center gap-2">
+                                        <LuPlus size={18} /> Emojis Rápidos
                                     </h3>
                                     <div className="grid grid-cols-6 gap-2">
                                         {['😀', '😍', '🎉', '❤️', '⭐', '✨', '🎁', '🎂', '☕', '🌟', '💖', '👑', '🌈', '🔥', '💪', '🎨', '🌸', '🦋', '☀️', '🌙', '🎵', '📸', '✓', '→'].map(emoji => (
@@ -859,8 +872,8 @@ export default function Toolbar({
                         {activeTab === 'plantillas' && (
                             <>
                                 <div>
-                                    <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-3">
-                                        Diseños Prediseñados
+                                    <h3 className="text-sm font-title font-semibold text-[var(--foreground)] mb-3 inline-flex items-center gap-2">
+                                        <LuLayoutTemplate size={18} /> Diseños Prediseñados
                                     </h3>
                                     <div className="space-y-3">
                                         <button
@@ -939,7 +952,7 @@ export default function Toolbar({
                                     onClick={onDelete}
                                     className="w-full py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg font-text font-semibold hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
                                 >
-                                    🗑️ Eliminar Elemento
+                                    <LuTrash2 size={18} /> Eliminar Elemento
                                 </button>
                             </div>
                         )}

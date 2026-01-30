@@ -7,15 +7,15 @@ import { useCartStore } from "@/store/cartStore";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import {
-  FaShoppingBag,
-  FaUserCircle,
-  FaSun,
-  FaMoon,
-  FaCrown,
-  FaSignOutAlt,
-  FaBars,
-  FaTimes
-} from "react-icons/fa";
+  LuShoppingBag,
+  LuUser,
+  LuSun,
+  LuMoon,
+  LuCrown,
+  LuLogOut,
+  LuMenu,
+  LuX
+} from "react-icons/lu";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -68,7 +68,7 @@ export default function Navbar() {
         {/* LOGO */}
         <Link href="/" className="text-2xl font-title font-black text-[var(--foreground)] tracking-tighter flex items-center gap-2">
           <div className="w-10 h-10 bg-[var(--foreground)] rounded-xl flex items-center justify-center text-[var(--background)] shadow-lg shadow-black/10">
-            <FaShoppingBag size={18} />
+            <LuShoppingBag size={18} />
           </div>
           <span>KYATHOS <span className="text-[var(--accent)] font-text font-light text-lg tracking-widest uppercase">tazas</span></span>
         </Link>
@@ -86,7 +86,7 @@ export default function Navbar() {
           )}
           {user?.is_admin && (
             <Link href="/admin" className="flex items-center gap-1.5 px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full text-xs font-black uppercase tracking-wider">
-              <FaCrown size={12} />
+              <LuCrown size={12} />
               Admin
             </Link>
           )}
@@ -95,7 +95,7 @@ export default function Navbar() {
 
           {/* Carrito */}
           <Link href="/cart" className="relative p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-all">
-            <FaShoppingBag size={20} />
+            <LuShoppingBag size={20} />
             {totalItems > 0 && (
               <span className="absolute -top-1 -right-1 bg-[var(--accent)] text-[var(--background)] text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-lg shadow-black/10">
                 {totalItems}
@@ -109,7 +109,7 @@ export default function Navbar() {
             className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-all"
             aria-label="Cambiar tema"
           >
-            {isDark ? <FaSun size={20} /> : <FaMoon size={20} />}
+            {isDark ? <LuSun size={20} /> : <LuMoon size={20} />}
           </button>
 
           {/* User / Auth */}
@@ -122,7 +122,7 @@ export default function Navbar() {
                   </div>
                 ) : (
                   <div className="w-8 h-8 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full flex items-center justify-center border border-[var(--accent)]/20">
-                    <FaUserCircle size={20} />
+                    <LuUser size={20} />
                   </div>
                 )}
                 <span className="text-sm group-hover:text-[var(--accent)] transition-colors">{user.username}</span>
@@ -132,7 +132,7 @@ export default function Navbar() {
                 className="p-2 text-gray-400 hover:text-red-500 transition-colors"
                 title="Cerrar Sesión"
               >
-                <FaSignOutAlt size={18} />
+                <LuLogOut size={18} />
               </button>
             </div>
           ) : (
@@ -150,7 +150,7 @@ export default function Navbar() {
           onClick={() => setOpen(!open)}
           className="md:hidden p-2 text-[var(--foreground)] hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-all"
         >
-          {open ? <FaTimes size={24} /> : <FaBars size={24} />}
+          {open ? <LuX size={24} /> : <LuMenu size={24} />}
         </button>
       </div>
 
@@ -206,7 +206,7 @@ export default function Navbar() {
             className="text-lg font-bold flex items-center gap-3"
           >
             <span className="w-8 h-8 bg-gray-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center">
-              {isDark ? <FaSun size={16} /> : <FaMoon size={16} />}
+              {isDark ? <LuSun size={16} /> : <LuMoon size={16} />}
             </span>
             {isDark ? "Modo Claro" : "Modo Oscuro"}
           </button>
@@ -219,7 +219,7 @@ export default function Navbar() {
               }}
               className="mt-4 w-full py-4 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-2xl font-bold flex items-center justify-center gap-2"
             >
-              <FaSignOutAlt />
+              <LuLogOut />
               Cerrar Sesión
             </button>
           ) : (

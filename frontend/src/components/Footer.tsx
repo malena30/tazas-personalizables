@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FaInstagram, FaTwitter, FaFacebook, FaEnvelope, FaPhone, FaMapMarkerAlt, FaShoppingBag } from "react-icons/fa";
+import { LuInstagram, LuTwitter, LuFacebook, LuMail, LuPhone, LuMapPin, LuShoppingBag } from "react-icons/lu";
 
 export default function Footer() {
   return (
@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="space-y-8">
             <Link href="/" className="text-2xl font-title font-black text-[var(--foreground)] tracking-tighter flex items-center gap-2">
               <div className="w-10 h-10 bg-[var(--foreground)] rounded-xl flex items-center justify-center text-[var(--background)] shadow-lg shadow-black/10">
-                <FaShoppingBag size={18} />
+                <LuShoppingBag size={18} />
               </div>
               <span>KYATHOS <span className="text-[var(--accent)] font-text font-light text-lg tracking-widest uppercase">tazas</span></span>
             </Link>
@@ -22,13 +22,13 @@ export default function Footer() {
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 bg-gray-50 dark:bg-zinc-900 rounded-xl flex items-center justify-center text-gray-400 hover:text-[var(--accent)] hover:bg-white dark:hover:bg-zinc-800 transition-all border border-[var(--border)]">
-                <FaInstagram size={18} />
+                <LuInstagram size={18} />
               </a>
               <a href="#" className="w-10 h-10 bg-gray-50 dark:bg-zinc-900 rounded-xl flex items-center justify-center text-gray-400 hover:text-[var(--accent)] hover:bg-white dark:hover:bg-zinc-800 transition-all border border-[var(--border)]">
-                <FaTwitter size={18} />
+                <LuTwitter size={18} />
               </a>
               <a href="#" className="w-10 h-10 bg-gray-50 dark:bg-zinc-900 rounded-xl flex items-center justify-center text-gray-400 hover:text-[var(--accent)] hover:bg-white dark:hover:bg-zinc-800 transition-all border border-[var(--border)]">
-                <FaFacebook size={18} />
+                <LuFacebook size={18} />
               </a>
             </div>
           </div>
@@ -62,7 +62,7 @@ export default function Footer() {
             <ul className="space-y-6">
               <li className="flex items-start gap-4">
                 <div className="w-8 h-8 bg-[var(--accent)]/10 text-[var(--accent)] rounded-lg flex items-center justify-center shrink-0">
-                  <FaEnvelope size={14} />
+                  <LuMail size={14} />
                 </div>
                 <div className="text-sm">
                   <p className="text-gray-400 mb-1">Email</p>
@@ -71,7 +71,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-4">
                 <div className="w-8 h-8 bg-[var(--accent)]/10 text-[var(--accent)] rounded-lg flex items-center justify-center shrink-0">
-                  <FaPhone size={14} />
+                  <LuPhone size={14} />
                 </div>
                 <div className="text-sm">
                   <p className="text-gray-400 mb-1">Teléfono</p>

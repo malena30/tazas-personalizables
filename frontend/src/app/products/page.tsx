@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaShoppingBag } from "react-icons/fa";
+import { LuShoppingBag } from "react-icons/lu";
 import ProductSkeleton from "@/components/ProductSkeleton";
 import { useCartStore } from "@/store/cartStore";
 import { getProducts } from "@/lib/api";
@@ -79,14 +79,14 @@ export default function ProductsPage() {
 
         {error && (
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-6 rounded-3xl flex items-center gap-4">
-            <FaShoppingBag />
+            <LuShoppingBag />
             <p className="font-bold">{error}</p>
           </div>
         )}
 
         {!loading && !error && products.length === 0 && (
           <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)]">
-            <FaShoppingBag className="text-4xl text-gray-300 mx-auto mb-4" />
+            <LuShoppingBag className="text-4xl text-gray-300 mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-[var(--foreground)]">No hay productos disponibles</h3>
           </div>
         )}
@@ -108,6 +108,6 @@ export default function ProductsPage() {
           </div>
         )}
       </div>
-    </main>
+    </main >
   );
 }

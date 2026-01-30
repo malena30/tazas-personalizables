@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaInstagram, FaTwitter, FaFacebook, FaPaperPlane, FaClock } from "react-icons/fa";
+import { LuMail, LuPhone, LuMapPin, LuInstagram, LuTwitter, LuFacebook, LuSend, LuClock } from "react-icons/lu";
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({
@@ -30,7 +30,7 @@ export default function ContactPage() {
                 {/* Header */}
                 <div className="text-center mb-20">
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-6">
-                        <FaEnvelope />
+                        <LuMail />
                         <span>Contacto</span>
                     </div>
                     <h1 className="text-5xl md:text-7xl font-title font-black text-[var(--foreground)] tracking-tighter mb-6">
@@ -48,7 +48,7 @@ export default function ContactPage() {
                         <div className="grid sm:grid-cols-2 gap-8">
                             <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
                                 <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
-                                    <FaEnvelope size={20} />
+                                    <LuMail size={20} />
                                 </div>
                                 <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-2">Email</h3>
                                 <p className="text-lg font-bold text-[var(--foreground)]">hola@kyathos.shop</p>
@@ -56,7 +56,7 @@ export default function ContactPage() {
 
                             <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
                                 <div className="w-12 h-12 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-2xl flex items-center justify-center mb-6">
-                                    <FaPhone size={20} />
+                                    <LuPhone size={20} />
                                 </div>
                                 <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-2">Teléfono</h3>
                                 <p className="text-lg font-bold text-[var(--foreground)]">+54 11 2233-4455</p>
@@ -64,7 +64,7 @@ export default function ContactPage() {
 
                             <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
                                 <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 text-purple-600 rounded-2xl flex items-center justify-center mb-6">
-                                    <FaMapMarkerAlt size={20} />
+                                    <LuMapPin size={20} />
                                 </div>
                                 <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-2">Ubicación</h3>
                                 <p className="text-lg font-bold text-[var(--foreground)]">Buenos Aires, Argentina</p>
@@ -72,7 +72,7 @@ export default function ContactPage() {
 
                             <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
                                 <div className="w-12 h-12 bg-orange-50 dark:bg-orange-900/20 text-orange-600 rounded-2xl flex items-center justify-center mb-6">
-                                    <FaClock size={20} />
+                                    <LuClock size={20} />
                                 </div>
                                 <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-2">Horario</h3>
                                 <p className="text-lg font-bold text-[var(--foreground)]">Lun - Vie: 9hs a 18hs</p>
@@ -83,9 +83,9 @@ export default function ContactPage() {
                             <h3 className="text-2xl font-black mb-6">Síguenos en redes</h3>
                             <div className="flex gap-4">
                                 {[
-                                    { icon: <FaInstagram size={24} />, label: "Instagram" },
-                                    { icon: <FaTwitter size={24} />, label: "Twitter" },
-                                    { icon: <FaFacebook size={24} />, label: "Facebook" }
+                                    { icon: <LuInstagram size={24} />, label: "Instagram" },
+                                    { icon: <LuTwitter size={24} />, label: "Twitter" },
+                                    { icon: <LuFacebook size={24} />, label: "Facebook" }
                                 ].map((social, idx) => (
                                     <a
                                         key={idx}
@@ -165,7 +165,7 @@ export default function ContactPage() {
                                     <>¡Mensaje Enviado!</>
                                 ) : (
                                     <>
-                                        <FaPaperPlane size={18} />
+                                        <LuSend size={18} />
                                         Enviar Mensaje
                                     </>
                                 )}

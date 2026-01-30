@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getProductBySlug, Product } from "@/lib/api";
 import { useCartStore } from "@/store/cartStore";
-import { FaPlus, FaMinus, FaShoppingBag, FaPalette, FaCheckCircle, FaArrowLeft, FaShieldAlt, FaTruck, FaUndo, FaInfoCircle } from "react-icons/fa";
+import { LuPlus, LuMinus, LuShoppingBag, LuPalette, LuCheckCircle, LuArrowLeft, LuShieldCheck, LuTruck, LuRotateCcw, LuInfo } from "react-icons/lu";
 import Image from "next/image";
 import ProductSkeleton from "@/components/ProductSkeleton";
 
@@ -87,7 +87,7 @@ export default function ProductDetailPage() {
                     onClick={() => router.back()}
                     className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[var(--accent)] transition-colors mb-12"
                 >
-                    <FaArrowLeft size={12} />
+                    <LuArrowLeft size={12} />
                     Volver
                 </button>
 
@@ -130,7 +130,7 @@ export default function ProductDetailPage() {
                     <div className="flex flex-col">
                         <div className="mb-8">
                             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
-                                <FaShieldAlt size={10} />
+                                <LuShieldCheck size={10} />
                                 <span>Calidad Premium</span>
                             </div>
                             <h1 className="text-4xl md:text-6xl font-title font-black text-[var(--foreground)] tracking-tighter mb-4">
@@ -153,7 +153,7 @@ export default function ProductDetailPage() {
                         {/* Technical Details */}
                         <div className="space-y-6 mb-12">
                             <h3 className="text-sm font-black uppercase tracking-widest text-[var(--foreground)] flex items-center gap-2">
-                                <FaInfoCircle className="text-[var(--accent)]" />
+                                <LuInfo className="text-[var(--accent)]" />
                                 Detalles Técnicos
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
@@ -184,7 +184,7 @@ export default function ProductDetailPage() {
                                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
                                         className="w-12 h-12 flex items-center justify-center text-gray-500 hover:text-[var(--accent)] transition-colors"
                                     >
-                                        <FaMinus size={12} />
+                                        <LuMinus size={12} />
                                     </button>
                                     <span className="w-12 text-center font-black text-lg text-[var(--foreground)]">
                                         {quantity}
@@ -193,7 +193,7 @@ export default function ProductDetailPage() {
                                         onClick={() => setQuantity(quantity + 1)}
                                         className="w-12 h-12 flex items-center justify-center text-gray-500 hover:text-[var(--accent)] transition-colors"
                                     >
-                                        <FaPlus size={12} />
+                                        <LuPlus size={12} />
                                     </button>
                                 </div>
 
@@ -206,12 +206,12 @@ export default function ProductDetailPage() {
                                 >
                                     {added ? (
                                         <>
-                                            <FaCheckCircle size={20} />
+                                            <LuCheckCircle size={20} />
                                             ¡Agregado!
                                         </>
                                     ) : (
                                         <>
-                                            <FaShoppingBag size={20} />
+                                            <LuShoppingBag size={20} />
                                             Agregar al carrito
                                         </>
                                     )}
@@ -222,7 +222,7 @@ export default function ProductDetailPage() {
                                 onClick={() => router.push("/customizer")}
                                 className="w-full py-4 bg-white dark:bg-zinc-900 text-[var(--foreground)] border-2 border-[var(--foreground)] rounded-2xl font-black flex items-center justify-center gap-3 hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-all"
                             >
-                                <FaPalette size={20} />
+                                <LuPalette size={20} />
                                 Personalizar este diseño
                             </button>
                         </div>
@@ -230,15 +230,15 @@ export default function ProductDetailPage() {
                         {/* Trust Badges */}
                         <div className="grid grid-cols-3 gap-4 mt-12 pt-8 border-t border-[var(--border)]">
                             <div className="flex flex-col items-center text-center">
-                                <FaTruck className="text-[var(--accent)] mb-2" size={20} />
+                                <LuTruck className="text-[var(--accent)] mb-2" size={20} />
                                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Envío Rápido</p>
                             </div>
                             <div className="flex flex-col items-center text-center">
-                                <FaShieldAlt className="text-[var(--accent)] mb-2" size={20} />
+                                <LuShieldCheck className="text-[var(--accent)] mb-2" size={20} />
                                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Pago Seguro</p>
                             </div>
                             <div className="flex flex-col items-center text-center">
-                                <FaUndo className="text-[var(--accent)] mb-2" size={20} />
+                                <LuRotateCcw className="text-[var(--accent)] mb-2" size={20} />
                                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Garantía 100%</p>
                             </div>
                         </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useEffect, useState, forwardRef, useImperativeHandle, useMemo } from "react";
+
+import React, { useRef, useEffect, useState, forwardRef, useImperativeHandle, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -508,8 +509,9 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
                 className={`bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-inner flex-shrink-0 transition-all duration-300 relative group/3dviewer ${!showCanvas ? 'w-full h-full rounded-none' : ''}`}
                 style={showCanvas ? {
                     width: isExpanded ? Math.min(600, typeof window !== 'undefined' ? window.innerWidth * 0.5 : 600) : Math.min(500, typeof window !== 'undefined' ? window.innerWidth - 100 : 500),
-                    height: isExpanded ? Math.min(600, typeof window !== 'undefined' ? window.innerHeight * 0.7 : 600) : 400
-                } : { width: '100%', height: '100%' }}
+                    height: isExpanded ? Math.min(600, typeof window !== 'undefined' ? window.innerHeight * 0.7 : 600) : 400,
+                    minHeight: '400px'
+                } : { width: '100%', height: '100%', minHeight: '500px' }}
             >
                 {/* Botón de Expandir/Contraer (dentro del visor 3D) */}
                 {onToggleExpand && (
@@ -527,45 +529,56 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
                     </button>
                 )}
 
-                <Canvas
-                    shadows
-                    className="w-full h-full"
-                    camera={{ position: [0, 1, 6], fov: 60 }}
-                    gl={{ preserveDrawingBuffer: true }}
-                >
-                    {/* Luces ... */}
-                    <ambientLight intensity={1.5} />
-                    <directionalLight
-                        position={[5, 5, 5]}
-                        intensity={1.8}
-                        castShadow
-                        shadow-mapSize-width={1024}
-                        shadow-mapSize-height={1024}
-                    />
-                    <pointLight position={[-5, 5, -5]} intensity={1.2} />
-                    <pointLight position={[0, -2, 3]} intensity={1} />
-                    <hemisphereLight intensity={0.6} />
 
-                    <Mug
-                        mugColor={mugColor}
-                        frontTexture={textures.front}
-                        frontBackTexture={textures.frontBack}
-                        fullTexture={textures.full}
-                    />
+                <React.Suspense fallback={
+                    <div className="w-full h-full flex items-center justify-center">
+                        <div className="text-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+                            <p className="text-gray-600 font-semibold">Inicializando Canvas 3D...</p>
+                        </div>
+                    </div>
+                }>
+                    <Canvas
+                        shadows
+                        className="w-full h-full"
+                        camera={{ position: [0, 1, 6], fov: 60 }}
+                        gl={{ preserveDrawingBuffer: true }}
+                        onCreated={() => console.log('✅ Canvas 3D inicializado correctamente')}
+                    >
+                        {/* Luces ... */}
+                        <ambientLight intensity={1.5} />
+                        <directionalLight
+                            position={[5, 5, 5]}
+                            intensity={1.8}
+                            castShadow
+                            shadow-mapSize-width={1024}
+                            shadow-mapSize-height={1024}
+                        />
+                        <pointLight position={[-5, 5, -5]} intensity={1.2} />
+                        <pointLight position={[0, -2, 3]} intensity={1} />
+                        <hemisphereLight intensity={0.6} />
 
-                    <OrbitControls
-                        enablePan={false}
-                        minDistance={4}
-                        maxDistance={10}
-                        minPolarAngle={Math.PI / 4}
-                        maxPolarAngle={Math.PI / 1.5}
-                    />
+                        <Mug
+                            mugColor={mugColor}
+                            frontTexture={textures.front}
+                            frontBackTexture={textures.frontBack}
+                            fullTexture={textures.full}
+                        />
 
-                    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]} receiveShadow>
-                        <planeGeometry args={[10, 10]} />
-                        <meshStandardMaterial color="#ffffff" roughness={0.8} />
-                    </mesh>
-                </Canvas>
+                        <OrbitControls
+                            enablePan={false}
+                            minDistance={4}
+                            maxDistance={10}
+                            minPolarAngle={Math.PI / 4}
+                            maxPolarAngle={Math.PI / 1.5}
+                        />
+
+                        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]} receiveShadow>
+                            <planeGeometry args={[10, 10]} />
+                            <meshStandardMaterial color="#ffffff" roughness={0.8} />
+                        </mesh>
+                    </Canvas>
+                </React.Suspense>
             </div>
         </div>
     );

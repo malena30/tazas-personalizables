@@ -7,16 +7,16 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import {
-    FaShoppingBag,
-    FaCalendarAlt,
-    FaCheckCircle,
-    FaClock,
-    FaTimesCircle,
-    FaExternalLinkAlt,
-    FaArrowRight,
-    FaBoxOpen,
-    FaCreditCard
-} from "react-icons/fa";
+    LuShoppingBag,
+    LuCalendar,
+    LuCheck,
+    LuClock,
+    LuInfo,
+    LuExternalLink,
+    LuArrowRight,
+    LuPackageOpen,
+    LuCreditCard
+} from "react-icons/lu";
 import OrderSkeleton from "@/components/OrderSkeleton";
 import Skeleton from "@/components/Skeleton";
 
@@ -55,21 +55,21 @@ export default function MyOrdersPage() {
             case "paid":
                 return (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                        <FaCheckCircle size={10} />
+                        <LuCheck size={10} />
                         Pagado
                     </span>
                 );
             case "pending":
                 return (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                        <FaClock size={10} />
+                        <LuClock size={10} />
                         Pendiente
                     </span>
                 );
             case "failed":
                 return (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                        <FaTimesCircle size={10} />
+                        <LuInfo size={10} />
                         Fallido
                     </span>
                 );
@@ -114,7 +114,7 @@ export default function MyOrdersPage() {
 
                 {error && (
                     <div className="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl text-red-600 dark:text-red-400 flex items-center gap-3">
-                        <FaTimesCircle />
+                        <LuInfo />
                         {error}
                     </div>
                 )}
@@ -122,7 +122,7 @@ export default function MyOrdersPage() {
                 {orders.length === 0 ? (
                     <div className="bg-white dark:bg-zinc-900 rounded-3xl p-16 text-center shadow-sm border border-[var(--border)] animate-in fade-in zoom-in duration-500">
                         <div className="w-24 h-24 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-600 dark:text-blue-400">
-                            <FaShoppingBag size={40} />
+                            <LuShoppingBag size={40} />
                         </div>
                         <h2 className="text-2xl font-bold text-[var(--foreground)] mb-3">No tienes pedidos aún</h2>
                         <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
@@ -133,7 +133,7 @@ export default function MyOrdersPage() {
                             className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all"
                         >
                             Comenzar a Diseñar
-                            <FaArrowRight size={14} />
+                            <LuArrowRight size={14} />
                         </Link>
                     </div>
                 ) : (
@@ -148,7 +148,7 @@ export default function MyOrdersPage() {
                                 <div className="bg-gray-50/50 dark:bg-zinc-800/30 p-6 lg:p-8 border-b border-[var(--border)] flex flex-wrap justify-between items-center gap-6">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 bg-white dark:bg-zinc-800 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm border border-[var(--border)]">
-                                            <FaBoxOpen size={20} />
+                                            <LuPackageOpen size={20} />
                                         </div>
                                         <div>
                                             <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Pedido</p>
@@ -160,7 +160,7 @@ export default function MyOrdersPage() {
                                         <div className="hidden sm:block">
                                             <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Fecha</p>
                                             <div className="flex items-center gap-2 text-sm font-bold text-[var(--foreground)]">
-                                                <FaCalendarAlt size={12} className="text-gray-400" />
+                                                <LuCalendar size={12} className="text-gray-400" />
                                                 {new Date(order.created_at).toLocaleDateString()}
                                             </div>
                                         </div>
@@ -215,7 +215,7 @@ export default function MyOrdersPage() {
                                                         className="flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
                                                     >
                                                         Ver Diseño
-                                                        <FaExternalLinkAlt size={10} />
+                                                        <LuExternalLink size={10} />
                                                     </Link>
                                                 )}
                                             </div>
@@ -226,7 +226,7 @@ export default function MyOrdersPage() {
                                     {order.status === "pending" && order.checkout_url && (
                                         <div className="mt-8 pt-8 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4">
                                             <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                                                <FaCreditCard className="text-blue-500" />
+                                                <LuCreditCard className="text-blue-500" />
                                                 Tu pago está pendiente. Completa el proceso para recibir tu pedido.
                                             </p>
                                             <a
@@ -234,7 +234,7 @@ export default function MyOrdersPage() {
                                                 className="w-full sm:w-auto px-8 py-3 bg-[#009EE3] text-white rounded-xl font-bold hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
                                             >
                                                 Pagar con Mercado Pago
-                                                <FaArrowRight size={14} />
+                                                <LuArrowRight size={14} />
                                             </a>
                                         </div>
                                     )}

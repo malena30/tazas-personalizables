@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaCookieBite, FaTimes } from 'react-icons/fa';
+import { LuCookie, LuX } from 'react-icons/lu';
 
 export default function CookieBanner() {
     const [isVisible, setIsVisible] = useState(false);
@@ -26,7 +26,7 @@ export default function CookieBanner() {
             <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-2xl border border-[var(--border)] flex flex-col gap-4">
                 <div className="flex items-start justify-between gap-4">
                     <div className="w-12 h-12 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center shrink-0">
-                        <FaCookieBite size={24} />
+                        <LuCookie size={24} />
                     </div>
                     <div className="flex-1">
                         <h3 className="font-bold text-[var(--foreground)] text-lg mb-1">¿Aceptas una cookie? 🍪</h3>
@@ -38,7 +38,7 @@ export default function CookieBanner() {
                         onClick={() => setIsVisible(false)}
                         className="text-gray-400 hover:text-gray-600 transition-colors"
                     >
-                        <FaTimes size={18} />
+                        <LuX size={18} />
                     </button>
                 </div>
                 <div className="flex gap-3">
