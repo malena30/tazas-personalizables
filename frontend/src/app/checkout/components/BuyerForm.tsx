@@ -30,7 +30,7 @@ export default function BuyerForm() {
         });
     };
 
-    const inputClasses = "w-full px-5 py-4 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all text-[var(--foreground)] placeholder:text-gray-400 font-medium";
+    const inputClasses = "w-full px-5 py-4 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700 rounded-2xl focus:ring-4 focus:ring-[var(--accent)]/10 focus:border-[var(--accent)] outline-none transition-all text-[var(--foreground)] placeholder:text-gray-400 font-medium";
     const labelClasses = "block text-xs font-black text-gray-400 dark:text-gray-500 mb-2 ml-1 uppercase tracking-widest";
 
     return (

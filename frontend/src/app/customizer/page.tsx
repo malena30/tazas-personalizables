@@ -448,7 +448,7 @@ export default function CustomizerPage() {
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => setShowLibrary(true)}
-                                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-text font-semibold transition-colors"
+                                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-text font-semibold transition-colors flex items-center gap-2"
                             >
                                 <LuFolderHeart size={18} /> Mis Diseños
                             </button>
@@ -465,8 +465,8 @@ export default function CustomizerPage() {
                             <div className="flex items-center gap-2">
                                 <LuShoppingCart size={24} className="text-[var(--accent)]" />
                                 <div>
-                                    <p className="text-lg font-title font-bold text-[var(--foreground)]">$3.500</p>
-                                    <p className="text-xs text-[var(--foreground)] opacity-60">Taza personalizada</p>
+                                    <p className="text-lg font-title font-bold text-zinc-900">$3.500</p>
+                                    <p className="text-xs text-zinc-500">Taza personalizada</p>
                                 </div>
                             </div>
                         </div>
