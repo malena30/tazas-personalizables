@@ -66,7 +66,7 @@ export default function CartPage() {
       <div className="max-w-7xl mx-auto">
         <header className="mb-12">
           <h1 className="text-4xl md:text-5xl font-black text-[var(--foreground)] tracking-tight">
-            Tu <span className="text-blue-600">Carrito</span>
+            Tu <span className="text-[var(--accent)]">Carrito</span>
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-4 text-lg">
             Revisá tus productos antes de finalizar la compra.
@@ -75,8 +75,8 @@ export default function CartPage() {
 
         {cart.length === 0 ? (
           <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-[3rem] p-20 text-center border border-[var(--border)] shadow-sm animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="w-32 h-32 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-8">
-              <LuShoppingBag className="text-5xl text-blue-600 dark:text-blue-400" />
+            <div className="w-32 h-32 bg-[var(--cream)] dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-8">
+              <LuShoppingBag className="text-5xl text-[var(--accent)]" />
             </div>
             <h2 className="text-3xl font-bold text-[var(--foreground)] mb-4">Tu carrito está vacío</h2>
             <p className="text-gray-500 dark:text-gray-400 mb-10 max-w-md mx-auto text-lg leading-relaxed">
@@ -84,7 +84,7 @@ export default function CartPage() {
             </p>
             <Link
               href="/products"
-              className="inline-flex items-center gap-3 bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/25 hover:scale-105 active:scale-95"
+              className="inline-flex items-center gap-3 bg-[var(--accent)] text-white px-10 py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all shadow-xl shadow-black/10 hover:scale-105 active:scale-95"
             >
               Explorar Productos
               <LuArrowRight size={16} />
@@ -119,12 +119,12 @@ export default function CartPage() {
                       <div className="flex-1 flex flex-col justify-between py-2">
                         <div className="flex justify-between items-start gap-4">
                           <div>
-                            <h3 className="text-xl font-bold text-[var(--foreground)] leading-tight group-hover:text-blue-600 transition-colors">
+                            <h3 className="text-xl font-bold text-[var(--foreground)] leading-tight group-hover:text-[var(--accent)] transition-colors">
                               {item.name}
                             </h3>
                             <div className="flex items-center gap-2 mt-2">
                               <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Precio Unitario:</span>
-                              <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                              <span className="text-sm font-bold text-[var(--accent)]">
                                 ${item.price.toLocaleString('es-AR')}
                               </span>
                             </div>
@@ -145,7 +145,7 @@ export default function CartPage() {
                               onClick={() =>
                                 updateQuantity(item.id, Math.max(1, item.quantity - 1))
                               }
-                              className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors"
+                              className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-[var(--accent)] transition-colors"
                             >
                               <LuMinus size={12} />
                             </button>
@@ -154,7 +154,7 @@ export default function CartPage() {
                             </span>
                             <button
                               onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors"
+                              className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-[var(--accent)] transition-colors"
                             >
                               <LuPlus size={12} />
                             </button>
@@ -186,7 +186,7 @@ export default function CartPage() {
 
             {/* COLUMNA DERECHA: RESUMEN + ENVÍO */}
             <aside className="lg:w-[400px]">
-              <div className="sticky top-32 bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-2xl shadow-blue-500/5 overflow-hidden">
+              <div className="sticky top-32 bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-2xl shadow-black/5 overflow-hidden">
                 <div className="p-10">
                   <h2 className="text-2xl font-bold text-[var(--foreground)] mb-8">Resumen</h2>
 
@@ -207,7 +207,7 @@ export default function CartPage() {
                         <select
                           value={province}
                           onChange={handleProvinceChange}
-                          className="w-full p-4 bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-2xl text-[var(--foreground)] font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer"
+                          className="w-full p-4 bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-2xl text-[var(--foreground)] font-bold focus:ring-2 focus:ring-[var(--accent)]/20 focus:border-[var(--accent)] outline-none transition-all appearance-none cursor-pointer"
                         >
                           <option value="">Seleccionar provincia</option>
                           <option>Buenos Aires</option>
@@ -230,7 +230,7 @@ export default function CartPage() {
 
                       <div className="flex justify-between items-center mt-6">
                         <span className="text-gray-500 dark:text-gray-400 font-medium">Costo de envío</span>
-                        <span className={`font-bold ${shippingCost > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-gray-300'}`}>
+                        <span className={`font-bold ${shippingCost > 0 ? 'text-[var(--accent)]' : 'text-gray-300'}`}>
                           {shippingCost > 0 ? `$${shippingCost.toLocaleString('es-AR')}` : '—'}
                         </span>
                       </div>
@@ -240,7 +240,7 @@ export default function CartPage() {
                       <div className="flex justify-between items-center">
                         <span className="text-xl font-bold text-[var(--foreground)]">Total Final</span>
                         <div className="text-right">
-                          <span className="block text-3xl font-black text-blue-600 dark:text-blue-400">
+                          <span className="block text-3xl font-black text-[var(--accent)]">
                             ${total.toLocaleString('es-AR')}
                           </span>
                           <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">IVA Incluido</span>
@@ -250,7 +250,7 @@ export default function CartPage() {
 
                     <button
                       onClick={handleCheckout}
-                      className="w-full mt-10 bg-blue-600 text-white py-5 rounded-[1.5rem] font-bold text-xl shadow-xl shadow-blue-500/25 hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+                      className="w-full mt-10 bg-[var(--accent)] text-white py-5 rounded-[1.5rem] font-bold text-xl shadow-xl shadow-black/5 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
                     >
                       Finalizar Compra
                       <LuArrowRight size={18} />

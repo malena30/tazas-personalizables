@@ -37,7 +37,7 @@ export default function CheckoutPage() {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent)]"></div>
             </div>
         );
     }
@@ -58,7 +58,7 @@ export default function CheckoutPage() {
                             <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-sm border border-[var(--border)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <div className="p-10">
                                     <div className="flex items-center gap-4 mb-8">
-                                        <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black shadow-lg shadow-blue-500/30">
+                                        <div className="w-10 h-10 rounded-xl bg-[var(--accent)] text-white flex items-center justify-center font-black shadow-lg shadow-[var(--accent)]/30">
                                             1
                                         </div>
                                         <h2 className="text-2xl font-bold text-[var(--foreground)]">Datos Personales</h2>
@@ -70,7 +70,7 @@ export default function CheckoutPage() {
                             <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-sm border border-[var(--border)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 delay-75">
                                 <div className="p-10">
                                     <div className="flex items-center gap-4 mb-8">
-                                        <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black shadow-lg shadow-blue-500/30">
+                                        <div className="w-10 h-10 rounded-xl bg-[var(--accent)] text-white flex items-center justify-center font-black shadow-lg shadow-[var(--accent)]/30">
                                             2
                                         </div>
                                         <h2 className="text-2xl font-bold text-[var(--foreground)]">Método de Envío</h2>
@@ -82,7 +82,7 @@ export default function CheckoutPage() {
                             <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-sm border border-[var(--border)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
                                 <div className="p-10">
                                     <div className="flex items-center gap-4 mb-8">
-                                        <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black shadow-lg shadow-blue-500/30">
+                                        <div className="w-10 h-10 rounded-xl bg-[var(--accent)] text-white flex items-center justify-center font-black shadow-lg shadow-[var(--accent)]/30">
                                             3
                                         </div>
                                         <h2 className="text-2xl font-bold text-[var(--foreground)]">Información de Pago</h2>

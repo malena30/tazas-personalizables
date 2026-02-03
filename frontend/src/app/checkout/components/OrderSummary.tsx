@@ -57,7 +57,7 @@ export default function OrderSummary() {
     };
 
     return (
-        <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] shadow-2xl shadow-blue-500/5 border border-[var(--border)] overflow-hidden">
+        <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] shadow-2xl shadow-black/5 border border-[var(--border)] overflow-hidden">
             <div className="p-10">
                 <h2 className="text-2xl font-bold text-[var(--foreground)] mb-8">Resumen</h2>
 
@@ -71,12 +71,12 @@ export default function OrderSummary() {
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-2xl">☕</div>
                                 )}
-                                <span className="absolute -top-1 -right-1 w-6 h-6 bg-blue-600 text-white text-[10px] font-black rounded-lg flex items-center justify-center border-2 border-white dark:border-zinc-900 shadow-lg">
+                                <span className="absolute -top-1 -right-1 w-6 h-6 bg-[var(--accent)] text-white text-[10px] font-black rounded-lg flex items-center justify-center border-2 border-white dark:border-zinc-900 shadow-lg">
                                     {item.quantity}
                                 </span>
                             </div>
                             <div className="flex-1 min-w-0 py-1">
-                                <h3 className="text-sm font-bold text-[var(--foreground)] truncate group-hover:text-blue-600 transition-colors">{item.name}</h3>
+                                <h3 className="text-sm font-bold text-[var(--foreground)] truncate group-hover:text-[var(--accent)] transition-colors">{item.name}</h3>
                                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
                                     ${item.price.toLocaleString('es-AR')} c/u
                                 </p>
@@ -96,7 +96,7 @@ export default function OrderSummary() {
                     </div>
                     <div className="flex justify-between items-center text-sm">
                         <span className="text-gray-500 dark:text-gray-400 font-medium">Envío</span>
-                        <span className={`font-bold ${shipping.cost > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-gray-300'}`}>
+                        <span className={`font-bold ${shipping.cost > 0 ? 'text-[var(--accent)]' : 'text-gray-300'}`}>
                             {shipping.cost > 0 ? `$${shipping.cost.toLocaleString('es-AR')}` : (shipping.method === 'correo' ? 'Calculando...' : 'Gratis')}
                         </span>
                     </div>
@@ -111,7 +111,7 @@ export default function OrderSummary() {
                     <div className="flex justify-between items-center pt-6 border-t border-[var(--border)] mt-4">
                         <span className="text-xl font-bold text-[var(--foreground)]">Total Final</span>
                         <div className="text-right">
-                            <span className="block text-3xl font-black text-blue-600 dark:text-blue-400">
+                            <span className="block text-3xl font-black text-[var(--accent)]">
                                 ${(payment === 'efectivo' ? total * 0.9 : total).toLocaleString('es-AR')}
                             </span>
                             <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">IVA Incluido</span>
@@ -124,7 +124,7 @@ export default function OrderSummary() {
                     disabled={loading || cart.length === 0}
                     className={`mt-10 w-full py-5 rounded-[1.5rem] font-bold text-xl shadow-xl transition-all flex justify-center items-center gap-3 ${loading || cart.length === 0
                         ? 'bg-gray-100 dark:bg-zinc-800 text-gray-400 cursor-not-allowed shadow-none'
-                        : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] shadow-blue-500/25'
+                        : 'bg-[var(--accent)] text-white hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] shadow-black/5'
                         }`}
                 >
                     {loading ? (

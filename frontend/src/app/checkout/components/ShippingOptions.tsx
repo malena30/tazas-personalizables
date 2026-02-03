@@ -38,28 +38,28 @@ export default function ShippingOptions() {
                         key={m.id}
                         onClick={() => handleSelect(m.id, m.id === "retiro" ? 0 : shipping.cost)}
                         className={`flex flex-col p-8 rounded-[2rem] border-2 text-left transition-all duration-500 group relative overflow-hidden ${shipping.method === m.id
-                            ? "border-blue-600 bg-blue-50/50 dark:bg-blue-900/10 shadow-lg shadow-blue-500/10"
-                            : "border-gray-100 dark:border-zinc-800 hover:border-blue-200 dark:hover:border-blue-900/30 bg-[var(--cream)] dark:bg-zinc-900"
+                            ? "border-[var(--accent)] bg-[var(--cream)] shadow-lg shadow-black/5"
+                            : "border-gray-100 dark:border-zinc-800 hover:border-[var(--accent)]/30 bg-[var(--cream)] dark:bg-zinc-900"
                             }`}
                     >
                         <div className="flex justify-between items-start mb-6">
-                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl transition-transform duration-500 group-hover:scale-110 ${shipping.method === m.id ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "bg-gray-50 dark:bg-zinc-800 text-gray-400"
+                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl transition-transform duration-500 group-hover:scale-110 ${shipping.method === m.id ? "bg-[var(--accent)] text-white shadow-lg shadow-black/10" : "bg-gray-50 dark:bg-zinc-800 text-gray-400"
                                 }`}>
                                 {m.icon}
                             </div>
                             {shipping.method === m.id && (
-                                <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30 animate-in zoom-in duration-300">
+                                <div className="w-6 h-6 rounded-full bg-[var(--accent)] flex items-center justify-center shadow-lg shadow-black/10 animate-in zoom-in duration-300">
                                     <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
                             )}
                         </div>
-                        <h3 className="text-lg font-bold text-[var(--foreground)] group-hover:text-blue-600 transition-colors">{m.title}</h3>
+                        <h3 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">{m.title}</h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 flex-1 leading-relaxed">{m.description}</p>
                         <div className="mt-6 flex items-center justify-between">
                             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Costo</span>
-                            <span className="text-lg font-black text-blue-600 dark:text-blue-400">{m.price}</span>
+                            <span className="text-lg font-black text-[var(--accent)]">{m.price}</span>
                         </div>
                     </button>
                 ))}
