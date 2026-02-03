@@ -41,7 +41,7 @@ export default function PaymentMethods() {
                     onClick={() => handleSelect(m.id)}
                     className={`flex items-center p-8 rounded-[2rem] border-2 text-left transition-all duration-500 group relative overflow-hidden ${payment === m.id
                         ? "border-blue-600 bg-blue-50/50 dark:bg-blue-900/10 shadow-lg shadow-blue-500/10"
-                        : "border-gray-100 dark:border-zinc-800 hover:border-blue-200 dark:hover:border-blue-900/30 bg-white dark:bg-zinc-900"
+                        : "border-gray-100 dark:border-zinc-800 hover:border-blue-200 dark:hover:border-blue-900/30 bg-[var(--cream)] dark:bg-zinc-900"
                         }`}
                 >
                     <div className={`flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mr-6 transition-transform duration-500 group-hover:scale-110 ${payment === m.id ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "bg-gray-50 dark:bg-zinc-800 text-gray-400"

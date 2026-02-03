@@ -156,7 +156,7 @@ export default function Navbar() {
 
       {/* MENÚ MÓVIL */}
       {open && (
-        <div className="md:hidden bg-white dark:bg-zinc-900 w-full px-6 py-8 flex flex-col gap-6 shadow-2xl border-t border-[var(--border)] animate-in slide-in-from-top duration-300">
+        <div className="md:hidden bg-[var(--cream)] dark:bg-zinc-900 w-full px-6 py-8 flex flex-col gap-6 shadow-2xl border-t border-[var(--border)] animate-in slide-in-from-top duration-300">
           <Link href="/" onClick={() => setOpen(false)} className="text-lg font-bold flex items-center gap-3">
             <span className="w-8 h-8 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-lg flex items-center justify-center">🏠</span>
             Inicio

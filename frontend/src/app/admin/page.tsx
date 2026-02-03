@@ -22,20 +22,22 @@ import {
 } from "@/lib/api";
 import {
     LuLayoutDashboard,
-    LuWand2,
+    LuWand,
     LuShoppingBag,
     LuUsers,
     LuPackage,
     LuActivity,
     LuPlus,
     LuSearch,
-    LuMoreVertical,
+    LuEllipsisVertical,
     LuTrash2,
     LuPencil,
-    LuCheckCircle,
+    LuCircleCheck,
     LuClock,
-    LuAlertCircle,
-    LuArrowLeft
+    LuInfo,
+    LuArrowLeft,
+    LuTrendingUp,
+    LuX
 } from "react-icons/lu";
 
 export default function AdminPanel() {
@@ -244,11 +246,11 @@ export default function AdminPanel() {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex">
             {/* Sidebar */}
-            <aside className="w-64 bg-white dark:bg-zinc-900 border-r border-[var(--border)] hidden lg:flex flex-col sticky top-0 h-screen">
+            <aside className="w-64 bg-[var(--cream)] dark:bg-zinc-900 border-r border-[var(--border)] hidden lg:flex flex-col sticky top-0 h-screen">
                 <div className="p-8">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                            <FaChartLine size={20} />
+                            <LuTrendingUp size={20} />
                         </div>
                         <span className="text-xl font-bold text-[var(--foreground)] tracking-tight">AdminPanel</span>
                     </div>
@@ -313,7 +315,7 @@ export default function AdminPanel() {
 
                 {error && (
                     <div className="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl text-red-600 dark:text-red-400 flex items-center gap-3">
-                        <LuAlertCircle />
+                        <LuInfo />
                         {error}
                     </div>
                 )}
@@ -323,7 +325,7 @@ export default function AdminPanel() {
                     <div className="space-y-12">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {/* Total Sales */}
-                            <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
+                            <div className="bg-[var(--cream)] dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="w-12 h-12 bg-green-50 dark:bg-green-900/20 rounded-xl flex items-center justify-center text-green-600 dark:text-green-400 group-hover:scale-110 transition-transform">
                                         <LuActivity size={20} />
@@ -342,7 +344,7 @@ export default function AdminPanel() {
                             </div>
 
                             {/* Total Orders */}
-                            <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
+                            <div className="bg-[var(--cream)] dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
                                         <LuShoppingBag size={20} />
@@ -363,7 +365,7 @@ export default function AdminPanel() {
                             </div>
 
                             {/* Users */}
-                            <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
+                            <div className="bg-[var(--cream)] dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-xl flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
                                         <LuUsers size={20} />
@@ -379,10 +381,10 @@ export default function AdminPanel() {
                             </div>
 
                             {/* Designs */}
-                            <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
+                            <div className="bg-[var(--cream)] dark:bg-zinc-900 p-8 rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow group">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="w-12 h-12 bg-orange-50 dark:bg-orange-900/20 rounded-xl flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
-                                        <LuWand2 size={20} />
+                                        <LuWand size={20} />
                                     </div>
                                 </div>
                                 <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Diseños</div>
@@ -396,7 +398,7 @@ export default function AdminPanel() {
                         </div>
 
                         {/* Recent Activity Placeholder */}
-                        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm p-8">
+                        <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm p-8">
                             <h3 className="text-lg font-bold text-[var(--foreground)] mb-6">Actividad Reciente</h3>
                             <div className="space-y-6">
                                 {orders.slice(0, 5).map((order) => (
@@ -421,7 +423,7 @@ export default function AdminPanel() {
                 {/* Orders Tab */}
                 {activeTab === "orders" && (
                     <div className="space-y-6">
-                        <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-zinc-900 p-4 rounded-2xl border border-[var(--border)] shadow-sm">
+                        <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-[var(--cream)] dark:bg-zinc-900 p-4 rounded-2xl border border-[var(--border)] shadow-sm">
                             <div className="relative flex-1 w-full">
                                 <LuSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                                 <input
@@ -442,7 +444,7 @@ export default function AdminPanel() {
                             </select>
                         </div>
 
-                        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
+                        <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="bg-gray-50 dark:bg-zinc-800/50 border-b border-[var(--border)]">
@@ -486,9 +488,9 @@ export default function AdminPanel() {
                                                             ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
                                                             : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
                                                         }`}>
-                                                        {order.status === 'paid' && <LuCheckCircle size={10} />}
+                                                        {order.status === 'paid' && <LuCircleCheck size={10} />}
                                                         {order.status === 'pending' && <LuClock size={10} />}
-                                                        {order.status === 'failed' && <LuAlertCircle size={10} />}
+                                                        {order.status === 'failed' && <LuInfo size={10} />}
                                                         {order.status === 'paid' ? 'Pagado' : order.status === 'pending' ? 'Pendiente' : 'Fallido'}
                                                     </span>
                                                 </td>
@@ -516,7 +518,7 @@ export default function AdminPanel() {
 
                 {/* Users Tab */}
                 {activeTab === "users" && (
-                    <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
+                    <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-gray-50 dark:bg-zinc-800/50 border-b border-[var(--border)]">
@@ -545,7 +547,7 @@ export default function AdminPanel() {
                                                     <LuShoppingBag size={10} /> {u.order_count}
                                                 </span>
                                                 <span className="flex items-center gap-1 text-gray-500">
-                                                    <LuWand2 size={10} /> {u.design_count}
+                                                    <LuWand size={10} /> {u.design_count}
                                                 </span>
                                             </div>
                                         </td>
@@ -570,7 +572,7 @@ export default function AdminPanel() {
                 {/* Products Tab */}
                 {activeTab === "products" && (
                     <div className="space-y-6">
-                        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
+                        <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="bg-gray-50 dark:bg-zinc-800/50 border-b border-[var(--border)]">
@@ -647,7 +649,7 @@ export default function AdminPanel() {
             {/* Product Modal */}
             {showProductModal && (
                 <div className="fixed inset-0 bg-zinc-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden border border-[var(--border)] animate-in fade-in zoom-in duration-200">
+                    <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden border border-[var(--border)] animate-in fade-in zoom-in duration-200">
                         <div className="p-8 border-b border-[var(--border)] flex justify-between items-center">
                             <div>
                                 <h3 className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
@@ -659,7 +661,7 @@ export default function AdminPanel() {
                                 onClick={() => setShowProductModal(false)}
                                 className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-400 transition-colors"
                             >
-                                <LuAlertCircle size={24} />
+                                <LuX size={24} />
                             </button>
                         </div>
 
@@ -809,7 +811,7 @@ export default function AdminPanel() {
                             <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-zinc-800 rounded-2xl border border-[var(--border)]">
                                 <div className="flex items-center gap-3">
                                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${productForm.is_active ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-400'}`}>
-                                        <FaCheckCircle size={20} />
+                                        <LuCircleCheck size={20} />
                                     </div>
                                     <div>
                                         <p className="text-sm font-bold text-[var(--foreground)]">Estado del Producto</p>

@@ -57,7 +57,7 @@ export default function OrderSummary() {
     };
 
     return (
-        <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-2xl shadow-blue-500/5 border border-[var(--border)] overflow-hidden">
+        <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] shadow-2xl shadow-blue-500/5 border border-[var(--border)] overflow-hidden">
             <div className="p-10">
                 <h2 className="text-2xl font-bold text-[var(--foreground)] mb-8">Resumen</h2>
 

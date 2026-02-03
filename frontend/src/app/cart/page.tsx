@@ -74,7 +74,7 @@ export default function CartPage() {
         </header>
 
         {cart.length === 0 ? (
-          <div className="bg-white dark:bg-zinc-900 rounded-[3rem] p-20 text-center border border-[var(--border)] shadow-sm animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-[3rem] p-20 text-center border border-[var(--border)] shadow-sm animate-in fade-in slide-in-from-bottom-8 duration-700">
             <div className="w-32 h-32 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-8">
               <LuShoppingBag className="text-5xl text-blue-600 dark:text-blue-400" />
             </div>
@@ -94,7 +94,7 @@ export default function CartPage() {
           <div className="flex flex-col lg:flex-row gap-12">
             {/* COLUMNA IZQUIERDA: LISTA DE PRODUCTOS */}
             <div className="flex-1 space-y-8">
-              <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] overflow-hidden shadow-sm">
+              <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] overflow-hidden shadow-sm">
                 <div className="divide-y divide-[var(--border)]">
                   {cart.map((item) => (
                     <div
@@ -186,7 +186,7 @@ export default function CartPage() {
 
             {/* COLUMNA DERECHA: RESUMEN + ENVÍO */}
             <aside className="lg:w-[400px]">
-              <div className="sticky top-32 bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-2xl shadow-blue-500/5 overflow-hidden">
+              <div className="sticky top-32 bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-2xl shadow-blue-500/5 overflow-hidden">
                 <div className="p-10">
                   <h2 className="text-2xl font-bold text-[var(--foreground)] mb-8">Resumen</h2>
 

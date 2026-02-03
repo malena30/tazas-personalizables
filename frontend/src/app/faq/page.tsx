@@ -97,7 +97,7 @@ export default function FAQPage() {
                     {faqs.map((category, catIdx) => (
                         <div key={catIdx} className="space-y-6">
                             <div className="flex items-center gap-4 mb-4">
-                                <div className="w-10 h-10 rounded-xl bg-white dark:bg-zinc-900 border border-[var(--border)] flex items-center justify-center shadow-sm">
+                                <div className="w-10 h-10 rounded-xl bg-[var(--cream)] dark:bg-zinc-900 border border-[var(--border)] flex items-center justify-center shadow-sm">
                                     {category.icon}
                                 </div>
                                 <h2 className="text-2xl font-black text-[var(--foreground)] tracking-tight">
@@ -113,7 +113,7 @@ export default function FAQPage() {
                                     return (
                                         <div
                                             key={qIdx}
-                                            className={`group border border-[var(--border)] rounded-3xl transition-all duration-300 ${isOpen ? 'bg-white dark:bg-zinc-900 shadow-xl shadow-black/5' : 'bg-transparent hover:border-[var(--accent)]'
+                                            className={`group border border-[var(--border)] rounded-3xl transition-all duration-300 ${isOpen ? 'bg-[var(--cream)] dark:bg-zinc-900 shadow-xl shadow-black/5' : 'bg-transparent hover:border-[var(--accent)]'
                                                 }`}
                                         >
                                             <button

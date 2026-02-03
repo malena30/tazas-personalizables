@@ -39,7 +39,7 @@ export default function ShippingOptions() {
                         onClick={() => handleSelect(m.id, m.id === "retiro" ? 0 : shipping.cost)}
                         className={`flex flex-col p-8 rounded-[2rem] border-2 text-left transition-all duration-500 group relative overflow-hidden ${shipping.method === m.id
                             ? "border-blue-600 bg-blue-50/50 dark:bg-blue-900/10 shadow-lg shadow-blue-500/10"
-                            : "border-gray-100 dark:border-zinc-800 hover:border-blue-200 dark:hover:border-blue-900/30 bg-white dark:bg-zinc-900"
+                            : "border-gray-100 dark:border-zinc-800 hover:border-blue-200 dark:hover:border-blue-900/30 bg-[var(--cream)] dark:bg-zinc-900"
                             }`}
                     >
                         <div className="flex justify-between items-start mb-6">

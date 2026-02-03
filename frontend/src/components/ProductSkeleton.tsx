@@ -4,7 +4,7 @@ import Skeleton from "./Skeleton";
 
 export default function ProductSkeleton() {
     return (
-        <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] overflow-hidden border border-[var(--border)] flex flex-col h-full">
+        <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] overflow-hidden border border-[var(--border)] flex flex-col h-full">
             {/* Image Placeholder */}
             <Skeleton className="aspect-square w-full" borderRadius="0" />
 

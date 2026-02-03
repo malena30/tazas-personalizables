@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getProductBySlug, Product } from "@/lib/api";
 import { useCartStore } from "@/store/cartStore";
-import { LuPlus, LuMinus, LuShoppingBag, LuPalette, LuCheckCircle, LuArrowLeft, LuShieldCheck, LuTruck, LuRotateCcw, LuInfo } from "react-icons/lu";
+import { LuPlus, LuMinus, LuShoppingBag, LuPalette, LuCircleCheck, LuArrowLeft, LuShieldCheck, LuTruck, LuRotateCcw, LuInfo } from "react-icons/lu";
 import Image from "next/image";
 import ProductSkeleton from "@/components/ProductSkeleton";
 
@@ -206,7 +206,7 @@ export default function ProductDetailPage() {
                                 >
                                     {added ? (
                                         <>
-                                            <LuCheckCircle size={20} />
+                                            <LuCircleCheck size={20} />
                                             ¡Agregado!
                                         </>
                                     ) : (
