@@ -4,7 +4,7 @@ import Skeleton from "./Skeleton";
 
 export default function OrderSkeleton() {
     return (
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-[var(--border)] shadow-sm space-y-6">
+        <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl p-6 border border-[var(--border)] shadow-sm space-y-6">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Skeleton width={48} height={48} borderRadius="0.75rem" />

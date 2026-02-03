@@ -242,7 +242,7 @@ export default function ProfilePage() {
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Sidebar Navigation */}
                     <aside className="lg:w-64 flex-shrink-0">
-                        <nav className="bg-white dark:bg-zinc-900 rounded-3xl p-2 md:p-3 border border-[var(--border)] shadow-sm sticky top-32 overflow-x-auto lg:overflow-x-visible no-scrollbar">
+                        <nav className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl p-2 md:p-3 border border-[var(--border)] shadow-sm sticky top-32 overflow-x-auto lg:overflow-x-visible no-scrollbar">
                             <div className="flex lg:flex-col gap-1 min-w-max lg:min-w-0">
                                 {menuItems.map((item) => (
                                     <button
@@ -290,7 +290,7 @@ export default function ProfilePage() {
                         {/* Personal Info Tab */}
                         {activeTab === "info" && (
                             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
+                                <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
                                     <div className="flex items-center gap-3 mb-8">
                                         <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
                                             <LuUser size={20} />
@@ -459,7 +459,7 @@ export default function ProfilePage() {
                         {activeTab === "orders" && (
                             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 {orders.length === 0 ? (
-                                    <div className="bg-white dark:bg-zinc-900 p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
+                                    <div className="bg-[var(--cream)] dark:bg-zinc-900 p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
                                         <div className="w-20 h-20 bg-gray-50 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
                                             <LuShoppingBag size={32} className="text-gray-300" />
                                         </div>
@@ -477,7 +477,7 @@ export default function ProfilePage() {
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
+                                    <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
                                         <div className="flex items-center justify-between mb-8">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
@@ -504,7 +504,7 @@ export default function ProfilePage() {
                                                     onClick={() => router.push("/orders")}
                                                 >
                                                     <div className="flex items-center gap-4">
-                                                        <div className="w-12 h-12 bg-white dark:bg-zinc-900 rounded-xl flex items-center justify-center border border-[var(--border)]">
+                                                        <div className="w-12 h-12 bg-[var(--cream)] dark:bg-zinc-900 rounded-xl flex items-center justify-center border border-[var(--border)]">
                                                             <LuShoppingBag className="text-gray-400" />
                                                         </div>
                                                         <div>
@@ -545,7 +545,7 @@ export default function ProfilePage() {
                         {activeTab === "addresses" && (
                             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 {/* Existing Addresses */}
-                                <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
+                                <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
                                     <div className="flex items-center justify-between mb-8">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
@@ -613,7 +613,7 @@ export default function ProfilePage() {
                                 </div>
 
                                 {/* Add New Address */}
-                                <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
+                                <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
                                     <div className="flex items-center gap-3 mb-8">
                                         <div className="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400">
                                             <LuPlus size={18} />
@@ -786,7 +786,7 @@ export default function ProfilePage() {
                                 </div>
 
                                 {designs.length === 0 ? (
-                                    <div className="bg-white dark:bg-zinc-900 p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
+                                    <div className="bg-[var(--cream)] dark:bg-zinc-900 p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
                                         <div className="w-20 h-20 bg-gray-50 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
                                             <LuPalette size={32} className="text-gray-300" />
                                         </div>
@@ -808,7 +808,7 @@ export default function ProfilePage() {
                                         {designs.map((design) => (
                                             <div
                                                 key={design.id}
-                                                className="group bg-white dark:bg-zinc-900 rounded-3xl border border-[var(--border)] overflow-hidden hover:shadow-xl hover:shadow-blue-500/5 hover:border-blue-500/30 transition-all duration-300"
+                                                className="group bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl border border-[var(--border)] overflow-hidden hover:shadow-xl hover:shadow-blue-500/5 hover:border-blue-500/30 transition-all duration-300"
                                             >
                                                 <div className="aspect-square bg-gray-50 dark:bg-zinc-800 relative flex items-center justify-center p-6 overflow-hidden">
                                                     {design.thumbnail ? (

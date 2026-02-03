@@ -120,7 +120,7 @@ export default function MyOrdersPage() {
                 )}
 
                 {orders.length === 0 ? (
-                    <div className="bg-white dark:bg-zinc-900 rounded-3xl p-16 text-center shadow-sm border border-[var(--border)] animate-in fade-in zoom-in duration-500">
+                    <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl p-16 text-center shadow-sm border border-[var(--border)] animate-in fade-in zoom-in duration-500">
                         <div className="w-24 h-24 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-600 dark:text-blue-400">
                             <LuShoppingBag size={40} />
                         </div>
@@ -141,7 +141,7 @@ export default function MyOrdersPage() {
                         {orders.map((order, index) => (
                             <div
                                 key={order.id}
-                                className="bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden shadow-sm border border-[var(--border)] hover:shadow-md transition-all animate-in fade-in slide-in-from-bottom-4 duration-500"
+                                className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl overflow-hidden shadow-sm border border-[var(--border)] hover:shadow-md transition-all animate-in fade-in slide-in-from-bottom-4 duration-500"
                                 style={{ animationDelay: `${index * 100}ms` }}
                             >
                                 {/* Header de la Orden */}

@@ -15,7 +15,7 @@ interface ProductCardProps {
 export default function ProductCard({ id, slug, name, price, image, description, onAddToCart }: ProductCardProps) {
     const linkHref = slug ? `/products/${slug}` : `/products/${id}`;
     return (
-        <div className="group bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] overflow-hidden hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 hover:-translate-y-2 flex flex-col">
+        <div className="group bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] overflow-hidden hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 hover:-translate-y-2 flex flex-col">
             {/* Image Container */}
             <Link href={linkHref} className="relative aspect-square bg-gray-50 dark:bg-zinc-800/50 overflow-hidden block">
                 <div className="absolute inset-0 flex items-center justify-center p-8">

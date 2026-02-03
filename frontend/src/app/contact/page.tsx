@@ -46,7 +46,7 @@ export default function ContactPage() {
                     {/* Contact Info */}
                     <div className="space-y-12">
                         <div className="grid sm:grid-cols-2 gap-8">
-                            <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
+                            <div className="p-8 bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
                                 <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
                                     <LuMail size={20} />
                                 </div>
@@ -54,7 +54,7 @@ export default function ContactPage() {
                                 <p className="text-lg font-bold text-[var(--foreground)]">hola@kyathos.shop</p>
                             </div>
 
-                            <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
+                            <div className="p-8 bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
                                 <div className="w-12 h-12 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-2xl flex items-center justify-center mb-6">
                                     <LuPhone size={20} />
                                 </div>
@@ -62,7 +62,7 @@ export default function ContactPage() {
                                 <p className="text-lg font-bold text-[var(--foreground)]">+54 11 2233-4455</p>
                             </div>
 
-                            <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
+                            <div className="p-8 bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
                                 <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 text-purple-600 rounded-2xl flex items-center justify-center mb-6">
                                     <LuMapPin size={20} />
                                 </div>
@@ -70,7 +70,7 @@ export default function ContactPage() {
                                 <p className="text-lg font-bold text-[var(--foreground)]">Buenos Aires, Argentina</p>
                             </div>
 
-                            <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
+                            <div className="p-8 bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
                                 <div className="w-12 h-12 bg-orange-50 dark:bg-orange-900/20 text-orange-600 rounded-2xl flex items-center justify-center mb-6">
                                     <LuClock size={20} />
                                 </div>
@@ -101,7 +101,7 @@ export default function ContactPage() {
                     </div>
 
                     {/* Contact Form */}
-                    <div className="bg-white dark:bg-zinc-900 p-10 md:p-12 rounded-[3.5rem] border border-[var(--border)] shadow-2xl shadow-black/5">
+                    <div className="bg-[var(--cream)] dark:bg-zinc-900 p-10 md:p-12 rounded-[3.5rem] border border-[var(--border)] shadow-2xl shadow-black/5">
                         <h2 className="text-3xl font-black text-[var(--foreground)] mb-8 tracking-tight">Envíanos un mensaje</h2>
 
                         <form onSubmit={handleSubmit} className="space-y-6">
