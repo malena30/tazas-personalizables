@@ -572,6 +572,36 @@ export default function AdminPanel() {
                 {/* Products Tab */}
                 {activeTab === "products" && (
                     <div className="space-y-6">
+                        <div className="flex justify-between items-center bg-[var(--cream)] dark:bg-zinc-900 p-6 rounded-2xl border border-[var(--border)] shadow-sm">
+                            <div>
+                                <h2 className="text-xl font-bold text-[var(--foreground)]">Catálogo de Productos</h2>
+                                <p className="text-sm text-gray-500">Gestiona los artículos disponibles en tu tienda.</p>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setEditingProduct(null);
+                                    setProductForm({
+                                        name: "",
+                                        slug: "",
+                                        description: "",
+                                        price: 0,
+                                        image_url: "",
+                                        gallery_urls: [],
+                                        material: "",
+                                        capacity: "",
+                                        care_instructions: "",
+                                        finish: "",
+                                        stock: 0,
+                                        is_active: true
+                                    });
+                                    setShowProductModal(true);
+                                }}
+                                className="flex items-center gap-2 bg-[var(--accent)] text-[var(--background)] px-6 py-3 rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-[var(--accent)]/20"
+                            >
+                                <LuPlus size={18} />
+                                Nuevo Producto
+                            </button>
+                        </div>
                         <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
                             <table className="w-full text-left border-collapse">
                                 <thead>
