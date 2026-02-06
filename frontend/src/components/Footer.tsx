@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { LuInstagram, LuTwitter, LuFacebook, LuMail, LuPhone, LuMapPin, LuShoppingBag } from "react-icons/lu";
 
 export default function Footer() {
@@ -11,11 +12,18 @@ export default function Footer() {
 
           {/* Brand Column */}
           <div className="space-y-8">
-            <Link href="/" className="text-2xl font-title font-black text-[var(--foreground)] tracking-tighter flex items-center gap-2">
-              <div className="w-10 h-10 bg-[var(--foreground)] rounded-xl flex items-center justify-center text-[var(--background)] shadow-lg shadow-black/10">
-                <LuShoppingBag size={18} />
-              </div>
-              <span>KYATHOS <span className="text-[var(--accent)] font-text font-light text-lg tracking-widest uppercase">tazas</span></span>
+            <Link href="/" className="flex items-center gap-3">
+              <Image
+                src="/LOGO.png"
+                alt="KYATHOS Logo"
+                width={150}
+                height={50}
+                style={{ height: '50px', width: 'auto' }}
+                className="object-contain"
+              />
+              <span className="text-2xl font-title font-black text-[var(--foreground)] tracking-tighter mt-2">
+                KYATHOS <span className="text-[var(--accent)] font-text font-light text-lg tracking-widest uppercase ml-1">tazas</span>
+              </span>
             </Link>
             <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-xs">
               Transformamos tus ideas en piezas únicas. Calidad premium y personalización sin límites para tus momentos especiales.
@@ -23,9 +31,6 @@ export default function Footer() {
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 bg-gray-50 dark:bg-zinc-900 rounded-xl flex items-center justify-center text-gray-400 hover:text-[var(--accent)] hover:bg-white dark:hover:bg-zinc-800 transition-all border border-[var(--border)]">
                 <LuInstagram size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 bg-gray-50 dark:bg-zinc-900 rounded-xl flex items-center justify-center text-gray-400 hover:text-[var(--accent)] hover:bg-white dark:hover:bg-zinc-800 transition-all border border-[var(--border)]">
-                <LuTwitter size={18} />
               </a>
               <a href="#" className="w-10 h-10 bg-gray-50 dark:bg-zinc-900 rounded-xl flex items-center justify-center text-gray-400 hover:text-[var(--accent)] hover:bg-white dark:hover:bg-zinc-800 transition-all border border-[var(--border)]">
                 <LuFacebook size={18} />
@@ -66,7 +71,7 @@ export default function Footer() {
                 </div>
                 <div className="text-sm">
                   <p className="text-gray-400 mb-1">Email</p>
-                  <a href="mailto:hola@kyathos.shop" className="font-bold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors">hola@kyathos.shop</a>
+                  <a href="mailto:tazas.personalizables@outlook.com" className="font-bold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors">tazas.personalizables@outlook.com</a>
                 </div>
               </li>
               <li className="flex items-start gap-4">
@@ -75,7 +80,7 @@ export default function Footer() {
                 </div>
                 <div className="text-sm">
                   <p className="text-gray-400 mb-1">Teléfono</p>
-                  <a href="tel:+541122334455" className="font-bold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors">+54 11 2233-4455</a>
+                  <a href="tel:+542494243094" className="font-bold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors">+54 249 4243094</a>
                 </div>
               </li>
             </ul>

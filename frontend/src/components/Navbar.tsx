@@ -66,11 +66,18 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
 
         {/* LOGO */}
-        <Link href="/" className="text-2xl font-title font-black text-[var(--foreground)] tracking-tighter flex items-center gap-2">
-          <div className="w-10 h-10 bg-[var(--foreground)] rounded-xl flex items-center justify-center text-[var(--background)] shadow-lg shadow-black/10">
-            <LuShoppingBag size={18} />
-          </div>
-          <span>KYATHOS <span className="text-[var(--accent)] font-text font-light text-lg tracking-widest uppercase">tazas</span></span>
+        <Link href="/" className="flex items-center gap-3">
+          <Image
+            src="/LOGO.png"
+            alt="KYATHOS Logo"
+            width={100}
+            height={20}
+            style={{ height: '50px', width: 'auto' }}
+            priority
+          />
+          <span className="text-2xl font-title font-black text-[var(--foreground)] tracking-tighter mt-2">
+            KYATHOS <span className="text-[var(--accent)] font-text font-light text-lg tracking-widest uppercase ml-1">tazas</span>
+          </span>
         </Link>
 
         {/* MENÚ DESKTOP */}
@@ -157,8 +164,29 @@ export default function Navbar() {
       {/* MENÚ MÓVIL */}
       {open && (
         <div className="md:hidden bg-[var(--cream)] dark:bg-zinc-900 w-full px-6 py-8 flex flex-col gap-6 shadow-2xl border-t border-[var(--border)] animate-in slide-in-from-top duration-300">
+          <div className="flex items-center justify-between mb-2">
+            <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
+              <Image
+                src="/LOGO.png"
+                alt="KYATHOS Logo"
+                width={80}
+                height={40}
+                style={{ height: '32px', width: 'auto' }}
+              />
+              <span className="text-xl font-title font-black text-[var(--foreground)] tracking-tighter">
+                KYATHOS <span className="text-[var(--accent)] font-text font-light text-sm tracking-widest uppercase ml-1">tazas</span>
+              </span>
+            </Link>
+          </div>
+          <div className="h-px bg-[var(--border)] w-full opacity-50"></div>
           <Link href="/" onClick={() => setOpen(false)} className="text-lg font-bold flex items-center gap-3">
-            <span className="w-8 h-8 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-lg flex items-center justify-center">🏠</span>
+            <Image
+              src="/LOGO.png"
+              alt="KYATHOS Logo"
+              width={32}
+              height={32}
+              className="w-8 h-8 object-contain"
+            />
             Inicio
           </Link>
           <Link href="/products" onClick={() => setOpen(false)} className="text-lg font-bold flex items-center gap-3">

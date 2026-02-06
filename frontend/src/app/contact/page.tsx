@@ -51,7 +51,7 @@ export default function ContactPage() {
                                     <LuMail size={20} />
                                 </div>
                                 <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-2">Email</h3>
-                                <p className="text-lg font-bold text-[var(--foreground)]">hola@kyathos.shop</p>
+                                <p className="text-lg font-bold text-[var(--foreground)]">tazas.personalizables@outlook.com</p>
                             </div>
 
                             <div className="p-8 bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
@@ -59,7 +59,7 @@ export default function ContactPage() {
                                     <LuPhone size={20} />
                                 </div>
                                 <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-2">Teléfono</h3>
-                                <p className="text-lg font-bold text-[var(--foreground)]">+54 11 2233-4455</p>
+                                <p className="text-lg font-bold text-[var(--foreground)]">+54 249 4243094</p>
                             </div>
 
                             <div className="p-8 bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-xl shadow-black/5">
@@ -84,7 +84,6 @@ export default function ContactPage() {
                             <div className="flex gap-4">
                                 {[
                                     { icon: <LuInstagram size={24} />, label: "Instagram" },
-                                    { icon: <LuTwitter size={24} />, label: "Twitter" },
                                     { icon: <LuFacebook size={24} />, label: "Facebook" }
                                 ].map((social, idx) => (
                                     <a
