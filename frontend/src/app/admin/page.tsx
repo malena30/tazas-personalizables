@@ -522,11 +522,11 @@ export default function AdminPanel() {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-gray-50 dark:bg-zinc-800/50 border-b border-[var(--border)]">
-                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Usuario</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Email</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Actividad</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Rol</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Registro</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Usuario</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Email</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Actividad</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Rol</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Registro</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[var(--border)]">
@@ -540,13 +540,13 @@ export default function AdminPanel() {
                                                 <span className="text-sm font-bold text-[var(--foreground)]">{u.username}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">{u.email}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{u.email}</td>
                                         <td className="px-6 py-4">
                                             <div className="flex gap-4 text-xs">
-                                                <span className="flex items-center gap-1 text-gray-500">
+                                                <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
                                                     <LuShoppingBag size={10} /> {u.order_count}
                                                 </span>
-                                                <span className="flex items-center gap-1 text-gray-500">
+                                                <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
                                                     <LuWand size={10} /> {u.design_count}
                                                 </span>
                                             </div>
@@ -559,7 +559,7 @@ export default function AdminPanel() {
                                                 {u.is_admin ? "Administrador" : "Cliente"}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                        <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                             {new Date(u.created_at).toLocaleDateString()}
                                         </td>
                                     </tr>
@@ -575,7 +575,7 @@ export default function AdminPanel() {
                         <div className="flex justify-between items-center bg-[var(--cream)] dark:bg-zinc-900 p-6 rounded-2xl border border-[var(--border)] shadow-sm">
                             <div>
                                 <h2 className="text-xl font-bold text-[var(--foreground)]">Catálogo de Productos</h2>
-                                <p className="text-sm text-gray-500">Gestiona los artículos disponibles en tu tienda.</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Gestiona los artículos disponibles en tu tienda.</p>
                             </div>
                             <button
                                 onClick={() => {

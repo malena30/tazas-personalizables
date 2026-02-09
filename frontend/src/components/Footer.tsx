@@ -25,7 +25,7 @@ export default function Footer() {
                 KYATHOS <span className="text-[var(--accent)] font-text font-light text-lg tracking-widest uppercase ml-1">tazas</span>
               </span>
             </Link>
-            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-xs">
+            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed max-w-xs">
               Transformamos tus ideas en piezas únicas. Calidad premium y personalización sin límites para tus momentos especiales.
             </p>
             <div className="flex gap-4">
@@ -40,7 +40,7 @@ export default function Footer() {
 
           {/* Shop Column */}
           <div>
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-8">Tienda</h4>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 mb-8">Tienda</h4>
             <ul className="space-y-4 text-sm font-bold text-[var(--foreground)]">
               <li><Link href="/products" className="hover:text-[var(--accent)] transition-colors">Todos los Productos</Link></li>
               <li><Link href="/customizer" className="hover:text-[var(--accent)] transition-colors">Personalizar</Link></li>
@@ -51,7 +51,7 @@ export default function Footer() {
 
           {/* Help Column */}
           <div>
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-8">Ayuda</h4>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 mb-8">Ayuda</h4>
             <ul className="space-y-4 text-sm font-bold text-[var(--foreground)]">
               <li><Link href="/orders" className="hover:text-[var(--accent)] transition-colors">Seguir mi Pedido</Link></li>
               <li><Link href="/terms" className="hover:text-[var(--accent)] transition-colors">Términos y Condiciones</Link></li>
@@ -63,14 +63,14 @@ export default function Footer() {
 
           {/* Contact Column */}
           <div>
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-8">Contacto</h4>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 mb-8">Contacto</h4>
             <ul className="space-y-6">
               <li className="flex items-start gap-4">
                 <div className="w-8 h-8 bg-[var(--accent)]/10 text-[var(--accent)] rounded-lg flex items-center justify-center shrink-0">
                   <LuMail size={14} />
                 </div>
                 <div className="text-sm">
-                  <p className="text-gray-400 mb-1">Email</p>
+                  <p className="text-gray-500 dark:text-gray-400 mb-1">Email</p>
                   <a href="mailto:tazas.personalizables@outlook.com" className="font-bold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors">tazas.personalizables@outlook.com</a>
                 </div>
               </li>
@@ -79,7 +79,7 @@ export default function Footer() {
                   <LuPhone size={14} />
                 </div>
                 <div className="text-sm">
-                  <p className="text-gray-400 mb-1">Teléfono</p>
+                  <p className="text-gray-500 dark:text-gray-400 mb-1">Teléfono</p>
                   <a href="tel:+542494243094" className="font-bold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors">+54 249 4243094</a>
                 </div>
               </li>
@@ -89,7 +89,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-[var(--border)] pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black uppercase tracking-widest text-gray-400">
+        <div className="border-t border-[var(--border)] pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">
           <p>© {new Date().getFullYear()} KYATHOS tazas. Hecho con ❤️ en Argentina.</p>
           <div className="flex gap-8">
             <Link href="/privacy" className="hover:text-[var(--accent)] transition-colors">Privacidad</Link>

@@ -68,7 +68,7 @@ export default function CartPage() {
           <h1 className="text-4xl md:text-5xl font-black text-[var(--foreground)] tracking-tight">
             Tu <span className="text-[var(--accent)]">Carrito</span>
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-4 text-lg">
+          <p className="text-gray-500 dark:text-gray-300 mt-4 text-lg">
             Revisá tus productos antes de finalizar la compra.
           </p>
         </header>
@@ -79,7 +79,7 @@ export default function CartPage() {
               <LuShoppingBag className="text-5xl text-[var(--accent)]" />
             </div>
             <h2 className="text-3xl font-bold text-[var(--foreground)] mb-4">Tu carrito está vacío</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-10 max-w-md mx-auto text-lg leading-relaxed">
+            <p className="text-gray-600 dark:text-gray-300 mb-10 max-w-md mx-auto text-lg leading-relaxed">
               Parece que aún no has añadido nada. ¡Explora nuestros productos y personaliza tu taza ideal!
             </p>
             <Link
@@ -123,7 +123,7 @@ export default function CartPage() {
                               {item.name}
                             </h3>
                             <div className="flex items-center gap-2 mt-2">
-                              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Precio Unitario:</span>
+                              <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Precio Unitario:</span>
                               <span className="text-sm font-bold text-[var(--accent)]">
                                 ${item.price.toLocaleString('es-AR')}
                               </span>
@@ -160,7 +160,7 @@ export default function CartPage() {
                             </button>
                           </div>
                           <div className="text-right">
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Subtotal Item</p>
+                            <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Subtotal Item</p>
                             <p className="text-2xl font-black text-[var(--foreground)]">
                               ${(item.price * item.quantity).toLocaleString('es-AR')}
                             </p>
@@ -192,7 +192,7 @@ export default function CartPage() {
 
                   <div className="space-y-6">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-500 dark:text-gray-400 font-medium">Subtotal</span>
+                      <span className="text-gray-600 dark:text-gray-300 font-medium">Subtotal</span>
                       <span className="font-bold text-xl text-[var(--foreground)]">
                         ${subtotal.toLocaleString('es-AR')}
                       </span>
@@ -200,7 +200,7 @@ export default function CartPage() {
 
                     {/* SELECT DE PROVINCIA */}
                     <div className="pt-6 border-t border-[var(--border)]">
-                      <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">
+                      <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3 ml-1">
                         Calcular Envío
                       </label>
                       <div className="relative">
@@ -229,8 +229,8 @@ export default function CartPage() {
                       </div>
 
                       <div className="flex justify-between items-center mt-6">
-                        <span className="text-gray-500 dark:text-gray-400 font-medium">Costo de envío</span>
-                        <span className={`font-bold ${shippingCost > 0 ? 'text-[var(--accent)]' : 'text-gray-300'}`}>
+                        <span className="text-gray-600 dark:text-gray-300 font-medium">Costo de envío</span>
+                        <span className={`font-bold ${shippingCost > 0 ? 'text-[var(--accent)]' : 'text-gray-400 dark:text-gray-600'}`}>
                           {shippingCost > 0 ? `$${shippingCost.toLocaleString('es-AR')}` : '—'}
                         </span>
                       </div>
@@ -243,7 +243,7 @@ export default function CartPage() {
                           <span className="block text-3xl font-black text-[var(--accent)]">
                             ${total.toLocaleString('es-AR')}
                           </span>
-                          <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">IVA Incluido</span>
+                          <span className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-tighter">IVA Incluido</span>
                         </div>
                       </div>
                     </div>

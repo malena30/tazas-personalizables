@@ -48,7 +48,7 @@ export default function Home() {
               Lo cotidiano, <br />
               <span className="text-[var(--accent)]">con intención.</span>
             </h1>
-            <p className="text-xl md:text-2xl text-[var(--foreground)] opacity-60 mb-12 font-text max-w-lg animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-12 font-text max-w-lg animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
               Personaliza cada detalle y crea una pieza única que hable de vos. Calidad excepcional en cada sorbo.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center md:justify-start animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
@@ -80,24 +80,24 @@ export default function Home() {
       </section>
 
       {/* STATS SECTION */}
-      <section className="w-full py-16 bg-zinc-900 border-y border-white/10">
+      <section className="w-full py-16 bg-[var(--cream)] dark:bg-zinc-900 border-y border-[var(--border)]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
             <div className="space-y-2">
-              <p className="text-5xl font-black text-white tracking-tighter">+1.5k</p>
-              <p className="text-[10px] text-white font-black uppercase tracking-[0.2em]">Clientes Felices</p>
+              <p className="text-5xl font-black text-[var(--foreground)] tracking-tighter">+1.5k</p>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em]">Clientes Felices</p>
             </div>
             <div className="space-y-2">
-              <p className="text-5xl font-black text-white tracking-tighter">+500</p>
-              <p className="text-[10px] text-white font-black uppercase tracking-[0.2em]">Diseños Únicos</p>
+              <p className="text-5xl font-black text-[var(--foreground)] tracking-tighter">+500</p>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em]">Diseños Únicos</p>
             </div>
             <div className="space-y-2">
-              <p className="text-5xl font-black text-white tracking-tighter">24h</p>
-              <p className="text-[10px] text-white font-black uppercase tracking-[0.2em]">Producción Express</p>
+              <p className="text-5xl font-black text-[var(--foreground)] tracking-tighter">24h</p>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em]">Producción Express</p>
             </div>
             <div className="space-y-2">
-              <p className="text-5xl font-black text-white tracking-tighter">100%</p>
-              <p className="text-[10px] text-white font-black uppercase tracking-[0.2em]">Garantía Total</p>
+              <p className="text-5xl font-black text-[var(--foreground)] tracking-tighter">100%</p>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em]">Garantía Total</p>
             </div>
           </div>
         </div>
@@ -107,50 +107,50 @@ export default function Home() {
       <section className="w-full py-32 px-6 bg-[var(--background)]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-24">
-            <h2 className="text-5xl md:text-6xl font-title font-black text-white tracking-tighter mb-6">
+            <h2 className="text-5xl md:text-6xl font-title font-black text-[var(--foreground)] tracking-tighter mb-6">
               ¿Cómo <span className="text-[var(--accent)]">Funciona?</span>
             </h2>
-            <p className="text-white/80 text-xl leading-relaxed">
+            <p className="text-gray-600 dark:text-gray-300 text-xl leading-relaxed">
               Tres simples pasos para transformar una idea en tu taza favorita.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-12">
             {/* Step 1 */}
-            <div className="relative p-10 bg-zinc-900 rounded-[3rem] border border-white/10 group hover:border-[var(--accent)] transition-all duration-500">
-              <div className="w-16 h-16 mb-8 bg-white text-zinc-900 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl group-hover:scale-110 transition-transform duration-300">
+            <div className="relative p-10 bg-[var(--cream)] dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)] group hover:border-[var(--accent)] transition-all duration-500">
+              <div className="w-16 h-16 mb-8 bg-[var(--foreground)] text-[var(--background)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl group-hover:scale-110 transition-transform duration-300">
                 01
               </div>
-              <h3 className="text-2xl font-black text-white mb-4">
+              <h3 className="text-2xl font-black text-[var(--foreground)] mb-4">
                 Diseña
               </h3>
-              <p className="text-white leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Usa nuestro editor intuitivo para agregar textos, imágenes y elementos únicos que reflejen tu personalidad.
               </p>
             </div>
 
             {/* Step 2 */}
-            <div className="relative p-10 bg-white dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)] group hover:border-[var(--accent)] transition-all duration-500">
+            <div className="relative p-10 bg-[var(--cream)] dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)] group hover:border-[var(--accent)] transition-all duration-500">
               <div className="w-16 h-16 mb-8 bg-[var(--accent)] text-[var(--background)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl group-hover:scale-110 transition-transform duration-300">
                 02
               </div>
-              <h3 className="text-2xl font-black text-white mb-4">
+              <h3 className="text-2xl font-black text-[var(--foreground)] mb-4">
                 Compra
               </h3>
-              <p className="text-white leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Agrega al carrito y completa tu pedido de forma segura con Mercado Pago. Aceptamos todas las tarjetas.
               </p>
             </div>
 
             {/* Step 3 */}
-            <div className="relative p-10 bg-zinc-900 rounded-[3rem] border border-white/10 group hover:border-[var(--accent)] transition-all duration-500">
-              <div className="w-16 h-16 mb-8 bg-white text-zinc-900 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl group-hover:scale-110 transition-transform duration-300">
+            <div className="relative p-10 bg-[var(--cream)] dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)] group hover:border-[var(--accent)] transition-all duration-500">
+              <div className="w-16 h-16 mb-8 bg-[var(--foreground)] text-[var(--background)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl group-hover:scale-110 transition-transform duration-300">
                 03
               </div>
-              <h3 className="text-2xl font-black text-white mb-4">
+              <h3 className="text-2xl font-black text-[var(--foreground)] mb-4">
                 Recibe
               </h3>
-              <p className="text-white leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Tu taza personalizada llega a tu puerta en pocos días, protegida y lista para ser estrenada.
               </p>
             </div>
@@ -166,7 +166,7 @@ export default function Home() {
               <h2 className="text-5xl md:text-6xl font-title font-black text-[var(--foreground)] tracking-tighter mb-6">
                 Productos <span className="text-[var(--accent)]">Destacados</span>
               </h2>
-              <p className="text-white text-xl leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 text-xl leading-relaxed">
                 Una selección de nuestras piezas más queridas, listas para ser el lienzo de tu creatividad.
               </p>
             </div>
