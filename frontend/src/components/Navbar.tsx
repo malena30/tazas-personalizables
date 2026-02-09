@@ -85,7 +85,7 @@ export default function Navbar() {
           <Link href="/" className="hover:text-[var(--accent)] transition-colors">Inicio</Link>
           <Link href="/products" className="hover:text-[var(--accent)] transition-colors">Productos</Link>
           <Link href="/customizer" className="hover:text-[var(--accent)] transition-colors">Personalizar</Link>
-          {user && (
+          {user && !user.is_admin && (
             <>
               <Link href="/orders" className="hover:text-[var(--accent)] transition-colors">Mis Pedidos</Link>
               <Link href="/profile" className="hover:text-[var(--accent)] transition-colors">Mi Perfil</Link>
@@ -100,15 +100,17 @@ export default function Navbar() {
 
           <div className="h-6 w-px bg-[var(--border)] mx-2"></div>
 
-          {/* Carrito */}
-          <Link href="/cart" className="relative p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-all">
-            <LuShoppingBag size={20} />
-            {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[var(--accent)] text-[var(--background)] text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-lg shadow-black/10">
-                {totalItems}
-              </span>
-            )}
-          </Link>
+          {/* Carrito - Oculto para admin */}
+          {!user?.is_admin && (
+            <Link href="/cart" className="relative p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-all">
+              <LuShoppingBag size={20} />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[var(--accent)] text-[var(--background)] text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-lg shadow-black/10">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+          )}
 
           {/* Botón de Tema */}
           <button
@@ -122,18 +124,28 @@ export default function Navbar() {
           {/* User / Auth */}
           {user ? (
             <div className="flex items-center gap-4 ml-2">
-              <Link href="/profile" className="flex items-center gap-2 group">
-                {user.avatar_url ? (
-                  <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-[var(--accent)]">
-                    <Image src={user.avatar_url} alt={user.username} fill className="object-cover" />
-                  </div>
-                ) : (
-                  <div className="w-8 h-8 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full flex items-center justify-center border border-[var(--accent)]/20">
+              {!user.is_admin && (
+                <Link href="/profile" className="flex items-center gap-2 group">
+                  {user.avatar_url ? (
+                    <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-[var(--accent)]">
+                      <Image src={user.avatar_url} alt={user.username} fill className="object-cover" />
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full flex items-center justify-center border border-[var(--accent)]/20">
+                      <LuUser size={20} />
+                    </div>
+                  )}
+                  <span className="text-sm group-hover:text-[var(--accent)] transition-colors">{user.username}</span>
+                </Link>
+              )}
+              {user.is_admin && (
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full flex items-center justify-center border border-purple-200 dark:border-purple-800">
                     <LuUser size={20} />
                   </div>
-                )}
-                <span className="text-sm group-hover:text-[var(--accent)] transition-colors">{user.username}</span>
-              </Link>
+                  <span className="text-sm font-bold">{user.username}</span>
+                </div>
+              )}
               <button
                 onClick={handleLogout}
                 className="p-2 text-gray-400 hover:text-red-500 transition-colors"

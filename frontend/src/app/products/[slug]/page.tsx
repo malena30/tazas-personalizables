@@ -146,8 +146,8 @@ export default function ProductDetailPage() {
                             </div>
                         </div>
 
-                        <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed mb-10">
-                            {product.description || "Esta pieza única combina diseño contemporáneo con la calidez de lo cotidiano. Ideal para quienes buscan un objeto con intención en cada detalle."}
+                        <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-10">
+                            {product.description || "Esta pieza única combina diseño contemporáneo con la calidez de lo cotidianos. Ideal para quienes buscan un objeto con intención en cada detalle."}
                         </p>
 
                         {/* Technical Details */}
@@ -158,19 +158,19 @@ export default function ProductDetailPage() {
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Material</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Material</p>
                                     <p className="font-bold text-[var(--foreground)]">{product.material || "Cerámica Premium"}</p>
                                 </div>
                                 <div className="p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Capacidad</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Capacidad</p>
                                     <p className="font-bold text-[var(--foreground)]">{product.capacity || "325ml / 11oz"}</p>
                                 </div>
                                 <div className="p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Acabado</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Acabado</p>
                                     <p className="font-bold text-[var(--foreground)]">{product.finish || "Esmaltado Brillante"}</p>
                                 </div>
                                 <div className="p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Cuidados</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Cuidados</p>
                                     <p className="font-bold text-[var(--foreground)] text-sm">{product.care_instructions || "Apto Microondas y Lavavajillas"}</p>
                                 </div>
                             </div>
@@ -231,15 +231,15 @@ export default function ProductDetailPage() {
                         <div className="grid grid-cols-3 gap-4 mt-12 pt-8 border-t border-[var(--border)]">
                             <div className="flex flex-col items-center text-center">
                                 <LuTruck className="text-[var(--accent)] mb-2" size={20} />
-                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Envío Rápido</p>
+                                <p className="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-tighter">Envío Rápido</p>
                             </div>
                             <div className="flex flex-col items-center text-center">
                                 <LuShieldCheck className="text-[var(--accent)] mb-2" size={20} />
-                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Pago Seguro</p>
+                                <p className="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-tighter">Pago Seguro</p>
                             </div>
                             <div className="flex flex-col items-center text-center">
                                 <LuRotateCcw className="text-[var(--accent)] mb-2" size={20} />
-                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Garantía 100%</p>
+                                <p className="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-tighter">Garantía 100%</p>
                             </div>
                         </div>
                     </div>
