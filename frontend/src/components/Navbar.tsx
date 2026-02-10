@@ -157,7 +157,7 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="px-6 py-2.5 bg-[var(--cream-dark)] text-white rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-[var(--cream-dark)]/10"
+              className="px-6 py-2.5 bg-white text-[#D4A373] rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-[#D4A373]/10 border border-[#D4A373]/20"
             >
               Iniciar Sesión
             </Link>
@@ -202,21 +202,21 @@ export default function Navbar() {
             Inicio
           </Link>
           <Link href="/products" onClick={() => setOpen(false)} className="text-lg font-bold flex items-center gap-3">
-            <span className="w-8 h-8 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-lg flex items-center justify-center">☕</span>
+            <span className="w-8 h-8 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-lg flex items-center justify-center">☕</span>
             Productos
           </Link>
           <Link href="/customizer" onClick={() => setOpen(false)} className="text-lg font-bold flex items-center gap-3">
-            <span className="w-8 h-8 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-lg flex items-center justify-center">🎨</span>
+            <span className="w-8 h-8 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-lg flex items-center justify-center">🎨</span>
             Personalizar
           </Link>
           {user && (
             <>
               <Link href="/orders" onClick={() => setOpen(false)} className="text-lg font-bold flex items-center gap-3">
-                <span className="w-8 h-8 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-lg flex items-center justify-center">📦</span>
+                <span className="w-8 h-8 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-lg flex items-center justify-center">📦</span>
                 Mis Pedidos
               </Link>
               <Link href="/profile" onClick={() => setOpen(false)} className="text-lg font-bold flex items-center gap-3">
-                <span className="w-8 h-8 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-lg flex items-center justify-center">👤</span>
+                <span className="w-8 h-8 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-lg flex items-center justify-center">👤</span>
                 Mi Perfil
               </Link>
             </>
@@ -226,11 +226,11 @@ export default function Navbar() {
 
           <Link href="/cart" onClick={() => setOpen(false)} className="text-lg font-bold flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <span className="w-8 h-8 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-lg flex items-center justify-center">🛒</span>
+              <span className="w-8 h-8 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-lg flex items-center justify-center">🛒</span>
               Carrito
             </div>
             {totalItems > 0 && (
-              <span className="bg-blue-600 text-white text-xs font-black px-3 py-1 rounded-full">{totalItems} items</span>
+              <span className="bg-purple-600 text-white text-xs font-black px-3 py-1 rounded-full">{totalItems} items</span>
             )}
           </Link>
 

@@ -37,6 +37,7 @@
         /* Crema claro */
         --cream-dark: #D4A373;
         /* Crema oscuro / Terracota suave original */
+        --card: #FFFFFF;
 
         /* Typography Variables */
         --font-title: "Cormorant Garamond", serif;
@@ -60,6 +61,7 @@
         --cream: #1A1A1A;
         /* Fondos de tarjetas con buena separación */
         --cream-dark: #222222;
+        --card: #141414;
     }
 
     body {

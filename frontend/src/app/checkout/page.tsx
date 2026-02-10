@@ -43,7 +43,7 @@ export default function CheckoutPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-cream py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col lg:flex-row gap-12">
 
@@ -55,7 +55,7 @@ export default function CheckoutPage() {
                         </header>
 
                         <div className="space-y-8">
-                            <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-sm border border-[var(--border)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <section className="bg-[var(--card)] rounded-[2.5rem] shadow-sm border border-[var(--border)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <div className="p-10">
                                     <div className="flex items-center gap-4 mb-8">
                                         <div className="w-10 h-10 rounded-xl bg-[var(--accent)] text-white flex items-center justify-center font-black shadow-lg shadow-[var(--accent)]/30">

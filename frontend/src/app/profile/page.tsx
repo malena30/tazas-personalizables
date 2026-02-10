@@ -210,7 +210,7 @@ export default function ProfilePage() {
 
     if (!user) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 pt-32 pb-20 px-6">
+            <div className="min-h-screen bg-cream pt-32 pb-20 px-6">
                 <div className="max-w-6xl mx-auto">
                     <ProfileSkeleton />
                 </div>
@@ -227,7 +227,7 @@ export default function ProfilePage() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 pt-32 pb-20 px-6">
+        <div className="min-h-screen bg-cream pt-32 pb-20 px-6">
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="mb-10">
@@ -242,7 +242,7 @@ export default function ProfilePage() {
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Sidebar Navigation */}
                     <aside className="lg:w-64 flex-shrink-0">
-                        <nav className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl p-2 md:p-3 border border-[var(--border)] shadow-sm sticky top-32 overflow-x-auto lg:overflow-x-visible no-scrollbar">
+                        <nav className="bg-[var(--card)] rounded-3xl p-2 md:p-3 border border-[var(--border)] shadow-sm sticky top-32 overflow-x-auto lg:overflow-x-visible no-scrollbar">
                             <div className="flex lg:flex-col gap-1 min-w-max lg:min-w-0">
                                 {menuItems.map((item) => (
                                     <button
@@ -477,7 +477,7 @@ export default function ProfilePage() {
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
+                                    <div className="bg-[var(--card)] rounded-3xl p-8 border border-[var(--border)] shadow-sm">
                                         <div className="flex items-center justify-between mb-8">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
