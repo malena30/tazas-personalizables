@@ -57,7 +57,7 @@ export default function ProductsPage() {
   };
 
   return (
-    <main className="w-full bg-[var(--background)] min-h-screen py-20 px-6">
+    <main className="w-full bg-[var(--cream)] min-h-screen py-20 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-16 text-center max-w-2xl mx-auto">
@@ -85,9 +85,16 @@ export default function ProductsPage() {
         )}
 
         {!loading && !error && products.length === 0 && (
-          <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)]">
-            <LuShoppingBag className="text-4xl text-gray-300 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-[var(--foreground)]">No hay productos disponibles</h3>
+          <div className="text-center py-32 bg-white rounded-[3rem] border border-[var(--border)] shadow-xl shadow-black/5">
+            <div className="w-20 h-20 bg-[var(--cream)] text-[var(--cream-dark)] rounded-full flex items-center justify-center mx-auto mb-8">
+              <LuShoppingBag size={40} />
+            </div>
+            <h3 className="text-3xl font-black text-zinc-900 tracking-tighter" style={{ color: '#18181b' }}>
+              No hay productos disponibles
+            </h3>
+            <p className="text-zinc-600 mt-4 max-w-xs mx-auto font-medium" style={{ color: '#3f3f46' }}>
+              Estamos preparando nuevas tazas exclusivas para vos. ¡Volvé pronto!
+            </p>
           </div>
         )}
 

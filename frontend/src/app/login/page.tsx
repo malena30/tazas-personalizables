@@ -44,7 +44,7 @@ function LoginForm() {
     };
 
     return (
-        <div className="bg-[var(--accent)] border border-[var(--border)] rounded-lg shadow-2xl p-8">
+        <div className="bg-[#faf7f2] border border-[var(--border)] rounded-2xl shadow-xl p-8">
             {/* Header */}
             <div className="text-center mb-8">
                 <h1 className="text-3xl font-title font-bold text-[var(--foreground)] mb-2">
