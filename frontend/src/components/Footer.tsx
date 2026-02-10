@@ -29,10 +29,10 @@ export default function Footer() {
               Transformamos tus ideas en piezas únicas. Calidad premium y personalización sin límites para tus momentos especiales.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 bg-gray-50 dark:bg-zinc-900 rounded-xl flex items-center justify-center text-gray-400 hover:text-[var(--accent)] hover:bg-white dark:hover:bg-zinc-800 transition-all border border-[var(--border)]">
+              <a href="#" className="w-10 h-10 bg-[var(--cream-dark)] rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all border border-[var(--cream-dark)]">
                 <LuInstagram size={18} />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-50 dark:bg-zinc-900 rounded-xl flex items-center justify-center text-gray-400 hover:text-[var(--accent)] hover:bg-white dark:hover:bg-zinc-800 transition-all border border-[var(--border)]">
+              <a href="#" className="w-10 h-10 bg-[var(--cream-dark)] rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all border border-[var(--cream-dark)]">
                 <LuFacebook size={18} />
               </a>
             </div>

@@ -157,7 +157,7 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="px-6 py-2.5 bg-gray-900 dark:bg-zinc-800 text-white rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-gray-900/10"
+              className="px-6 py-2.5 bg-[var(--cream-dark)] text-white rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-[var(--cream-dark)]/10"
             >
               Iniciar Sesión
             </Link>
