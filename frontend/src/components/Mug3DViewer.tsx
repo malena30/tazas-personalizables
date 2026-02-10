@@ -3,7 +3,7 @@
 
 import React, { useRef, useEffect, useState, forwardRef, useImperativeHandle, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, useTexture, Decal } from "@react-three/drei";
 import * as THREE from "three";
 import { Stage, Layer, Rect, Text as KonvaText, TextPath, Image as KonvaImage, Transformer } from "react-konva";
 import { CanvasElement, MugCoverage } from "@/types/customizer";
@@ -27,6 +27,26 @@ function Mug({ mugColor, frontTexture, frontBackTexture, fullTexture }: {
     fullTexture: THREE.Texture | null;
 }) {
     const color = useMemo(() => new THREE.Color(mugColor), [mugColor]);
+    const logoTexture = useTexture("/LOGO.png");
+
+    // Generar textura para el texto KYATHOS
+    const textTexture = useMemo(() => {
+        if (typeof document === 'undefined') return null;
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 128;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+            ctx.fillStyle = '#2A2A2A';
+            ctx.font = '900 80px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('KYATHOS', 256, 64);
+        }
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+        return texture;
+    }, []);
 
     return (
         <group rotation={[0, 0, 0]}>
@@ -39,6 +59,68 @@ function Mug({ mugColor, frontTexture, frontBackTexture, fullTexture }: {
                     roughness={0.15}
                     metalness={0.05}
                 />
+
+                {/* Logo Frontal Branding */}
+                <Decal
+                    position={[0, -0.2, 1.05]} // Bajado un poco
+                    rotation={[0, 0, 0]}
+                    scale={[1.1, 1.1, 1]}
+                >
+                    <meshStandardMaterial
+                        map={logoTexture}
+                        transparent
+                        polygonOffset
+                        polygonOffsetFactor={-1}
+                        color="black"
+                    />
+                </Decal>
+
+                {/* Texto KYATHOS Frontal */}
+                {textTexture && (
+                    <Decal
+                        position={[0, 0.65, 1.05]}
+                        rotation={[0, 0, 0]}
+                        scale={[1.4, 0.35, 1]}
+                    >
+                        <meshStandardMaterial
+                            map={textTexture}
+                            transparent
+                            polygonOffset
+                            polygonOffsetFactor={-1}
+                        />
+                    </Decal>
+                )}
+
+                {/* Logo Trasero Branding */}
+                <Decal
+                    position={[0, -0.2, -1.05]} // Bajado un poco
+                    rotation={[0, Math.PI, 0]}
+                    scale={[1.1, 1.1, 1]}
+                >
+                    <meshStandardMaterial
+                        map={logoTexture}
+                        transparent
+                        polygonOffset
+                        polygonOffsetFactor={-1}
+                        color="black"
+                    />
+                </Decal>
+
+                {/* Texto KYATHOS Trasero */}
+                {textTexture && (
+                    <Decal
+                        position={[0, 0.65, -1.05]}
+                        rotation={[0, Math.PI, 0]}
+                        scale={[1.4, 0.35, 1]}
+                    >
+                        <meshStandardMaterial
+                            map={textTexture}
+                            transparent
+                            polygonOffset
+                            polygonOffsetFactor={-1}
+                        />
+                    </Decal>
+                )}
             </mesh>
 
             {/* Fondo de la taza */}

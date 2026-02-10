@@ -2,12 +2,32 @@
 
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Float, PerspectiveCamera } from "@react-three/drei";
+import { OrbitControls, Float, PerspectiveCamera, useTexture, Decal } from "@react-three/drei";
 import * as THREE from "three";
 
 function MugModel({ color = "#FFFFFF" }: { color?: string }) {
     const meshRef = useRef<THREE.Group>(null);
     const mugColor = useMemo(() => new THREE.Color(color), [color]);
+    const logoTexture = useTexture("/LOGO.png");
+
+    // Generar textura para el texto KYATHOS
+    const textTexture = useMemo(() => {
+        if (typeof document === 'undefined') return null;
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 128;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+            ctx.fillStyle = '#2A2A2A';
+            ctx.font = '900 80px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('KYATHOS', 256, 64);
+        }
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+        return texture;
+    }, []);
 
     useFrame((state) => {
         if (meshRef.current) {
@@ -25,6 +45,68 @@ function MugModel({ color = "#FFFFFF" }: { color?: string }) {
                     roughness={0.1}
                     metalness={0.1}
                 />
+
+                {/* Logo Frontal */}
+                <Decal
+                    position={[0, -0.2, 1.05]} // Bajado un poco para dar lugar al texto
+                    rotation={[0, 0, 0]}
+                    scale={[1.1, 1.1, 1]}
+                >
+                    <meshStandardMaterial
+                        map={logoTexture}
+                        transparent
+                        polygonOffset
+                        polygonOffsetFactor={-1}
+                        color="black"
+                    />
+                </Decal>
+
+                {/* Texto KYATHOS Frontal */}
+                {textTexture && (
+                    <Decal
+                        position={[0, 0.65, 1.05]}
+                        rotation={[0, 0, 0]}
+                        scale={[1.4, 0.35, 1]}
+                    >
+                        <meshStandardMaterial
+                            map={textTexture}
+                            transparent
+                            polygonOffset
+                            polygonOffsetFactor={-1}
+                        />
+                    </Decal>
+                )}
+
+                {/* Logo Trasero */}
+                <Decal
+                    position={[0, -0.2, -1.05]} // Bajado un poco
+                    rotation={[0, Math.PI, 0]}
+                    scale={[1.1, 1.1, 1]}
+                >
+                    <meshStandardMaterial
+                        map={logoTexture}
+                        transparent
+                        polygonOffset
+                        polygonOffsetFactor={-1}
+                        color="black"
+                    />
+                </Decal>
+
+                {/* Texto KYATHOS Trasero */}
+                {textTexture && (
+                    <Decal
+                        position={[0, 0.65, -1.05]}
+                        rotation={[0, Math.PI, 0]}
+                        scale={[1.4, 0.35, 1]}
+                    >
+                        <meshStandardMaterial
+                            map={textTexture}
+                            transparent
+                            polygonOffset
+                            polygonOffsetFactor={-1}
+                        />
+                    </Decal>
+                )}
             </mesh>
 
             {/* Interior de la taza */}
