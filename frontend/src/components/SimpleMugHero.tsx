@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Float, PerspectiveCamera, useTexture, Decal } from "@react-three/drei";
 import * as THREE from "three";
@@ -10,24 +10,58 @@ function MugModel({ color = "#FFFFFF" }: { color?: string }) {
     const mugColor = useMemo(() => new THREE.Color(color), [color]);
     const logoTexture = useTexture("/LOGO.png");
 
+    // Estado para controlar la carga de fuentes
+    const [fontsLoaded, setFontsLoaded] = useState(false);
+
+    useEffect(() => {
+        if (typeof document !== 'undefined') {
+            document.fonts.ready.then(() => {
+                setFontsLoaded(true);
+            });
+        }
+    }, []);
+
     // Generar textura para el texto KYATHOS
     const textTexture = useMemo(() => {
-        if (typeof document === 'undefined') return null;
+        if (typeof document === 'undefined' || !fontsLoaded) return null; // Esperar a que carguen fuentes
         const canvas = document.createElement('canvas');
-        canvas.width = 512;
-        canvas.height = 128;
+        canvas.width = 1024; // Increased resolution
+        canvas.height = 256;
         const ctx = canvas.getContext('2d');
         if (ctx) {
+            // Configuración de fuente
             ctx.fillStyle = '#2A2A2A';
-            ctx.font = '900 80px Inter, sans-serif';
+            ctx.font = '600 140px "Cinzel", serif'; // SemiBold
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('KYATHOS', 256, 64);
+
+            // Texto con espaciado manual (tracking)
+            const text = "KYATHOS"; // Usar 'A' normal
+            const letterSpacing = 30; // Espaciado en pixeles
+
+            // Calcular ancho total para centrar
+            let totalWidth = 0;
+            const charWidths = text.split('').map(char => {
+                const width = ctx.measureText(char).width;
+                totalWidth += width;
+                return width;
+            });
+            totalWidth += (text.length - 1) * letterSpacing;
+
+            // Dibujar letras centradas
+            let currentX = (canvas.width - totalWidth) / 2;
+            const startY = canvas.height / 2;
+
+            text.split('').forEach((char, i) => {
+                ctx.fillText(char, currentX + charWidths[i] / 2, startY);
+                currentX += charWidths[i] + letterSpacing;
+            });
         }
         const texture = new THREE.CanvasTexture(canvas);
         texture.needsUpdate = true;
+        // texture.anisotropy = 16; // Mejorar calidad en ángulos, si el renderer lo soporta
         return texture;
-    }, []);
+    }, [fontsLoaded]); // Regenerar cuando carguen fuentes
 
     useFrame((state) => {
         if (meshRef.current) {
