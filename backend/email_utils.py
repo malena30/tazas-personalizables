@@ -24,19 +24,25 @@ def send_email(to_email, subject, html_content):
     Prioriza Resend si hay una API Key, de lo contrario usa SMTP.
     Si no hay credenciales, solo simula el envío.
     """
+    print(f"📧 Intentando enviar email a: {to_email}")
+    print(f"   Asunto: {subject}")
+    print(f"   RESEND_API_KEY configurada: {'Sí' if RESEND_API_KEY else 'No'}")
+    print(f"   EMAIL_FROM: {EMAIL_FROM}")
+    
     # 1. Intentar con Resend (Recomendado para producción)
     if RESEND_API_KEY:
         try:
-            resend.Emails.send({
+            result = resend.Emails.send({
                 "from": EMAIL_FROM,
                 "to": to_email,
                 "subject": subject,
                 "html": html_content
             })
+            print(f"   ✅ Email enviado con Resend! Result: {result}")
             return True
-        except Exception:
+        except Exception as e:
+            print(f"   ❌ Error con Resend: {e}")
             # Si falla Resend, intentamos con SMTP si está configurado
-            pass
 
     # 2. Intentar con SMTP (Fallback)
     if SMTP_USER and SMTP_PASSWORD:
@@ -53,11 +59,14 @@ def send_email(to_email, subject, html_content):
             server.login(SMTP_USER, SMTP_PASSWORD)
             server.send_message(msg)
             server.quit()
+            print(f"   ✅ Email enviado con SMTP!")
             return True
-        except Exception:
+        except Exception as e:
+            print(f"   ❌ Error con SMTP: {e}")
             return False
 
     # 3. Modo Simulación (Desarrollo)
+    print(f"   ⚠️ MODO SIMULACIÓN - No hay credenciales de email configuradas")
     return True
 
 def get_welcome_template(username):
@@ -94,5 +103,20 @@ def get_payment_success_template(order_id):
         <p>Te notificaremos cuando el paquete esté en camino.</p>
         <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
         <p style="text-align: center; color: #999; font-size: 12px;">Gracias por confiar en Tazas.shop</p>
+    </div>
+    """
+
+def get_password_reset_template(reset_url):
+    return f"""
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        <h2 style="color: #D4A373;">Recuperar Contraseña</h2>
+        <p>Recibimos una solicitud para restablecer tu contraseña en <strong>KYATHOS tazas</strong>.</p>
+        <p>Hacé click en el siguiente botón para crear una nueva contraseña:</p>
+        <div style="margin: 30px 0; text-align: center;">
+            <a href="{reset_url}" style="background-color: #D4A373; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Restablecer Contraseña</a>
+        </div>
+        <p style="color: #666; font-size: 14px;">Este enlace expira en <strong>1 hora</strong>. Si no solicitaste este cambio, podés ignorar este correo.</p>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+        <p style="text-align: center; color: #999; font-size: 12px;">KYATHOS tazas — Tazas personalizables con amor</p>
     </div>
     """

@@ -102,7 +102,7 @@ export default function Navbar() {
 
           {/* Carrito - Oculto para admin */}
           {!user?.is_admin && (
-            <Link href="/cart" className="relative p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-all">
+            <Link href="/cart" className="relative p-2 hover:text-[var(--accent)] rounded-xl transition-colors">
               <LuShoppingBag size={20} />
               {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 bg-[var(--accent)] text-[var(--background)] text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-lg shadow-black/10">
@@ -115,7 +115,7 @@ export default function Navbar() {
           {/* Botón de Tema */}
           <button
             onClick={toggleTheme}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-all"
+            className="p-2 hover:text-[var(--accent)] rounded-xl transition-colors"
             aria-label="Cambiar tema"
           >
             {isDark ? <LuSun size={20} /> : <LuMoon size={20} />}
@@ -157,7 +157,7 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="px-6 py-2.5 bg-white text-[#D4A373] rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-[#D4A373]/10 border border-[#D4A373]/20"
+              className="px-6 py-2.5 bg-white text-[var(--cream-dark)] rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-[var(--cream-dark)]/10 border border-[var(--cream-dark)]/20"
             >
               Iniciar Sesión
             </Link>
@@ -167,7 +167,7 @@ export default function Navbar() {
         {/* Botón menú móvil */}
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden p-2 text-[var(--foreground)] hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-all"
+          className="md:hidden p-2 text-[var(--foreground)] hover:text-[var(--accent)] rounded-xl transition-colors"
         >
           {open ? <LuX size={24} /> : <LuMenu size={24} />}
         </button>
@@ -175,7 +175,7 @@ export default function Navbar() {
 
       {/* MENÚ MÓVIL */}
       {open && (
-        <div className="md:hidden bg-[var(--cream)] dark:bg-zinc-900 w-full px-6 py-8 flex flex-col gap-6 shadow-2xl border-t border-[var(--border)] animate-in slide-in-from-top duration-300">
+        <div className="md:hidden bg-[var(--cream)] w-full px-6 py-8 flex flex-col gap-6 shadow-2xl border-t border-[var(--border)] animate-in slide-in-from-top duration-300">
           <div className="flex items-center justify-between mb-2">
             <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
               <Image
@@ -266,7 +266,7 @@ export default function Navbar() {
             <Link
               href="/login"
               onClick={() => setOpen(false)}
-              className="mt-4 w-full py-4 bg-gray-900 dark:bg-zinc-800 text-white rounded-2xl font-bold text-center"
+              className="mt-4 w-full py-4 bg-[var(--stone)] text-[var(--foreground)] rounded-2xl font-bold text-center"
             >
               Iniciar Sesión
             </Link>

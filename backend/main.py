@@ -11,7 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 from typing import List, Optional
-from datetime import timedelta
+from datetime import timedelta, datetime
+import uuid
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
@@ -19,6 +20,7 @@ from database import get_db, Design, User, Order, OrderItem, Product
 from schemas import (
     DesignCreate, DesignUpdate, DesignResponse, 
     UserRegister, UserLogin, UserResponse, Token,
+    PasswordResetRequest, PasswordResetConfirm,
     OrderCreate, OrderResponse,
     AdminStats, AdminUserResponse, AdminOrderResponse, OrderStatusUpdate,
     UserProfileUpdate, UserStats, Address,
@@ -35,8 +37,11 @@ from email_utils import (
     send_email, 
     get_welcome_template, 
     get_order_confirmation_template, 
-    get_payment_success_template
+    get_payment_success_template,
+    get_password_reset_template
 )
+
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 # Inicializar Sentry
 SENTRY_DSN = os.getenv("SENTRY_DSN")
@@ -150,6 +155,68 @@ async def login(request: Request, user_credentials: UserLogin, db: Session = Dep
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+@app.post("/auth/forgot-password")
+@limiter.limit("5/minute")
+async def forgot_password(request: Request, data: PasswordResetRequest, db: Session = Depends(get_db)):
+    """
+    Solicitar recuperación de contraseña.
+    Genera un token temporal y envía un email con el link de reset.
+    """
+    print(f"\n🔑 Solicitud de recuperación de contraseña para: {data.email}")
+    user = db.query(User).filter(User.email == data.email).first()
+    
+    # Siempre responder con éxito para no revelar si el email existe
+    if not user:
+        print(f"   ⚠️ No se encontró usuario con email: {data.email}")
+        return {"message": "Si el email existe, recibirás un enlace de recuperación."}
+    
+    print(f"   ✅ Usuario encontrado: {user.username}")
+    
+    # Generar token único
+    reset_token = str(uuid.uuid4())
+    user.reset_token = reset_token
+    user.reset_token_expires = datetime.utcnow() + timedelta(hours=1)
+    db.commit()
+    
+    # Enviar email
+    reset_url = f"{FRONTEND_URL}/reset-password?token={reset_token}"
+    print(f"   🔗 URL de reset: {reset_url}")
+    try:
+        send_email(
+            user.email,
+            "Recuperar Contraseña - KYATHOS tazas",
+            get_password_reset_template(reset_url)
+        )
+    except Exception:
+        pass
+    
+    return {"message": "Si el email existe, recibirás un enlace de recuperación."}
+
+@app.post("/auth/reset-password")
+@limiter.limit("5/minute")
+async def reset_password(request: Request, data: PasswordResetConfirm, db: Session = Depends(get_db)):
+    """
+    Restablecer contraseña usando el token recibido por email.
+    """
+    user = db.query(User).filter(
+        User.reset_token == data.token,
+        User.reset_token_expires > datetime.utcnow()
+    ).first()
+    
+    if not user:
+        raise HTTPException(
+            status_code=400,
+            detail="El enlace de recuperación es inválido o ha expirado."
+        )
+    
+    # Actualizar contraseña
+    user.hashed_password = get_password_hash(data.new_password)
+    user.reset_token = None
+    user.reset_token_expires = None
+    db.commit()
+    
+    return {"message": "Contraseña actualizada correctamente. Ya podés iniciar sesión."}
 
 @app.get("/auth/me", response_model=UserResponse)
 async def read_users_me(current_user: User = Depends(get_current_user)):

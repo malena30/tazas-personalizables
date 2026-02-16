@@ -7,13 +7,13 @@ interface TestimonialCardProps {
 
 export default function TestimonialCard({ name, comment, rating, avatar }: TestimonialCardProps) {
     return (
-        <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-[var(--border)] dark:border-white/5 hover:border-[var(--accent)]/30 hover:shadow-2xl transition-all duration-300 group shadow-sm hover:shadow-xl">
+        <div className="p-8 rounded-[2rem] border hover:shadow-2xl transition-all duration-300 group shadow-sm hover:shadow-xl" style={{ backgroundColor: '#ffffff', borderColor: 'rgba(212,163,115,0.15)' }}>
             {/* Rating Stars */}
             <div className="flex gap-1 mb-6">
                 {[...Array(5)].map((_, i) => (
                     <span
                         key={i}
-                        className={`text-xl ${i < rating ? "text-yellow-500" : "text-gray-300 dark:text-white/20"
+                        className={`text-xl ${i < rating ? "text-yellow-500" : "text-gray-300"
                             }`}
                     >
                         ★
@@ -28,7 +28,7 @@ export default function TestimonialCard({ name, comment, rating, avatar }: Testi
 
             {/* Author */}
             <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-[var(--cream-dark)] dark:bg-gradient-to-br dark:from-[var(--accent)] dark:to-[var(--accent)]/50 flex items-center justify-center text-white font-black text-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: '#D4A373' }}>
                     {name.charAt(0).toUpperCase()}
                 </div>
                 <div>
