@@ -113,6 +113,42 @@ export async function getCurrentUser(token: string): Promise<User> {
     return response.json();
 }
 
+// --- PASSWORD RESET FUNCTIONS ---
+
+export async function requestPasswordReset(email: string): Promise<{ message: string }> {
+    const response = await fetch(`${API_URL}/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Error al solicitar recuperación');
+    }
+    return response.json();
+}
+
+export async function resetPassword(token: string, new_password: string): Promise<{ message: string }> {
+    const response = await fetch(`${API_URL}/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, new_password }),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        let errorMessage = 'Error al restablecer contraseña';
+        if (error.detail) {
+            if (Array.isArray(error.detail)) {
+                errorMessage = error.detail.map((err: any) => err.msg).join(', ');
+            } else {
+                errorMessage = error.detail;
+            }
+        }
+        throw new Error(errorMessage);
+    }
+    return response.json();
+}
+
 // --- DESIGN FUNCTIONS (PROTECTED) ---
 
 // Crear nuevo diseño

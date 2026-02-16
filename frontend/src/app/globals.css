@@ -47,21 +47,24 @@
 
     /* 🌑 Modo oscuro (Activado por clase .dark) */
     .dark {
-        --background: #0A0A0A;
-        /* Obsidian más profundo */
-        --foreground: #F5F5F3;
-        /* Marfil más brillante para mejor contraste */
-        --stone: #262626;
-        --border: #333333;
-        /* Borde un poco más visible */
+        --background: #2B2B2B;
+        /* Gris carbón suave */
+        --foreground: #F0EDE8;
+        /* Blanco cálido marfil */
+        --stone: #3A3A38;
+        /* Gris piedra cálido */
+        --border: #4A4A46;
+        /* Borde gris oliva visible */
         --accent: #8BA195;
-        /* Oliva más claro para botones en fondo negro */
+        /* Oliva suave */
         --gold: #D4C68E;
-        /* Oro más brillante */
-        --cream: #1A1A1A;
-        /* Fondos de tarjetas con buena separación */
-        --cream-dark: #222222;
-        --card: #141414;
+        /* Oro cálido */
+        --cream: #333330;
+        /* Fondo tarjetas gris cálido */
+        --cream-dark: #3D3D38;
+        /* Crema dark con tinte oliva */
+        --card: #323230;
+        /* Card gris suave */
     }
 
     body {

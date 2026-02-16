@@ -71,6 +71,26 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+# Schema para solicitar recuperación de contraseña
+class PasswordResetRequest(BaseModel):
+    email: str = Field(..., pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')
+
+# Schema para confirmar reset de contraseña
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: str = Field(..., min_length=8)
+
+    @field_validator('new_password')
+    @classmethod
+    def reset_password_complexity(cls, v: str) -> str:
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('La contraseña debe contener al menos una letra mayúscula')
+        if not re.search(r'\d', v):
+            raise ValueError('La contraseña debe contener al menos un número')
+        if not re.search(r'[@$!%*?&]', v):
+            raise ValueError('La contraseña debe contener al menos un carácter especial (@$!%*?&)')
+        return v
+
 # --- Order Schemas ---
 
 class OrderItemCreate(BaseModel):

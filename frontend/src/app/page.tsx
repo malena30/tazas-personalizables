@@ -80,24 +80,24 @@ export default function Home() {
       </section>
 
       {/* STATS SECTION */}
-      <section className="w-full py-16 bg-[var(--cream)] dark:bg-zinc-900 border-y border-[var(--border)]">
+      <section className="w-full py-16 border-y border-[var(--border)] bg-[var(--stone)]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
             <div className="space-y-2">
-              <p className="text-5xl font-black text-[var(--cream-dark)] tracking-tighter transition-colors">+1.5k</p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em]">Clientes Felices</p>
+              <p className="text-5xl font-black text-[var(--gold)] tracking-tighter transition-colors">+1.5k</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--foreground)] opacity-70">Clientes Felices</p>
             </div>
             <div className="space-y-2">
-              <p className="text-5xl font-black text-[var(--cream-dark)] tracking-tighter transition-colors">+500</p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em]">Diseños Únicos</p>
+              <p className="text-5xl font-black text-[var(--gold)] tracking-tighter transition-colors">+500</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--foreground)] opacity-70">Diseños Únicos</p>
             </div>
             <div className="space-y-2">
-              <p className="text-5xl font-black text-[var(--cream-dark)] tracking-tighter transition-colors">24h</p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em]">Producción Express</p>
+              <p className="text-5xl font-black text-[var(--gold)] tracking-tighter transition-colors">24h</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--foreground)] opacity-70">Producción Express</p>
             </div>
             <div className="space-y-2">
-              <p className="text-5xl font-black text-[var(--cream-dark)] tracking-tighter transition-colors">100%</p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em]">Garantía Total</p>
+              <p className="text-5xl font-black text-[var(--gold)] tracking-tighter transition-colors">100%</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--foreground)] opacity-70">Garantía Total</p>
             </div>
           </div>
         </div>
@@ -117,40 +117,40 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-12">
             {/* Step 1 */}
-            <div className="relative p-10 bg-white dark:bg-zinc-900 rounded-[3rem] border-2 border-[var(--border)] group hover:border-[var(--cream-dark)] transition-all duration-500 shadow-sm hover:shadow-xl">
-              <div className="w-16 h-16 mb-8 bg-white border-2 border-[var(--cream-dark)] text-[var(--cream-dark)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-[var(--cream-dark)]/5 group-hover:scale-110 transition-transform duration-300">
+            <div className="relative p-10 rounded-[3rem] border-2 border-[var(--border)] bg-[var(--cream)] group hover:border-[var(--accent)] transition-all duration-500 shadow-sm hover:shadow-xl">
+              <div className="w-16 h-16 mb-8 bg-[var(--background)] border-2 border-[var(--accent)] text-[var(--accent)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-[var(--accent)]/5 group-hover:scale-110 transition-transform duration-300">
                 01
               </div>
-              <h3 className="text-2xl font-black text-zinc-900 dark:text-white mb-4">
+              <h3 className="text-2xl font-black mb-4 text-[var(--foreground)]">
                 Diseña
               </h3>
-              <p className="text-zinc-700 dark:text-gray-300 leading-relaxed font-medium">
+              <p className="leading-relaxed font-medium text-[var(--foreground)] opacity-70">
                 Usa nuestro editor intuitivo para agregar textos, imágenes y elementos únicos que reflejen tu personalidad.
               </p>
             </div>
 
             {/* Step 2 */}
-            <div className="relative p-10 bg-white dark:bg-zinc-900 rounded-[3rem] border-2 border-[var(--border)] group hover:border-[var(--cream-dark)] transition-all duration-500 shadow-sm hover:shadow-xl">
-              <div className="w-16 h-16 mb-8 bg-white border-2 border-[var(--cream-dark)] text-[var(--cream-dark)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-[var(--cream-dark)]/5 group-hover:scale-110 transition-transform duration-300">
+            <div className="relative p-10 rounded-[3rem] border-2 border-[var(--border)] bg-[var(--cream)] group hover:border-[var(--accent)] transition-all duration-500 shadow-sm hover:shadow-xl">
+              <div className="w-16 h-16 mb-8 bg-[var(--background)] border-2 border-[var(--accent)] text-[var(--accent)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-[var(--accent)]/5 group-hover:scale-110 transition-transform duration-300">
                 02
               </div>
-              <h3 className="text-2xl font-black text-zinc-900 dark:text-white mb-4">
+              <h3 className="text-2xl font-black mb-4 text-[var(--foreground)]">
                 Compra
               </h3>
-              <p className="text-zinc-700 dark:text-gray-300 leading-relaxed font-medium">
+              <p className="leading-relaxed font-medium text-[var(--foreground)] opacity-70">
                 Agrega al carrito y completa tu pedido de forma segura con Mercado Pago. Aceptamos todas las tarjetas.
               </p>
             </div>
 
             {/* Step 3 */}
-            <div className="relative p-10 bg-white dark:bg-zinc-900 rounded-[3rem] border-2 border-[var(--border)] group hover:border-[var(--cream-dark)] transition-all duration-500 shadow-sm hover:shadow-xl">
-              <div className="w-16 h-16 mb-8 bg-white border-2 border-[var(--cream-dark)] text-[var(--cream-dark)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-[var(--cream-dark)]/5 group-hover:scale-110 transition-transform duration-300">
+            <div className="relative p-10 rounded-[3rem] border-2 border-[var(--border)] bg-[var(--cream)] group hover:border-[var(--accent)] transition-all duration-500 shadow-sm hover:shadow-xl">
+              <div className="w-16 h-16 mb-8 bg-[var(--background)] border-2 border-[var(--accent)] text-[var(--accent)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-[var(--accent)]/5 group-hover:scale-110 transition-transform duration-300">
                 03
               </div>
-              <h3 className="text-2xl font-black text-zinc-900 dark:text-white mb-4">
+              <h3 className="text-2xl font-black mb-4 text-[var(--foreground)]">
                 Recibe
               </h3>
-              <p className="text-zinc-700 dark:text-gray-300 leading-relaxed font-medium">
+              <p className="leading-relaxed font-medium text-[var(--foreground)] opacity-70">
                 Tu taza personalizada llega a tu puerta en pocos días, protegida y lista para ser estrenada.
               </p>
             </div>
@@ -202,15 +202,15 @@ export default function Home() {
       </section>
 
       {/* TRUST SECTION */}
-      <section className="w-full py-24 px-6 bg-[var(--cream)] dark:bg-zinc-950 border-y border-[var(--border)] dark:border-white/10" style={{ backgroundColor: 'var(--cream)' }}>
+      <section className="w-full py-24 px-6 bg-[var(--cream)] border-y border-[var(--border)]">
         <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl flex items-center justify-center shrink-0">
               <LuTruck size={24} />
             </div>
             <div>
-              <h4 className="font-black text-[var(--cream-dark)] dark:text-white text-lg" style={{ color: 'var(--cream-dark)' }}>Envío Nacional</h4>
-              <p className="text-sm text-zinc-800 dark:text-white/60 font-medium" style={{ color: '#1f2937' }}>Llegamos a todo el país con seguimiento en tiempo real.</p>
+              <h4 className="font-black text-[var(--gold)] text-lg">Envío Nacional</h4>
+              <p className="text-sm text-[var(--foreground)] opacity-70 font-medium">Llegamos a todo el país con seguimiento en tiempo real.</p>
             </div>
           </div>
           <div className="flex items-center gap-6">
@@ -218,8 +218,8 @@ export default function Home() {
               <LuShieldCheck size={24} />
             </div>
             <div>
-              <h4 className="font-black text-[var(--cream-dark)] dark:text-white text-lg" style={{ color: 'var(--cream-dark)' }}>Pago 100% Seguro</h4>
-              <p className="text-sm text-zinc-800 dark:text-white/60 font-medium" style={{ color: '#1f2937' }}>Tus datos están protegidos con encriptación de grado bancario.</p>
+              <h4 className="font-black text-[var(--gold)] text-lg">Pago 100% Seguro</h4>
+              <p className="text-sm text-[var(--foreground)] opacity-70 font-medium">Tus datos están protegidos con encriptación de grado bancario.</p>
             </div>
           </div>
           <div className="flex items-center gap-6">
@@ -227,21 +227,21 @@ export default function Home() {
               <LuStar size={24} />
             </div>
             <div>
-              <h4 className="font-black text-[var(--cream-dark)] dark:text-white text-lg" style={{ color: 'var(--cream-dark)' }}>Calidad Premium</h4>
-              <p className="text-sm text-zinc-800 dark:text-white/60 font-medium" style={{ color: '#1f2937' }}>Solo usamos materiales de alta gama para resultados duraderos.</p>
+              <h4 className="font-black text-[var(--gold)] text-lg">Calidad Premium</h4>
+              <p className="text-sm text-[var(--foreground)] opacity-70 font-medium">Solo usamos materiales de alta gama para resultados duraderos.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* TESTIMONIALS SECTION */}
-      <section className="w-full py-32 px-6 bg-[var(--cream)] dark:bg-zinc-950" style={{ backgroundColor: 'var(--cream)' }}>
+      <section className="w-full py-32 px-6 bg-[var(--cream)]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-24">
-            <h2 className="text-5xl md:text-6xl font-title font-black text-zinc-900 dark:text-white tracking-tighter mb-6" style={{ color: '#18181b' }}>
+            <h2 className="text-5xl md:text-6xl font-title font-black text-[var(--foreground)] tracking-tighter mb-6">
               Lo que dicen nuestros <span className="text-[var(--accent)]">clientes</span>
             </h2>
-            <p className="text-zinc-800 dark:text-white/60 text-xl leading-relaxed font-medium" style={{ color: '#27272a' }}>
+            <p className="text-[var(--foreground)] opacity-70 text-xl leading-relaxed font-medium">
               Más de 1,000 personas ya disfrutan de sus tazas personalizadas.
             </p>
           </div>
@@ -273,11 +273,11 @@ export default function Home() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--cream-dark)]/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-[var(--cream-dark)]/5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2"></div>
 
-          <h2 className="text-5xl md:text-7xl font-title font-black mb-8 relative z-10 tracking-tighter leading-none text-zinc-900">
+          <h2 className="text-5xl md:text-7xl font-title font-black mb-8 relative z-10 tracking-tighter leading-none text-[var(--foreground)]">
             ¿Listo para crear tu <br />
             <span className="text-[var(--cream-dark)]">taza ideal?</span>
           </h2>
-          <p className="text-xl md:text-2xl text-zinc-800 dark:text-gray-300 mb-12 relative z-10 max-w-2xl mx-auto font-bold">
+          <p className="text-xl md:text-2xl text-[var(--foreground)] opacity-70 mb-12 relative z-10 max-w-2xl mx-auto font-bold">
             Empieza a diseñar ahora y tené tu taza única en pocos días. El regalo perfecto está a un clic.
           </p>
           <div className="flex justify-center relative z-10">

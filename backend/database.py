@@ -50,6 +50,8 @@ class User(Base):
     is_admin = Column(Boolean, default=False, nullable=False)
     phone = Column(String, nullable=True)
     addresses = Column(SmartJSON(), default=list, nullable=True)  # Lista de direcciones
+    reset_token = Column(String, nullable=True)
+    reset_token_expires = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     
     designs = relationship("Design", back_populates="owner")
@@ -123,6 +125,25 @@ class OrderItem(Base):
 
 # Crear todas las tablas
 Base.metadata.create_all(bind=engine)
+
+# Auto-migración: agregar columnas nuevas si no existen
+def _auto_migrate():
+    from sqlalchemy import text, inspect
+    inspector = inspect(engine)
+    cols = [c['name'] for c in inspector.get_columns('users')]
+    with engine.connect() as conn:
+        if 'reset_token' not in cols:
+            conn.execute(text("ALTER TABLE users ADD COLUMN reset_token VARCHAR"))
+            conn.commit()
+        if 'reset_token_expires' not in cols:
+            conn.execute(text("ALTER TABLE users ADD COLUMN reset_token_expires TIMESTAMP"))
+            conn.commit()
+
+try:
+    _auto_migrate()
+except Exception:
+    pass
+
 
 # Dependency para obtener sesión de DB
 def get_db():
