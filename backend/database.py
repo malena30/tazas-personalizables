@@ -73,6 +73,9 @@ class Product(Base):
     care_instructions = Column(String, nullable=True)
     finish = Column(String, nullable=True)
     stock = Column(Integer, default=0, nullable=True)
+    image_fit = Column(String, default="contain", nullable=True) # "contain" or "cover"
+    image_scale = Column(Float, default=1.0, nullable=True)      # Zoom level (1.0 = 100%)
+    category = Column(String, default="frases", nullable=True) # "frases" or "formas"
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -137,6 +140,17 @@ def _auto_migrate():
             conn.commit()
         if 'reset_token_expires' not in cols:
             conn.execute(text("ALTER TABLE users ADD COLUMN reset_token_expires TIMESTAMP"))
+            conn.commit()
+            
+    # Migración para productos
+    inspector = inspect(engine)
+    p_cols = [c['name'] for c in inspector.get_columns('products')]
+    with engine.connect() as conn:
+        if 'image_fit' not in p_cols:
+            conn.execute(text("ALTER TABLE products ADD COLUMN image_fit VARCHAR DEFAULT 'contain'"))
+            conn.commit()
+        if 'image_scale' not in p_cols:
+            conn.execute(text("ALTER TABLE products ADD COLUMN image_scale FLOAT DEFAULT 1.0"))
             conn.commit()
 
 try:

@@ -642,8 +642,15 @@ async def get_product_by_slug(
 ):
     """
     Obtener un producto por su slug (público).
+    Soporta búsqueda por ID como fallback para mayor robustez.
     """
+    # Intentar por slug primero
     product = db.query(Product).filter(Product.slug == slug, Product.is_active == True).first()
+    
+    # Si no se encuentra, intentar por ID (fallback)
+    if not product:
+        product = db.query(Product).filter(Product.id == slug, Product.is_active == True).first()
+        
     if not product:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
     return product
@@ -670,28 +677,40 @@ async def create_product(
     """
     Crear un nuevo producto (admin only).
     """
-    image_url = product.image_url
-    if image_url and image_url.startswith("data:image"):
-        image_url = upload_base64_image(image_url, folder="tazas_products")
+    print(f"DEBUG: Creando producto: {product.name}, slug: {product.slug}")
+    try:
+        image_url = product.image_url
+        if image_url and image_url.startswith("data:image"):
+            print("DEBUG: Subiendo imagen a Cloudinary...")
+            image_url = upload_base64_image(image_url, folder="tazas_products")
+            print(f"DEBUG: Imagen subida: {image_url[:50]}...")
 
-    new_product = Product(
-        name=product.name,
-        slug=product.slug,
-        description=product.description,
-        price=product.price,
-        image_url=image_url,
-        gallery_urls=product.gallery_urls,
-        material=product.material,
-        capacity=product.capacity,
-        care_instructions=product.care_instructions,
-        finish=product.finish,
-        stock=product.stock,
-        is_active=product.is_active
-    )
-    db.add(new_product)
-    db.commit()
-    db.refresh(new_product)
-    return new_product
+        new_product = Product(
+            name=product.name,
+            slug=product.slug if product.slug else None, # Convertir "" a None para evitar duplicados de ""
+            description=product.description,
+            price=product.price,
+            image_url=image_url,
+            gallery_urls=product.gallery_urls,
+            material=product.material,
+            capacity=product.capacity,
+            care_instructions=product.care_instructions,
+            finish=product.finish,
+            stock=product.stock,
+            image_fit=product.image_fit,
+            image_scale=product.image_scale,
+            category=product.category,
+            is_active=product.is_active
+        )
+        db.add(new_product)
+        db.commit()
+        db.refresh(new_product)
+        print(f"DEBUG: Producto creado exitosamente: {new_product.id}")
+        return new_product
+    except Exception as e:
+        print(f"ERROR en create_product: {str(e)}")
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al crear producto: {str(e)}")
 
 @app.put("/api/products/{product_id}", response_model=ProductResponse)
 async def update_product(

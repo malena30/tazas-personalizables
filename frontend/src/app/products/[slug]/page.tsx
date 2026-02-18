@@ -56,7 +56,7 @@ export default function ProductDetailPage() {
 
     if (loading) {
         return (
-            <div className="max-w-7xl mx-auto px-6 py-32">
+            <div className="max-w-7xl mx-auto px-6 py-12">
                 <ProductSkeleton />
             </div>
         );
@@ -81,29 +81,34 @@ export default function ProductDetailPage() {
         : [product.image_url].filter(Boolean) as string[];
 
     return (
-        <main className="min-h-screen bg-[var(--background)] pt-32 pb-20">
+        <main className="min-h-screen bg-[var(--background)] pt-12 pb-20">
             <div className="max-w-7xl mx-auto px-6">
                 <button
                     onClick={() => router.back()}
-                    className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[var(--accent)] transition-colors mb-12"
+                    className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[var(--accent)] transition-colors mb-4"
                 >
                     <LuArrowLeft size={12} />
                     Volver
                 </button>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     {/* Gallery */}
                     <div className="space-y-6">
-                        <div className="aspect-square bg-white dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)] overflow-hidden flex items-center justify-center p-8 shadow-sm relative">
+                        <div className="aspect-square bg-white dark:bg-zinc-900 rounded-[3rem] border border-[var(--border)] overflow-hidden flex items-center justify-center shadow-sm relative">
                             {activeImage ? (
                                 <div className="relative w-full h-full">
-                                    <Image
-                                        src={activeImage}
-                                        alt={product.name}
-                                        fill
-                                        className="object-contain animate-in fade-in duration-500"
-                                        priority
-                                    />
+                                    <div
+                                        className="relative w-full h-full"
+                                        style={{ transform: product.image_scale ? `scale(${product.image_scale})` : undefined }}
+                                    >
+                                        <Image
+                                            src={activeImage}
+                                            alt={product.name}
+                                            fill
+                                            className={`${product.image_fit === 'cover' ? 'object-cover' : 'object-contain'} animate-in fade-in duration-500`}
+                                            priority
+                                        />
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="text-9xl">☕</div>
@@ -217,31 +222,8 @@ export default function ProductDetailPage() {
                                     )}
                                 </button>
                             </div>
-
-                            <button
-                                onClick={() => router.push("/customizer")}
-                                className="w-full py-4 bg-white dark:bg-zinc-900 text-[var(--foreground)] border-2 border-[var(--foreground)] rounded-2xl font-black flex items-center justify-center gap-3 hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-all"
-                            >
-                                <LuPalette size={20} />
-                                Personalizar este diseño
-                            </button>
                         </div>
 
-                        {/* Trust Badges */}
-                        <div className="grid grid-cols-3 gap-4 mt-12 pt-8 border-t border-[var(--border)]">
-                            <div className="flex flex-col items-center text-center">
-                                <LuTruck className="text-[var(--accent)] mb-2" size={20} />
-                                <p className="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-tighter">Envío Rápido</p>
-                            </div>
-                            <div className="flex flex-col items-center text-center">
-                                <LuShieldCheck className="text-[var(--accent)] mb-2" size={20} />
-                                <p className="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-tighter">Pago Seguro</p>
-                            </div>
-                            <div className="flex flex-col items-center text-center">
-                                <LuRotateCcw className="text-[var(--accent)] mb-2" size={20} />
-                                <p className="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-tighter">Garantía 100%</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

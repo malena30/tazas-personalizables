@@ -9,35 +9,33 @@ interface ProductCardProps {
     price: number;
     image: string;
     description: string;
+    image_fit?: 'contain' | 'cover';
+    image_scale?: number;
     onAddToCart: () => void;
 }
 
-export default function ProductCard({ id, slug, name, price, image, description, onAddToCart }: ProductCardProps) {
+export default function ProductCard({ id, slug, name, price, image, description, image_fit, image_scale, onAddToCart }: ProductCardProps) {
     const linkHref = slug ? `/products/${slug}` : `/products/${id}`;
     return (
         <div className="group bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] overflow-hidden hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 hover:-translate-y-2 flex flex-col">
             {/* Image Container */}
             <Link href={linkHref} className="relative aspect-square bg-gray-50 dark:bg-zinc-800/50 overflow-hidden block">
-                <div className="absolute inset-0 flex items-center justify-center p-8">
+                <div className="absolute inset-0 flex items-center justify-center">
                     {image ? (
-                        <div className="relative w-full h-full">
+                        <div
+                            className="relative w-full h-full"
+                            style={{ transform: image_scale ? `scale(${image_scale})` : undefined }}
+                        >
                             <Image
                                 src={image}
                                 alt={name}
                                 fill
-                                className="object-contain group-hover:scale-110 transition-transform duration-700 ease-out"
+                                className={`${image_fit === 'cover' ? 'object-cover' : 'object-contain'} group-hover:scale-110 transition-transform duration-700 ease-out`}
                             />
                         </div>
                     ) : (
                         <div className="text-7xl group-hover:scale-110 transition-transform duration-500">☕</div>
                     )}
-                </div>
-
-                {/* Quick Actions Overlay */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 backdrop-blur-[2px]">
-                    <div className="p-4 bg-white text-[var(--foreground)] rounded-2xl transform translate-y-4 group-hover:translate-y-0 duration-300 shadow-lg">
-                        <LuPalette size={20} />
-                    </div>
                 </div>
             </Link>
 

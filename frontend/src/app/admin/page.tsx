@@ -61,6 +61,7 @@ export default function AdminPanel() {
     const [products, setProducts] = useState<Product[]>([]);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [showProductModal, setShowProductModal] = useState(false);
+    const [showImageEditModal, setShowImageEditModal] = useState(false);
     const [productForm, setProductForm] = useState<ProductCreate>({
         name: "",
         slug: "",
@@ -73,6 +74,9 @@ export default function AdminPanel() {
         care_instructions: "",
         finish: "",
         stock: 0,
+        image_fit: "contain",
+        image_scale: 1.0,
+        category: "frases",
         is_active: true
     });
 
@@ -163,6 +167,9 @@ export default function AdminPanel() {
                 care_instructions: productForm.care_instructions || undefined,
                 finish: productForm.finish || undefined,
                 stock: productForm.stock || undefined,
+                image_fit: productForm.image_fit || undefined,
+                image_scale: productForm.image_scale || undefined,
+                category: productForm.category || undefined,
                 is_active: productForm.is_active
             };
             await updateProduct(editingProduct.id, updateData);
@@ -199,12 +206,16 @@ export default function AdminPanel() {
             care_instructions: product.care_instructions || "",
             finish: product.finish || "",
             stock: product.stock || 0,
+            image_fit: product.image_fit || "contain",
+            image_scale: product.image_scale || 1.0,
+            category: product.category || "frases",
             is_active: product.is_active
         });
         setShowProductModal(true);
     };
 
     const resetProductForm = () => {
+        setShowImageEditModal(false);
         setProductForm({
             name: "",
             slug: "",
@@ -217,6 +228,9 @@ export default function AdminPanel() {
             care_instructions: "",
             finish: "",
             stock: 0,
+            image_fit: "contain",
+            image_scale: 1.0,
+            category: "frases",
             is_active: true
         });
     };
@@ -687,33 +701,53 @@ export default function AdminPanel() {
                         <div className="p-8 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
                             {/* Image Upload Section */}
                             <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start">
-                                <div className="relative w-40 h-40 bg-gray-50 dark:bg-zinc-800 rounded-2xl border-2 border-dashed border-[var(--border)] flex items-center justify-center overflow-hidden group">
+                                <div className="relative w-40 h-40 bg-gray-50 dark:bg-zinc-800 rounded-2xl border-2 border-[var(--border)] flex items-center justify-center overflow-hidden group shadow-inner">
                                     {productForm.image_url ? (
-                                        <Image src={productForm.image_url} alt="Preview" fill className="object-contain" />
+                                        <Image
+                                            src={productForm.image_url}
+                                            alt="Preview"
+                                            fill
+                                            className={productForm.image_fit === 'cover' ? 'object-cover' : 'object-contain'}
+                                            style={{ transform: productForm.image_scale ? `scale(${productForm.image_scale})` : 'scale(1)' }}
+                                        />
                                     ) : (
                                         <div className="text-center p-4">
                                             <LuPackage className="mx-auto text-3xl text-gray-300 mb-2" />
                                             <span className="text-[10px] font-bold text-gray-400 uppercase">Sin Imagen</span>
                                         </div>
                                     )}
-                                    <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                                        <span className="text-white text-xs font-bold">Cambiar</span>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => {
-                                                const file = e.target.files?.[0];
-                                                if (file) {
-                                                    const reader = new FileReader();
-                                                    reader.onloadend = () => {
-                                                        setProductForm({ ...productForm, image_url: reader.result as string });
-                                                    };
-                                                    reader.readAsDataURL(file);
-                                                }
+
+                                    {/* Edit Overlay */}
+                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-2 p-4 cursor-default">
+                                        <label className="w-full py-2.5 bg-white text-gray-900 rounded-xl text-[10px] font-black uppercase tracking-widest text-center cursor-pointer hover:bg-gray-100 transition-all shadow-lg active:scale-95">
+                                            Cambiar Foto
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) {
+                                                        const reader = new FileReader();
+                                                        reader.onloadend = () => {
+                                                            setProductForm({ ...productForm, image_url: reader.result as string, image_scale: 1.0 });
+                                                        };
+                                                        reader.readAsDataURL(file);
+                                                    }
+                                                }}
+                                                className="hidden"
+                                            />
+                                        </label>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setShowImageEditModal(true);
                                             }}
-                                            className="hidden"
-                                        />
-                                    </label>
+                                            className="w-full py-2.5 bg-purple-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-purple-700 transition-all shadow-lg active:scale-95"
+                                        >
+                                            Ajustar Imagen
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="flex-1 space-y-4 w-full">
                                     <div className="grid grid-cols-2 gap-4">
@@ -727,6 +761,19 @@ export default function AdminPanel() {
                                                 placeholder="Ej: Taza Cerámica Premium"
                                             />
                                         </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Colección</label>
+                                            <select
+                                                value={productForm.category}
+                                                onChange={(e) => setProductForm({ ...productForm, category: e.target.value as any })}
+                                                className="w-full bg-white border border-[var(--border)] rounded-xl px-4 py-3 text-[#D4A373] focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                                            >
+                                                <option value="frases">Colección Frases</option>
+                                                <option value="formas">Colección Formas</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-4">
                                         <div>
                                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Slug (URL)</label>
                                             <input
@@ -861,6 +908,92 @@ export default function AdminPanel() {
                                 className="bg-purple-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-purple-500/20 hover:bg-purple-700 hover:scale-[1.02] active:scale-[0.98] transition-all"
                             >
                                 {editingProduct ? "Guardar Cambios" : "Crear Producto"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Image Adjustment Sub-Modal */}
+            {showImageEditModal && (
+                <div className="fixed inset-0 bg-zinc-950/20 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm border border-[var(--border)] p-8 animate-in zoom-in-95 duration-200">
+                        <div className="flex justify-between items-center mb-6">
+                            <h4 className="text-lg font-black uppercase tracking-tight text-[var(--foreground)]">Ajustar Taza</h4>
+                            <button
+                                onClick={() => setShowImageEditModal(false)}
+                                className="text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                                <LuX size={20} />
+                            </button>
+                        </div>
+
+                        <div className="space-y-6">
+                            {/* Preview inside sub-modal */}
+                            <div className="aspect-square w-full bg-gray-50 dark:bg-zinc-800 rounded-2xl border border-[var(--border)] overflow-hidden relative flex items-center justify-center shadow-inner">
+                                {productForm.image_url ? (
+                                    <div className="relative w-full h-full">
+                                        <Image
+                                            src={productForm.image_url}
+                                            alt="Preview"
+                                            fill
+                                            className={productForm.image_fit === 'cover' ? 'object-cover' : 'object-contain'}
+                                            style={{ transform: productForm.image_scale ? `scale(${productForm.image_scale})` : 'scale(1)' }}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="text-center p-4">
+                                        <LuPackage className="mx-auto text-3xl text-gray-300 mb-2" />
+                                        <span className="text-[10px] font-bold text-gray-400 uppercase">Sin Imagen</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Modo de Ajuste</label>
+                                <div className="grid grid-cols-2 gap-2 p-1 bg-gray-100 rounded-xl">
+                                    <button
+                                        onClick={() => setProductForm({ ...productForm, image_fit: 'contain' })}
+                                        className={`py-2 text-[10px] font-bold rounded-lg transition-all ${productForm.image_fit === 'contain' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                    >
+                                        CONTENER
+                                    </button>
+                                    <button
+                                        onClick={() => setProductForm({ ...productForm, image_fit: 'cover' })}
+                                        className={`py-2 text-[10px] font-bold rounded-lg transition-all ${productForm.image_fit === 'cover' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                    >
+                                        CUBRIR
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider">Escala / Zoom</label>
+                                    <span className="text-[10px] font-black text-purple-600 bg-purple-50 px-2 py-1 rounded-md">
+                                        {Math.round((productForm.image_scale || 1) * 50)}%
+                                    </span>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="1"
+                                    max="100"
+                                    step="1"
+                                    value={Math.round((productForm.image_scale || 1) * 50)}
+                                    onChange={(e) => setProductForm({ ...productForm, image_scale: Number(e.target.value) / 50 })}
+                                    className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-purple-600"
+                                />
+                                <div className="flex justify-between mt-2">
+                                    <span className="text-[8px] text-gray-400 font-bold uppercase">0%</span>
+                                    <span className="text-[8px] text-gray-400 font-bold uppercase">100%</span>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={() => setShowImageEditModal(false)}
+                                className="w-full py-4 bg-[var(--foreground)] text-[var(--background)] rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-zinc-800 transition-all shadow-xl shadow-black/5 active:scale-[0.98]"
+                            >
+                                Aplicar y Cerrar
                             </button>
                         </div>
                     </div>
