@@ -189,10 +189,13 @@ export default function Home() {
                 <ProductCard
                   key={product.id}
                   id={product.id}
+                  slug={product.slug}
                   name={product.name}
                   price={product.price}
                   image={product.image_url || ""}
                   description={product.description || ""}
+                  image_fit={product.image_fit}
+                  image_scale={product.image_scale}
                   onAddToCart={() => { }}
                 />
               ))}

@@ -232,6 +232,9 @@ class ProductCreate(BaseModel):
     care_instructions: Optional[str] = None
     finish: Optional[str] = None
     stock: Optional[int] = Field(default=0, ge=0)
+    image_fit: Optional[str] = Field(default="contain", pattern=r'^(contain|cover)$')
+    image_scale: Optional[float] = Field(default=1.0, ge=0.1, le=3.0)
+    category: Optional[str] = Field(default="frases", pattern=r'^(frases|formas)$')
     is_active: bool = True
 
 class ProductUpdate(BaseModel):
@@ -247,6 +250,9 @@ class ProductUpdate(BaseModel):
     care_instructions: Optional[str] = None
     finish: Optional[str] = None
     stock: Optional[int] = Field(None, ge=0)
+    image_fit: Optional[str] = Field(None, pattern=r'^(contain|cover)$')
+    image_scale: Optional[float] = Field(None, ge=0.1, le=3.0)
+    category: Optional[str] = Field(None, pattern=r'^(frases|formas)$')
     is_active: Optional[bool] = None
 
 class ProductResponse(BaseModel):
@@ -263,6 +269,9 @@ class ProductResponse(BaseModel):
     care_instructions: Optional[str]
     finish: Optional[str]
     stock: Optional[int]
+    image_fit: Optional[str]
+    image_scale: Optional[float]
+    category: Optional[str]
     is_active: bool
     created_at: datetime
     updated_at: datetime

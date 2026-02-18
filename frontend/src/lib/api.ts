@@ -495,6 +495,9 @@ export interface Product {
     care_instructions?: string;
     finish?: string;
     stock?: number;
+    image_fit?: 'contain' | 'cover';
+    image_scale?: number;
+    category?: 'frases' | 'formas';
     is_active: boolean;
     created_at: string;
     updated_at: string;
@@ -512,6 +515,9 @@ export interface ProductCreate {
     care_instructions?: string;
     finish?: string;
     stock?: number;
+    image_fit?: 'contain' | 'cover';
+    image_scale?: number;
+    category?: 'frases' | 'formas';
     is_active?: boolean;
 }
 
@@ -527,6 +533,9 @@ export interface ProductUpdate {
     care_instructions?: string;
     finish?: string;
     stock?: number;
+    image_fit?: 'contain' | 'cover';
+    image_scale?: number;
+    category?: 'frases' | 'formas';
     is_active?: boolean;
 }
 
