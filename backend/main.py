@@ -139,10 +139,16 @@ async def register(request: Request, user: UserRegister, db: Session = Depends(g
         
     return new_user
 
+from sqlalchemy import or_
+
 @app.post("/auth/login", response_model=Token)
 @limiter.limit("10/minute")
 async def login(request: Request, user_credentials: UserLogin, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.username == user_credentials.username).first()
+    # Buscar por username o por email
+    user = db.query(User).filter(
+        or_(User.username == user_credentials.username, User.email == user_credentials.username)
+    ).first()
+    print(f"DEBUG LOGIN INPUT: {user_credentials.username} -> FOUND USER: {user.username if user else 'None'}")
     if not user or not verify_password(user_credentials.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

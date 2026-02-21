@@ -133,6 +133,8 @@ Base.metadata.create_all(bind=engine)
 def _auto_migrate():
     from sqlalchemy import text, inspect
     inspector = inspect(engine)
+    
+    # Migración de usuarios
     cols = [c['name'] for c in inspector.get_columns('users')]
     with engine.connect() as conn:
         if 'reset_token' not in cols:
@@ -141,22 +143,36 @@ def _auto_migrate():
         if 'reset_token_expires' not in cols:
             conn.execute(text("ALTER TABLE users ADD COLUMN reset_token_expires TIMESTAMP"))
             conn.commit()
+        if 'addresses' not in cols:
+            conn.execute(text("ALTER TABLE users ADD COLUMN addresses JSON"))
+            conn.commit()
             
     # Migración para productos
-    inspector = inspect(engine)
     p_cols = [c['name'] for c in inspector.get_columns('products')]
     with engine.connect() as conn:
-        if 'image_fit' not in p_cols:
-            conn.execute(text("ALTER TABLE products ADD COLUMN image_fit VARCHAR DEFAULT 'contain'"))
-            conn.commit()
-        if 'image_scale' not in p_cols:
-            conn.execute(text("ALTER TABLE products ADD COLUMN image_scale FLOAT DEFAULT 1.0"))
-            conn.commit()
+        # Array de columnas faltantes a verificar y agregar
+        missing_columns = {
+            'slug': 'VARCHAR',
+            'gallery_urls': 'JSON',
+            'material': 'VARCHAR',
+            'capacity': 'VARCHAR',
+            'care_instructions': 'VARCHAR',
+            'finish': 'VARCHAR',
+            'stock': 'INTEGER DEFAULT 0',
+            'image_fit': "VARCHAR DEFAULT 'contain'",
+            'image_scale': 'FLOAT DEFAULT 1.0',
+            'category': "VARCHAR DEFAULT 'frases'"
+        }
+        
+        for col_name, col_type in missing_columns.items():
+            if col_name not in p_cols:
+                conn.execute(text(f"ALTER TABLE products ADD COLUMN {col_name} {col_type}"))
+                conn.commit()
 
 try:
     _auto_migrate()
-except Exception:
-    pass
+except Exception as e:
+    print(f"Auto-migration error: {e}")
 
 
 # Dependency para obtener sesión de DB
