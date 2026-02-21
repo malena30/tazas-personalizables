@@ -130,53 +130,62 @@ class OrderItem(Base):
     order = relationship("Order", back_populates="items")
     design = relationship("Design")
 
-# Crear todas las tablas
-Base.metadata.create_all(bind=engine)
-
-# Auto-migración: agregar columnas nuevas si no existen
+# Auto-migración: agregar columnas nuevas si no existen (solo para SQLite, en Postgres create_all es suficiente)
 def _auto_migrate():
     from sqlalchemy import text, inspect
     inspector = inspect(engine)
-    
-    # Migración de usuarios
-    cols = [c['name'] for c in inspector.get_columns('users')]
-    with engine.connect() as conn:
-        if 'reset_token' not in cols:
-            conn.execute(text("ALTER TABLE users ADD COLUMN reset_token VARCHAR"))
-            conn.commit()
-        if 'reset_token_expires' not in cols:
-            conn.execute(text("ALTER TABLE users ADD COLUMN reset_token_expires TIMESTAMP"))
-            conn.commit()
-        if 'addresses' not in cols:
-            conn.execute(text("ALTER TABLE users ADD COLUMN addresses JSON"))
-            conn.commit()
-            
-    # Migración para productos
-    p_cols = [c['name'] for c in inspector.get_columns('products')]
-    with engine.connect() as conn:
-        # Array de columnas faltantes a verificar y agregar
-        missing_columns = {
-            'slug': 'VARCHAR',
-            'gallery_urls': 'JSON',
-            'material': 'VARCHAR',
-            'capacity': 'VARCHAR',
-            'care_instructions': 'VARCHAR',
-            'finish': 'VARCHAR',
-            'stock': 'INTEGER DEFAULT 0',
-            'image_fit': "VARCHAR DEFAULT 'contain'",
-            'image_scale': 'FLOAT DEFAULT 1.0',
-            'category': "VARCHAR DEFAULT 'frases'"
-        }
-        
-        for col_name, col_type in missing_columns.items():
-            if col_name not in p_cols:
-                conn.execute(text(f"ALTER TABLE products ADD COLUMN {col_name} {col_type}"))
+    # En PostgreSQL, create_all ya se encarga de las tablas y columnas nuevas
+    # Esta migración es principalmente para SQLite local
+    try:
+        cols = [c['name'] for c in inspector.get_columns('users')]
+        with engine.connect() as conn:
+            if 'reset_token' not in cols:
+                conn.execute(text("ALTER TABLE users ADD COLUMN reset_token VARCHAR"))
                 conn.commit()
+            if 'reset_token_expires' not in cols:
+                conn.execute(text("ALTER TABLE users ADD COLUMN reset_token_expires TIMESTAMP"))
+                conn.commit()
+            if 'addresses' not in cols:
+                conn.execute(text("ALTER TABLE users ADD COLUMN addresses JSON"))
+                conn.commit()
+    except Exception as e:
+        print(f"⚠️  Migración users: {e}")
+
+    try:
+        p_cols = [c['name'] for c in inspector.get_columns('products')]
+        missing = {
+            'slug': 'VARCHAR', 'gallery_urls': 'JSON', 'material': 'VARCHAR',
+            'capacity': 'VARCHAR', 'care_instructions': 'VARCHAR', 'finish': 'VARCHAR',
+            'stock': 'INTEGER DEFAULT 0', 'image_fit': "VARCHAR DEFAULT 'contain'",
+            'image_scale': 'FLOAT DEFAULT 1.0', 'category': "VARCHAR DEFAULT 'frases'"
+        }
+        with engine.connect() as conn:
+            for col_name, col_type in missing.items():
+                if col_name not in p_cols:
+                    conn.execute(text(f"ALTER TABLE products ADD COLUMN {col_name} {col_type}"))
+                    conn.commit()
+    except Exception as e:
+        print(f"⚠️  Migración products: {e}")
+
+# Crear todas las tablas + auto-migración al iniciar
+def init_db():
+    try:
+        Base.metadata.create_all(bind=engine)
+        print("✅ Tablas verificadas/creadas correctamente.")
+    except Exception as e:
+        print(f"⚠️  Error al crear tablas: {e}")
+        return
+
+    try:
+        _auto_migrate()
+        print("✅ Auto-migración completada.")
+    except Exception as e:
+        print(f"⚠️  Error en auto-migración: {e}")
 
 try:
-    _auto_migrate()
+    init_db()
 except Exception as e:
-    print(f"Auto-migration error: {e}")
+    print(f"⚠️  Error al inicializar DB: {e}")
 
 
 # Dependency para obtener sesión de DB
