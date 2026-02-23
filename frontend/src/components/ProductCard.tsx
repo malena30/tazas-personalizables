@@ -42,16 +42,16 @@ export default function ProductCard({ id, slug, name, price, image, description,
             {/* Info */}
             <div className="p-8 flex flex-col flex-1">
                 <Link href={linkHref}>
-                    <h2 className="text-xl font-bold text-[var(--foreground)] mb-2 group-hover:text-[var(--accent)] transition-colors line-clamp-1">
+                    <h2 className="text-xl font-bold text-white mb-2 group-hover:text-[var(--accent)] transition-colors line-clamp-1">
                         {name}
                     </h2>
                 </Link>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 line-clamp-2 leading-relaxed">
+                <p className="text-sm text-white/60 mb-6 line-clamp-2 leading-relaxed">
                     {description}
                 </p>
 
                 <div className="mt-auto flex items-center justify-between">
-                    <span className="text-2xl font-black text-[var(--foreground)]">
+                    <span className="text-2xl font-black text-white">
                         ${price.toLocaleString("es-AR")}
                     </span>
 

@@ -31,17 +31,17 @@ export default function CollectionCard({ title, description, itemCount, onClick,
                         {icon}
                     </div>
                     <div>
-                        <h3 className="text-3xl md:text-4xl font-black text-[var(--foreground)] tracking-tighter leading-none mb-2">
+                        <h3 className="text-3xl md:text-4xl font-black text-white tracking-tighter leading-none mb-2">
                             {title}
                         </h3>
-                        <p className="text-gray-500 dark:text-gray-400 text-sm font-medium leading-relaxed max-w-[200px]">
+                        <p className="text-white/70 text-sm font-medium leading-relaxed max-w-[200px]">
                             {description}
                         </p>
                     </div>
                 </div>
 
                 <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/50">
                         {itemCount} Diseños exclusivos
                     </span>
                     <div className="w-12 h-12 bg-[var(--foreground)] text-[var(--background)] rounded-full flex items-center justify-center transform translate-x-4 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100 shadow-xl">
