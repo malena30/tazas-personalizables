@@ -629,18 +629,18 @@ export default function AdminPanel() {
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-bold text-[var(--foreground)]">{p.name}</p>
-                                                        <p className="text-xs text-black dark:text-gray-400 truncate max-w-[200px]">{p.description || 'Sin descripción'}</p>
+                                                        <p className="text-sm font-bold text-white">{p.name}</p>
+                                                        <p className="text-xs text-white/50 truncate max-w-[200px]">{p.description || 'Sin descripción'}</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="text-sm font-black text-[var(--foreground)]">
+                                                <span className="text-sm font-black text-white">
                                                     ${p.price.toLocaleString('es-AR')}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className={`text-sm font-bold ${p.stock && p.stock < 10 ? 'text-red-500' : 'text-[var(--foreground)]'}`}>
+                                                <span className={`text-sm font-bold ${p.stock && p.stock < 10 ? 'text-red-400' : 'text-white'}`}>
                                                     {p.stock} uds.
                                                 </span>
                                             </td>
