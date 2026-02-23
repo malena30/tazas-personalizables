@@ -1,11 +1,2 @@
-import * as Sentry from "@sentry/nextjs";
-
-Sentry.init({
-    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-
-    // Adjust this value in production, or use tracesSampler for greater control
-    tracesSampleRate: 1,
-
-    // Setting this option to true will print useful information to the console while you're setting up Sentry.
-    debug: false,
-});
+// Sentry edge config disabled - no DSN configured in this environment
+// Re-enable when NEXT_PUBLIC_SENTRY_DSN is set in Vercel environment variables
