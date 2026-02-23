@@ -17,7 +17,12 @@ export default function Home() {
     const loadProducts = async () => {
       try {
         const data = await getProducts();
-        setProducts(data.slice(0, 4)); // Mostrar solo los primeros 4
+        // Mostrar 2 de Frases + 2 de Formas para un balance visual
+        const frases = data.filter((p: Product) => p.category === 'frases').slice(0, 2);
+        const formas = data.filter((p: Product) => p.category === 'formas').slice(0, 2);
+        const featured = [...frases, ...formas];
+        setProducts(featured.length >= 2 ? featured : data.slice(0, 4));
+
       } catch (error) {
       } finally {
         setLoading(false);
