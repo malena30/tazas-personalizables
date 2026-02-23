@@ -122,7 +122,7 @@ function LoginForm() {
                                 { label: 'Mínimo 8 caracteres', ok: password.length >= 8 },
                                 { label: 'Al menos una mayúscula', ok: /[A-Z]/.test(password) },
                                 { label: 'Al menos un número', ok: /[0-9]/.test(password) },
-                                { label: 'Al menos un carácter especial (@$!%*?&)', ok: /[@$!%*?&]/.test(password) },
+                                { label: 'Al menos un carácter especial (. , @ $ ! % * ? & - _)', ok: /[@$!%*?&.,\-_#^:;|~]/.test(password) },
                             ].map(({ label, ok }) => (
                                 <li key={label} className="flex items-center gap-2 text-[11px] transition-colors duration-200"
                                     style={{ color: ok ? '#22c55e' : '#999999' }}>
