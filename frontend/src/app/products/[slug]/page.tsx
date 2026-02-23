@@ -145,7 +145,7 @@ export default function ProductDetailPage() {
                                 <span className="text-3xl font-black text-[var(--foreground)]">
                                     ${product.price.toLocaleString("es-AR")}
                                 </span>
-                                <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-black uppercase tracking-widest rounded-full">
+                                <span className="text-green-500 dark:text-green-400 text-xs font-black uppercase tracking-widest">
                                     En Stock
                                 </span>
                             </div>
@@ -163,20 +163,20 @@ export default function ProductDetailPage() {
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Material</p>
-                                    <p className="font-bold text-[var(--foreground)]">{product.material || "Cerámica Premium"}</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-1">Material</p>
+                                    <p className="font-bold text-white">{product.material || "Cerámica Premium"}</p>
                                 </div>
                                 <div className="p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Capacidad</p>
-                                    <p className="font-bold text-[var(--foreground)]">{product.capacity || "325ml / 11oz"}</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-1">Capacidad</p>
+                                    <p className="font-bold text-white">{product.capacity || "325ml / 11oz"}</p>
                                 </div>
                                 <div className="p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Acabado</p>
-                                    <p className="font-bold text-[var(--foreground)]">{product.finish || "Esmaltado Brillante"}</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-1">Acabado</p>
+                                    <p className="font-bold text-white">{product.finish || "Esmaltado Brillante"}</p>
                                 </div>
                                 <div className="p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-[var(--border)]">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Cuidados</p>
-                                    <p className="font-bold text-[var(--foreground)] text-sm">{product.care_instructions || "Apto Microondas y Lavavajillas"}</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-1">Cuidados</p>
+                                    <p className="font-bold text-white text-sm">{product.care_instructions || "Apto Microondas y Lavavajillas"}</p>
                                 </div>
                             </div>
                         </div>
@@ -191,7 +191,7 @@ export default function ProductDetailPage() {
                                     >
                                         <LuMinus size={12} />
                                     </button>
-                                    <span className="w-12 text-center font-black text-lg text-[var(--foreground)]">
+                                    <span className="w-12 text-center font-black text-lg text-white">
                                         {quantity}
                                     </span>
                                     <button
