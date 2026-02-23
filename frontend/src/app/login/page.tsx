@@ -117,21 +117,29 @@ function LoginForm() {
                         placeholder="••••••••"
                     />
                     {!isLogin && (
-                        <ul className="mt-2 space-y-1">
-                            <li className="text-[10px] flex items-center gap-1" style={{ color: '#999999' }}>
-                                • Mínimo 8 caracteres
-                            </li>
-                            <li className="text-[10px] flex items-center gap-1" style={{ color: '#999999' }}>
-                                • Al menos una mayúscula
-                            </li>
-                            <li className="text-[10px] flex items-center gap-1" style={{ color: '#999999' }}>
-                                • Al menos un número
-                            </li>
-                            <li className="text-[10px] flex items-center gap-1" style={{ color: '#999999' }}>
-                                • Al menos un carácter especial (@$!%*?&)
-                            </li>
+                        <ul className="mt-3 space-y-1.5">
+                            {[
+                                { label: 'Mínimo 8 caracteres', ok: password.length >= 8 },
+                                { label: 'Al menos una mayúscula', ok: /[A-Z]/.test(password) },
+                                { label: 'Al menos un número', ok: /[0-9]/.test(password) },
+                                { label: 'Al menos un carácter especial (@$!%*?&)', ok: /[@$!%*?&]/.test(password) },
+                            ].map(({ label, ok }) => (
+                                <li key={label} className="flex items-center gap-2 text-[11px] transition-colors duration-200"
+                                    style={{ color: ok ? '#22c55e' : '#999999' }}>
+                                    <span className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-black border transition-all duration-200"
+                                        style={{
+                                            borderColor: ok ? '#22c55e' : '#cccccc',
+                                            backgroundColor: ok ? '#22c55e' : 'transparent',
+                                            color: ok ? 'white' : '#cccccc'
+                                        }}>
+                                        {ok ? '✓' : '·'}
+                                    </span>
+                                    {label}
+                                </li>
+                            ))}
                         </ul>
                     )}
+
                 </div>
 
                 {/* Forgot Password Link */}
