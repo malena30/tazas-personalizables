@@ -18,7 +18,7 @@ function LoginForm() {
     const { login, register } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const redirectPath = searchParams.get('redirect') || '/customizer';
+    const redirectPath = searchParams.get('redirect') || '/';
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
