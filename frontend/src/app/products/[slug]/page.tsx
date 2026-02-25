@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getProductBySlug, Product } from "@/lib/api";
 import { useCartStore } from "@/store/cartStore";
-import { LuPlus, LuMinus, LuShoppingBag, LuPalette, LuCircleCheck, LuArrowLeft, LuShieldCheck, LuTruck, LuRotateCcw, LuInfo } from "react-icons/lu";
+import { useAuth } from "@/context/AuthContext";
+import { useFavoriteStore } from "@/store/favoriteStore";
+import { LuPlus, LuMinus, LuShoppingBag, LuPalette, LuCircleCheck, LuArrowLeft, LuShieldCheck, LuTruck, LuRotateCcw, LuInfo, LuHeart } from "react-icons/lu";
 import Image from "next/image";
 import ProductSkeleton from "@/components/ProductSkeleton";
 
@@ -12,6 +14,8 @@ export default function ProductDetailPage() {
     const { slug } = useParams();
     const router = useRouter();
     const addToCart = useCartStore((state) => state.addToCart);
+    const { token } = useAuth();
+    const { favorites, toggleFavorite } = useFavoriteStore();
 
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
@@ -113,6 +117,24 @@ export default function ProductDetailPage() {
                             ) : (
                                 <div className="text-9xl">☕</div>
                             )}
+
+                            {/* Favorite Button */}
+                            <button
+                                onClick={async (e) => {
+                                    e.preventDefault();
+                                    if (!token) {
+                                        alert("Iniciá sesión para guardar tus favoritos");
+                                        return;
+                                    }
+                                    if (product) await toggleFavorite(product.id, token);
+                                }}
+                                className={`absolute top-8 right-8 p-5 rounded-[1.5rem] backdrop-blur-md transition-all duration-300 z-10 ${product && favorites.includes(product.id)
+                                        ? 'bg-red-500 text-white shadow-xl shadow-red-500/20 scale-110'
+                                        : 'bg-black/10 text-white hover:bg-black/20 hover:scale-110'
+                                    }`}
+                            >
+                                <LuHeart className={product && favorites.includes(product.id) ? 'fill-current' : ''} size={24} />
+                            </button>
                         </div>
 
                         {gallery.length > 1 && (
@@ -227,6 +249,6 @@ export default function ProductDetailPage() {
                     </div>
                 </div>
             </div>
-        </main>
+        </main >
     );
 }

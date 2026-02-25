@@ -60,6 +60,7 @@ class User(Base):
     
     designs = relationship("Design", back_populates="owner")
     orders = relationship("Order", back_populates="user")
+    favorites = relationship("UserFavorite", back_populates="user", cascade="all, delete-orphan")
 
 # Modelo de Producto
 class Product(Base):
@@ -81,6 +82,8 @@ class Product(Base):
     image_scale = Column(Float, default=1.0, nullable=True)      # Zoom level (1.0 = 100%)
     category = Column(String, default="frases", nullable=True) # "frases" or "formas"
     is_active = Column(Boolean, default=True, nullable=False)
+    
+    favorited_by = relationship("UserFavorite", back_populates="product", cascade="all, delete-orphan")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -128,6 +131,20 @@ class OrderItem(Base):
     price = Column(Float, nullable=False)
 
     order = relationship("Order", back_populates="items")
+    design = relationship("Design")
+
+# Modelo de Favorito
+class UserFavorite(Base):
+    __tablename__ = "user_favorites"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    product_id = Column(String, ForeignKey("products.id"), nullable=True, index=True)
+    design_id = Column(String, ForeignKey("designs.id"), nullable=True, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="favorites")
+    product = relationship("Product", back_populates="favorited_by")
     design = relationship("Design")
 
 # Auto-migración: agregar columnas nuevas si no existen (solo para SQLite, en Postgres create_all es suficiente)

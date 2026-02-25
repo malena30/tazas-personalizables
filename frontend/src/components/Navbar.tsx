@@ -14,8 +14,10 @@ import {
   LuCrown,
   LuLogOut,
   LuMenu,
-  LuX
+  LuX,
+  LuHeart
 } from "react-icons/lu";
+import { useFavoriteStore } from "@/store/favoriteStore";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -24,7 +26,8 @@ export default function Navbar() {
   const cart = useCartStore((state) => state.cart);
   const totalItems = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
 
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
+  const { favorites, fetchFavorites } = useFavoriteStore();
   const router = useRouter();
 
   // Detect scroll for transparent navbar effect
@@ -35,6 +38,13 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Sincronizar favoritos al cargar o loguear
+  useEffect(() => {
+    if (token) {
+      fetchFavorites(token);
+    }
+  }, [token]);
 
   // Manejo de tema (Claro/Oscuro)
   useEffect(() => {
@@ -87,6 +97,14 @@ export default function Navbar() {
           <Link href="/customizer" className="hover:text-[var(--accent)] transition-colors">Personalizar</Link>
           {user && !user.is_admin && (
             <>
+              <Link href="/favorites" className="relative p-2 hover:text-[var(--accent)] rounded-xl transition-colors" title="Mis Favoritos">
+                <LuHeart size={20} className={favorites.length > 0 ? "fill-[var(--accent)] text-[var(--accent)]" : ""} />
+                {favorites.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[var(--accent)] text-[var(--background)] text-[8px] font-black w-4 h-4 flex items-center justify-center rounded-full">
+                    {favorites.length}
+                  </span>
+                )}
+              </Link>
               <Link href="/orders" className="hover:text-[var(--accent)] transition-colors">Mis Pedidos</Link>
               <Link href="/profile" className="hover:text-[var(--accent)] transition-colors">Mi Perfil</Link>
             </>
@@ -211,6 +229,10 @@ export default function Navbar() {
           </Link>
           {user && (
             <>
+              <Link href="/favorites" onClick={() => setOpen(false)} className="text-lg font-bold flex items-center gap-3">
+                <span className="w-8 h-8 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-lg flex items-center justify-center">❤️</span>
+                Mis Favoritos {favorites.length > 0 && `(${favorites.length})`}
+              </Link>
               <Link href="/orders" onClick={() => setOpen(false)} className="text-lg font-bold flex items-center gap-3">
                 <span className="w-8 h-8 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-lg flex items-center justify-center">📦</span>
                 Mis Pedidos

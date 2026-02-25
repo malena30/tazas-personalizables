@@ -16,7 +16,7 @@ import uuid
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from database import get_db, Design, User, Order, OrderItem, Product
+from database import get_db, Design, User, Order, OrderItem, Product, UserFavorite
 from schemas import (
     DesignCreate, DesignUpdate, DesignResponse, 
     UserRegister, UserLogin, UserResponse, Token,
@@ -468,6 +468,63 @@ async def list_orders(
         joinedload(Order.items).joinedload(OrderItem.design)
     ).filter(Order.user_id == current_user.id).order_by(Order.created_at.desc()).offset(skip).limit(limit).all()
     return orders
+
+# --- FAVORITES ENDPOINTS ---
+
+@app.get("/api/favorites", response_model=List[ProductResponse])
+async def get_favorites(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Obtener la lista de productos favoritos del usuario.
+    """
+    favorites = db.query(UserFavorite).filter(UserFavorite.user_id == current_user.id).all()
+    product_ids = [f.product_id for f in favorites if f.product_id]
+    
+    products = db.query(Product).filter(Product.id.in_(product_ids)).all()
+    return products
+
+@app.post("/api/favorites/toggle/{product_id}")
+async def toggle_favorite(
+    product_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Alternar un producto como favorito para el usuario actual.
+    """
+    # Verificar que el producto existe
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+    
+    # Buscar si ya es favorito
+    fav = db.query(UserFavorite).filter(
+        UserFavorite.user_id == current_user.id,
+        UserFavorite.product_id == product_id
+    ).first()
+    
+    if fav:
+        db.delete(fav)
+        db.commit()
+        return {"is_favorite": False}
+    else:
+        new_fav = UserFavorite(user_id=current_user.id, product_id=product_id)
+        db.add(new_fav)
+        db.commit()
+        return {"is_favorite": True}
+
+@app.get("/api/favorites/ids", response_model=List[str])
+async def get_favorite_ids(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Obtener solo los IDs de los productos favoritos para el estado global.
+    """
+    favorites = db.query(UserFavorite).filter(UserFavorite.user_id == current_user.id).all()
+    return [f.product_id for f in favorites if f.product_id]
 
 # --- PAYMENT WEBHOOK ---
 

@@ -2,6 +2,8 @@ import { CanvasElement } from '@/types/customizer';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
+export const getApiUrl = () => API_URL;
+
 // Helper para obtener headers de autenticación
 function getAuthHeaders(): Record<string, string> {
     const token = localStorage.getItem('auth_token');
