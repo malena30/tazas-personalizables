@@ -71,52 +71,95 @@ def send_email(to_email, subject, html_content):
 
 def get_welcome_template(username):
     return f"""
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-        <h2 style="color: #2563eb;">¡Bienvenido a Tazas.shop, {username}!</h2>
-        <p>Estamos encantados de tenerte con nosotros. Ahora puedes empezar a diseñar tus propias tazas personalizadas.</p>
-        <div style="margin: 30px 0;">
-            <a href="{os.getenv('FRONTEND_URL', 'http://localhost:3000')}/customizer" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Comenzar a Diseñar</a>
+    <div style="background-color: #FAFAF5; padding: 40px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <div style="max-width: 500px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #E5E7EB;">
+            <div style="background-color: #1a1a1a; padding: 30px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 900; letter-spacing: -1px;">KYATHOS</h1>
+            </div>
+            <div style="padding: 40px 30px; text-align: center;">
+                <h2 style="color: #1a1a1a; margin-top: 0; font-size: 28px; font-weight: 900; letter-spacing: -0.5px;">¡Hola, {username}! 👋</h2>
+                <p style="color: #4B5563; line-height: 1.6; font-size: 16px;">Estamos encantados de tenerte en nuestra comunidad de amantes del diseño. Ahora podés empezar a crear tus propias tazas exclusivas.</p>
+                <div style="margin: 35px 0;">
+                    <a href="{os.getenv('FRONTEND_URL', 'https://tazas-personalizables.vercel.app')}/customizer" 
+                       style="background-color: #D4A373; color: white; padding: 16px 32px; text-decoration: none; border-radius: 12px; font-weight: 900; display: inline-block; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
+                        Comenzar a Diseñar
+                    </a>
+                </div>
+                <p style="color: #9CA3AF; font-size: 13px; margin-top: 40px;">Si tenés alguna duda, simplemente respondé a este correo.</p>
+            </div>
         </div>
-        <p style="color: #666; font-size: 14px;">Si tienes alguna duda, responde a este correo.</p>
     </div>
     """
 
 def get_order_confirmation_template(order_id, total_amount):
     return f"""
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-        <h2 style="color: #2563eb;">Confirmación de Pedido</h2>
-        <p>Hemos recibido tu pedido <strong>#{order_id[:8]}</strong> correctamente.</p>
-        <p>Total a pagar: <strong>${total_amount:,.2f}</strong></p>
-        <p>En cuanto el pago sea aprobado, comenzaremos con la producción de tu taza.</p>
-        <div style="margin: 30px 0; padding: 15px; bg-color: #f9fafb; border-radius: 8px;">
-            <p style="margin: 0; font-size: 14px; color: #666;">Puedes seguir el estado de tu pedido en tu perfil.</p>
+    <div style="background-color: #FAFAF5; padding: 40px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <div style="max-width: 500px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #E5E7EB;">
+            <div style="background-color: #D4A373; padding: 30px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 900; letter-spacing: -0.5px;">PEDIDO RECIBIDO</h1>
+            </div>
+            <div style="padding: 40px 30px;">
+                <h2 style="color: #1a1a1a; margin-top: 0; font-size: 24px; font-weight: 900; letter-spacing: -0.5px; text-align: center;">¡Gracias por tu compra!</h2>
+                <p style="color: #4B5563; line-height: 1.6; font-size: 16px; text-align: center;">Hemos recibido tu pedido correctamente. Estamos ansiosos por empezar a producir tus tazas.</p>
+                
+                <div style="margin: 30px 0; background-color: #F9FAFB; padding: 25px; border-radius: 16px; border: 1px solid #F3F4F6;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <span style="color: #6B7280; font-size: 14px;">Nº de Pedido:</span>
+                        <strong style="color: #1a1a1a; font-size: 14px; font-family: monospace;">#{order_id[:8].upper()}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-top: 1px solid #E5E7EB; padding-top: 12px; margin-top: 12px;">
+                        <span style="color: #1a1a1a; font-weight: 900;">Total:</span>
+                        <strong style="color: #D4A373; font-size: 20px; font-weight: 900;">${total_amount:,.2f}</strong>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <a href="{os.getenv('FRONTEND_URL', 'https://tazas-personalizables.vercel.app')}/profile" 
+                       style="background-color: #1a1a1a; color: white; padding: 14px 28px; text-decoration: none; border-radius: 12px; font-weight: 900; display: inline-block; font-size: 13px; text-transform: uppercase;">
+                        Ver mi pedido
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
     """
 
 def get_payment_success_template(order_id):
     return f"""
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-        <h2 style="color: #10b981;">¡Pago Aprobado! 🎉</h2>
-        <p>Tu pago para el pedido <strong>#{order_id[:8]}</strong> ha sido confirmado.</p>
-        <p>¡Buenas noticias! Ya estamos preparando tu pedido para que llegue lo antes posible.</p>
-        <p>Te notificaremos cuando el paquete esté en camino.</p>
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-        <p style="text-align: center; color: #999; font-size: 12px;">Gracias por confiar en Tazas.shop</p>
+    <div style="background-color: #FAFAF5; padding: 40px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <div style="max-width: 500px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #E5E7EB;">
+            <div style="background-color: #10b981; padding: 40px; text-align: center;">
+                <div style="font-size: 50px; margin-bottom: 20px;">✨</div>
+                <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 900;">¡PAGO APROBADO!</h1>
+            </div>
+            <div style="padding: 40px 30px; text-align: center;">
+                <h2 style="color: #1a1a1a; margin-top: 0; font-size: 22px; font-weight: 900;">¡Buenas noticias!</h2>
+                <p style="color: #4B5563; line-height: 1.6; font-size: 16px;">Confirmamos el pago de tu pedido <strong>#{order_id[:8].upper()}</strong>.</p>
+                <p style="color: #4B5563; line-height: 1.6; font-size: 16px;">Ya estamos moviendo hilos para que tu taza personalizada empiece a tomar forma.</p>
+                <p style="color: #9CA3AF; font-size: 13px; margin-top: 40px;">Te avisaremos cuando esté en camino. ¡Gracias por confiar en nosotros!</p>
+            </div>
+        </div>
     </div>
     """
 
 def get_password_reset_template(reset_url):
     return f"""
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-        <h2 style="color: #D4A373;">Recuperar Contraseña</h2>
-        <p>Recibimos una solicitud para restablecer tu contraseña en <strong>KYATHOS tazas</strong>.</p>
-        <p>Hacé click en el siguiente botón para crear una nueva contraseña:</p>
-        <div style="margin: 30px 0; text-align: center;">
-            <a href="{reset_url}" style="background-color: #D4A373; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Restablecer Contraseña</a>
+    <div style="background-color: #FAFAF5; padding: 40px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <div style="max-width: 500px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #E5E7EB;">
+            <div style="background-color: #1a1a1a; padding: 30px; text-align: center;">
+                <h1 style="color: #D4A373; margin: 0; font-size: 20px; font-weight: 900;">KYATHOS RECUPERACIÓN</h1>
+            </div>
+            <div style="padding: 40px 30px; text-align: center;">
+                <h2 style="color: #1a1a1a; margin-top: 0; font-size: 24px; font-weight: 900; letter-spacing: -0.5px;">¿Olvidaste tu contraseña?</h2>
+                <p style="color: #4B5563; line-height: 1.6; font-size: 16px;">No pasa nada, nos pasa a todos. Hacé click abajo para crear una nueva.</p>
+                <div style="margin: 35px 0;">
+                    <a href="{reset_url}" 
+                       style="background-color: #D4A373; color: white; padding: 16px 32px; text-decoration: none; border-radius: 12px; font-weight: 900; display: inline-block; font-size: 14px;">
+                        Restablecer Contraseña
+                    </a>
+                </div>
+                <p style="color: #9CA3AF; font-size: 12px; margin-top: 40px; font-style: italic;">Este enlace expira en 60 minutos por seguridad.</p>
+            </div>
         </div>
-        <p style="color: #666; font-size: 14px;">Este enlace expira en <strong>1 hora</strong>. Si no solicitaste este cambio, podés ignorar este correo.</p>
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-        <p style="text-align: center; color: #999; font-size: 12px;">KYATHOS tazas — Tazas personalizables con amor</p>
     </div>
     """
