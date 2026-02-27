@@ -27,36 +27,36 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://kyathos.shop'),
   title: {
-    default: "KYATHOS tazas | Crea tu diseño único en 3D",
-    template: "%s | KYATHOS tazas"
+    default: "KYATHOS | Tazas de Autor y Diseño 3D",
+    template: "%s | KYATHOS"
   },
-  description: "Diseña y compra tazas personalizadas de alta calidad con nuestro editor 3D. Lo cotidiano, con intención. Cerámica premium y envío a toda Argentina.",
-  keywords: ["tazas personalizadas", "regalos personalizados", "diseño de tazas", "tazas de cerámica", "tazas 3D", "tazas con foto"],
-  authors: [{ name: "KYATHOS Team" }],
-  creator: "KYATHOS tazas",
+  description: "Diseñá tazas únicas con nuestro editor 3D o elegí de nuestras colecciones exclusivas. Cerámica premium, envíos a todo el país y lo cotidiano con intención.",
+  keywords: ["tazas personalizadas", "regalos originales", "diseño 3D", "tazas de cerámica", "tazas con frases", "KYATHOS", "tazas autor"],
+  authors: [{ name: "KYATHOS" }],
+  creator: "KYATHOS",
   openGraph: {
     type: "website",
     locale: "es_AR",
     url: "https://kyathos.shop",
-    title: "KYATHOS tazas | Crea tu diseño único en 3D",
-    description: "Diseña tu propia taza en minutos con nuestro editor 3D. Calidad premium y envío a todo el país. ¡Regalá algo único!",
-    siteName: "KYATHOS tazas",
+    title: "KYATHOS | Tazas de Autor y Diseño 3D",
+    description: "Creá tu propia taza en 3D o explorá nuestros diseños exclusivos. ¡Regalá algo único con alma!",
+    siteName: "KYATHOS",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Tazas Personalizables - Tazas.shop",
+        alt: "KYATHOS - Tazas con Intención",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KYATHOS tazas | Crea tu diseño único en 3D",
-    description: "Diseña tu propia taza en minutos con nuestro editor 3D. Calidad premium y envío a todo el país.",
+    title: "KYATHOS | Tazas de Autor y Diseño 3D",
+    description: "Diseñá tu propia taza en minutos con nuestro editor 3D. Calidad premium y envío a todo el país.",
     images: ["/og-image.jpg"],
-    creator: "@kyathostazas",
   },
   robots: {
     index: true,

@@ -1,9 +1,10 @@
 import { MetadataRoute } from 'next';
+import { getProducts } from '@/lib/api';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://kyathos.shop';
 
-    return [
+    const baseRoutes: MetadataRoute.Sitemap = [
         {
             url: baseUrl,
             lastModified: new Date(),
@@ -35,4 +36,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.3,
         },
     ];
+
+    try {
+        const products = await getProducts();
+        const productRoutes: MetadataRoute.Sitemap = products.map((product) => ({
+            url: `${baseUrl}/products/${product.slug || product.id}`,
+            lastModified: new Date(product.updated_at || new Date()),
+            changeFrequency: 'weekly' as const,
+            priority: 0.7,
+        }));
+
+        return [...baseRoutes, ...productRoutes];
+    } catch (error) {
+        console.error('Error generating sitemap product routes:', error);
+        return baseRoutes;
+    }
 }
