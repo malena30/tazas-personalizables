@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { CanvasElement, ImageElement, TextElement, EmojiElement, MugCoverage } from "@/types/customizer";
+import { CanvasElement, ImageElement, TextElement, EmojiElement } from "@/types/customizer";
 import Toolbar from "@/components/Toolbar";
 import DesignLibrary from "@/components/DesignLibrary";
 import { useCartStore } from "@/store/cartStore";
@@ -10,15 +10,16 @@ import { saveDesign, updateDesign, Design } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { templates } from "@/data/templates";
-import { LuFolderHeart, LuSave, LuShoppingCart, LuShoppingBag, LuCircleCheck } from "react-icons/lu";
+import { LuFolderHeart, LuSave, LuShoppingBag, LuCircleCheck, LuArrowLeft } from "react-icons/lu";
+
 // Importación dinámica de Mug3DViewer para evitar errores de SSR con Three.js y Konva
 const Mug3DViewer = dynamic(() => import("@/components/Mug3DViewer"), {
     ssr: false,
     loading: () => (
-        <div className="w-full h-[400px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">
+        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
             <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-                <p className="text-gray-600 font-semibold">Cargando visor 3D...</p>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accent)] mx-auto mb-4"></div>
+                <p className="text-gray-400 text-xs font-black uppercase tracking-widest">Iniciando Motor 3D</p>
             </div>
         </div>
     )
@@ -31,6 +32,7 @@ export default function CustomizerPage() {
     const [textColor, setTextColor] = useState("#000000");
     const [fontSize, setFontSize] = useState(24);
     const [fontFamily, setFontFamily] = useState("Inter");
+
     // Estados para opciones avanzadas de texto
     const [stroke, setStroke] = useState<string>("");
     const [strokeWidth, setStrokeWidth] = useState<number>(0.5);
@@ -41,24 +43,21 @@ export default function CustomizerPage() {
     const [shadowOffsetY, setShadowOffsetY] = useState<number>(3);
     const [curvature, setCurvature] = useState<number>(0);
 
-    // Estado para la pestaña activa del toolbar
     const [activeTab, setActiveTab] = useState<'producto' | 'capas' | 'imagen' | 'texto' | 'stickers' | 'plantillas' | null>(null);
-
     const [showTooltip, setShowTooltip] = useState(false);
     const [showLibrary, setShowLibrary] = useState(false);
     const [showSaveModal, setShowSaveModal] = useState(false);
     const [designName, setDesignName] = useState("");
     const [currentDesignId, setCurrentDesignId] = useState<string | null>(null);
     const [isExpanded, setIsExpanded] = useState(false);
+
     const canvasRef = useRef<any>(null);
     const addToCart = useCartStore((state) => state.addToCart);
     const { user } = useAuth();
     const router = useRouter();
 
-    // Generar ID único
     const generateId = () => `element-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-    // Agregar imagen
     const handleAddImage = (imageUrl: string) => {
         const newImage: ImageElement = {
             id: generateId(),
@@ -73,10 +72,9 @@ export default function CustomizerPage() {
         };
         setElements([...elements, newImage]);
         setSelectedId(newImage.id);
-        setActiveTab('imagen'); // Auto-abrir pestaña imagen
+        setActiveTab('imagen');
     };
 
-    // Agregar texto
     const handleAddText = () => {
         const newText: TextElement = {
             id: generateId(),
@@ -90,13 +88,12 @@ export default function CustomizerPage() {
             zIndex: elements.length,
             isBold: false,
             isItalic: false,
-
             curvature: 0,
             coverage: 'front'
         };
         setElements([...elements, newText]);
         setSelectedId(newText.id);
-        setActiveTab('texto'); // Auto-abrir pestaña texto
+        setActiveTab('texto');
     };
 
     const handleAddEmoji = (emoji: string) => {
@@ -117,19 +114,15 @@ export default function CustomizerPage() {
     const handleLoadTemplate = (templateId: string) => {
         const template = templates.find(t => t.id === templateId);
         if (template) {
-            // Confirmar si hay elementos actuales
             if (elements.length > 0) {
                 if (!confirm("¿Deseas cargar esta plantilla? Se reemplazará tu diseño actual.")) {
                     return;
                 }
             }
-
-            // Cargar elementos de la plantilla con nuevos IDs para evitar duplicados
             const newElements = template.elements.map(el => ({
                 ...el,
                 id: generateId()
             }));
-
             setElements(newElements);
             setMugColor(template.mugColor);
             setSelectedId(null);
@@ -137,7 +130,6 @@ export default function CustomizerPage() {
         }
     };
 
-    // Eliminar elemento seleccionado
     const handleDeleteElement = () => {
         if (selectedId) {
             setElements(elements.filter(el => el.id !== selectedId));
@@ -145,7 +137,6 @@ export default function CustomizerPage() {
         }
     };
 
-    // Traer al frente
     const handleBringToFront = () => {
         if (!selectedId) return;
         const maxZIndex = Math.max(...elements.map(el => el.zIndex), 0);
@@ -154,7 +145,6 @@ export default function CustomizerPage() {
         ));
     };
 
-    // Enviar atrás
     const handleSendToBack = () => {
         if (!selectedId) return;
         const minZIndex = Math.min(...elements.map(el => el.zIndex), 0);
@@ -163,20 +153,16 @@ export default function CustomizerPage() {
         ));
     };
 
-    // Actualizar elemento (cuando se modifica en el canvas)
     const handleUpdateElement = (updatedElement: CanvasElement) => {
         setElements(elements.map(el =>
             el.id === updatedElement.id ? updatedElement : el
         ));
     };
 
-    // Sincronizar propiedades del elemento seleccionado
     useEffect(() => {
         if (!selectedId) return;
-
         setElements(prev => prev.map(el => {
             if (el.id !== selectedId) return el;
-
             if (el.type === 'text') {
                 return {
                     ...el,
@@ -197,7 +183,6 @@ export default function CustomizerPage() {
         }));
     }, [selectedId, textColor, fontSize, fontFamily, stroke, strokeWidth, shadowColor, shadowBlur, shadowOpacity, shadowOffsetX, shadowOffsetY, curvature]);
 
-    // Sincronizar estados locales cuando cambia la selección
     useEffect(() => {
         if (!selectedId) return;
         const selectedElement = elements.find(el => el.id === selectedId);
@@ -221,37 +206,27 @@ export default function CustomizerPage() {
         }
     }, [selectedId]);
 
-
-
-    // Agregar al carrito
     const handleAddToCart = () => {
         if (canvasRef.current) {
-            // Exportar diseño como imagen
             const uri = canvasRef.current.toDataURL({
                 pixelRatio: 3,
                 mimeType: 'image/png',
             });
-
-            // Agregar al carrito
             addToCart({
-                id: Date.now().toString(), // ID único basado en timestamp
+                id: Date.now().toString(),
                 name: "Taza Personalizada",
-                price: 3500, // Precio de la taza personalizada
-                image: uri, // Imagen del diseño
+                price: 3500,
+                image: uri,
                 description: `Taza personalizada con ${elements.length} elemento(s)`,
                 designId: currentDesignId || undefined
             });
-
-            // Mostrar tooltip de confirmación
             setShowTooltip(true);
             setTimeout(() => setShowTooltip(false), 3000);
         }
     };
 
-    // Guardar diseño
     const handleSaveDesign = async () => {
         if (!user) {
-            // Si no está logueado, guardar temporalmente y redirigir
             const pendingDesign = {
                 mug_color: mugColor,
                 elements: elements,
@@ -261,42 +236,30 @@ export default function CustomizerPage() {
             router.push('/login?redirect=/customizer');
             return;
         }
-
         if (!designName.trim()) {
             alert('Por favor ingresa un nombre para el diseño');
             return;
         }
-
         try {
-            // Generar thumbnail (opcional)
             let thumbnail = undefined;
             try {
                 thumbnail = canvasRef.current?.toDataURL?.({
                     pixelRatio: 1,
                     mimeType: 'image/png',
                 });
-            } catch (err) {
-                // Ignore thumbnail generation error
-            }
-
+            } catch (err) { }
             const designData = {
                 name: designName,
                 mug_color: mugColor,
                 elements: elements,
                 thumbnail: thumbnail,
             };
-
             if (currentDesignId) {
-                // Actualizar diseño existente
                 await updateDesign(currentDesignId, designData);
-                alert('Diseño actualizado exitosamente!');
             } else {
-                // Crear nuevo diseño
                 const saved = await saveDesign(designData);
                 setCurrentDesignId(saved.id);
-                alert('Diseño guardado exitosamente!');
             }
-
             setShowSaveModal(false);
             setDesignName('');
         } catch (error) {
@@ -304,7 +267,6 @@ export default function CustomizerPage() {
         }
     };
 
-    // Cargar diseño
     const handleLoadDesign = (design: Design) => {
         setElements(design.elements);
         setMugColor(design.mug_color);
@@ -313,7 +275,6 @@ export default function CustomizerPage() {
         setSelectedId(null);
     };
 
-    // Restaurar diseño pendiente tras login
     useEffect(() => {
         const pending = localStorage.getItem('pending_design');
         if (pending) {
@@ -322,95 +283,114 @@ export default function CustomizerPage() {
                 setElements(design.elements || []);
                 setMugColor(design.mug_color || "#FFFFFF");
                 setDesignName(design.name || "");
-                // Limpiar para que no se restaure cada vez que refresca
                 localStorage.removeItem('pending_design');
-
-                // Si ahora está logueado, abrir el modal de guardado automáticamente
-                if (user) {
-                    setShowSaveModal(true);
-                }
-            } catch (e) {
-                // Ignore parsing error
-            }
+                if (user) setShowSaveModal(true);
+            } catch (e) { }
         }
-    }, [user]); // Re-ejecutar cuando el usuario se loguea
+    }, [user]);
 
     return (
-        <main className="w-full min-h-screen bg-[var(--background)] py-8 overflow-x-hidden">
-            <div className="max-w-full mx-auto px-2 lg:px-4">
-                <h1 className="text-2xl lg:text-3xl font-title font-bold text-[var(--foreground)] mb-4 lg:mb-8">
-                    Diseñá tu Taza Personalizada
-                </h1>
+        <main className="w-full h-screen bg-[var(--background)] overflow-hidden flex flex-col">
+            <header className="h-16 flex-shrink-0 border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-md flex items-center justify-between px-6 z-50">
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => router.back()}
+                        className="p-2 hover:bg-[var(--hover-bg)] rounded-full transition-colors text-[var(--foreground)]"
+                        title="Volver"
+                    >
+                        <LuArrowLeft size={20} />
+                    </button>
+                    <h1 className="text-xl font-title font-black text-[var(--foreground)] tracking-tight">
+                        DISEÑÁ TU <span className="text-[var(--accent)]">TAZA</span>
+                    </h1>
+                </div>
 
-                <div className="flex gap-2 lg:gap-4 overflow-x-hidden">
-                    {/* Panel de herramientas - Izquierda (ancho flexible) */}
-                    {!isExpanded && (
-                        <Toolbar
-                            onAddImage={handleAddImage}
-                            onAddText={handleAddText}
-                            onAddEmoji={handleAddEmoji}
-                            onLoadTemplate={handleLoadTemplate}
-                            onExport={handleAddToCart}
-                            onDelete={handleDeleteElement}
-                            onBringToFront={handleBringToFront}
-                            onSendToBack={handleSendToBack}
-                            mugColor={mugColor}
-                            onMugColorChange={setMugColor}
-                            textColor={textColor}
-                            onTextColorChange={setTextColor}
-                            fontSize={fontSize}
-                            onFontSizeChange={setFontSize}
-                            fontFamily={fontFamily}
-                            onFontFamilyChange={setFontFamily}
-                            hasSelection={selectedId !== null}
-                            hasElements={elements.length > 0}
-                            stroke={stroke}
-                            onStrokeChange={setStroke}
-                            strokeWidth={strokeWidth}
-                            onStrokeWidthChange={setStrokeWidth}
-                            shadowColor={shadowColor}
-                            onShadowColorChange={setShadowColor}
-                            shadowBlur={shadowBlur}
-                            onShadowBlurChange={setShadowBlur}
-                            shadowOpacity={shadowOpacity}
-                            onShadowOpacityChange={setShadowOpacity}
-                            shadowOffsetX={shadowOffsetX}
-                            onShadowOffsetXChange={setShadowOffsetX}
-                            shadowOffsetY={shadowOffsetY}
-                            onShadowOffsetYChange={setShadowOffsetY}
-                            activeTab={activeTab}
-                            onTabChange={setActiveTab}
-                            curvature={curvature}
-                            onCurvatureChange={setCurvature}
-                            mugCoverage={selectedId ? elements.find(el => el.id === selectedId)?.coverage || 'front' : 'front'}
-                            onMugCoverageChange={(coverage) => {
-                                if (selectedId) {
-                                    const el = elements.find(e => e.id === selectedId);
-                                    if (el) handleUpdateElement({ ...el, coverage });
-                                }
-                            }}
-                            imageFilters={selectedId ? (elements.find(el => el.id === selectedId) as ImageElement)?.filters : undefined}
-                            onImageFiltersChange={(filters) => {
-                                if (selectedId) {
-                                    const el = elements.find(e => e.id === selectedId);
-                                    if (el && el.type === 'image') {
-                                        handleUpdateElement({ ...el, filters });
-                                    }
-                                }
-                            }}
-                            elements={elements}
-                            onReorderElements={(newElements) => {
-                                // Reparar zIndex basado en la nueva posición del array
-                                const updated = newElements.map((el, i) => ({ ...el, zIndex: i }));
-                                setElements(updated);
-                            }}
-                            onSelectElement={setSelectedId}
-                            selectedId={selectedId}
-                        />
-                    )}
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setShowLibrary(true)}
+                        className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-[var(--foreground)] hover:bg-[var(--hover-bg)] rounded-xl transition-all"
+                    >
+                        <LuFolderHeart size={18} />
+                        <span className="hidden sm:inline">Mis Diseños</span>
+                    </button>
+                    <button
+                        onClick={() => setShowSaveModal(true)}
+                        disabled={elements.length === 0}
+                        className="flex items-center gap-2 px-4 py-2 text-sm font-bold bg-[var(--foreground)] text-[var(--background)] rounded-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+                    >
+                        <LuSave size={18} />
+                        <span>Guardar</span>
+                    </button>
+                </div>
+            </header>
 
-                    {/* Visor 3D de la Taza - Centro */}
-                    <div className={`flex-1 relative ${isExpanded ? 'fixed inset-0 top-0 z-[100] bg-[var(--background)] flex items-center justify-center' : ''}`} style={isExpanded ? { paddingTop: '64px' } : {}}>
+            <div className="flex-1 flex overflow-hidden relative">
+                {!isExpanded && (
+                    <Toolbar
+                        onAddImage={handleAddImage}
+                        onAddText={handleAddText}
+                        onAddEmoji={handleAddEmoji}
+                        onLoadTemplate={handleLoadTemplate}
+                        onExport={handleAddToCart}
+                        onDelete={handleDeleteElement}
+                        onBringToFront={handleBringToFront}
+                        onSendToBack={handleSendToBack}
+                        mugColor={mugColor}
+                        onMugColorChange={setMugColor}
+                        textColor={textColor}
+                        onTextColorChange={setTextColor}
+                        fontSize={fontSize}
+                        onFontSizeChange={setFontSize}
+                        fontFamily={fontFamily}
+                        onFontFamilyChange={setFontFamily}
+                        hasSelection={selectedId !== null}
+                        hasElements={elements.length > 0}
+                        stroke={stroke}
+                        onStrokeChange={setStroke}
+                        strokeWidth={strokeWidth}
+                        onStrokeWidthChange={setStrokeWidth}
+                        shadowColor={shadowColor}
+                        onShadowColorChange={setShadowColor}
+                        shadowBlur={shadowBlur}
+                        onShadowBlurChange={setShadowBlur}
+                        shadowOpacity={shadowOpacity}
+                        onShadowOpacityChange={setShadowOpacity}
+                        shadowOffsetX={shadowOffsetX}
+                        onShadowOffsetXChange={setShadowOffsetX}
+                        shadowOffsetY={shadowOffsetY}
+                        onShadowOffsetYChange={setShadowOffsetY}
+                        activeTab={activeTab}
+                        onTabChange={setActiveTab}
+                        curvature={curvature}
+                        onCurvatureChange={setCurvature}
+                        mugCoverage={selectedId ? elements.find(el => el.id === selectedId)?.coverage || 'front' : 'front'}
+                        onMugCoverageChange={(coverage) => {
+                            if (selectedId) {
+                                const el = elements.find(e => e.id === selectedId);
+                                if (el) handleUpdateElement({ ...el, coverage });
+                            }
+                        }}
+                        imageFilters={selectedId ? (elements.find(el => el.id === selectedId) as ImageElement)?.filters : undefined}
+                        onImageFiltersChange={(filters) => {
+                            if (selectedId) {
+                                const el = elements.find(e => e.id === selectedId);
+                                if (el && el.type === 'image') {
+                                    handleUpdateElement({ ...el, filters });
+                                }
+                            }
+                        }}
+                        elements={elements}
+                        onReorderElements={(newElements) => {
+                            const updated = newElements.map((el, i) => ({ ...el, zIndex: i }));
+                            setElements(updated);
+                        }}
+                        onSelectElement={setSelectedId}
+                        selectedId={selectedId}
+                    />
+                )}
+
+                <div className={`flex-1 relative flex flex-col ${isExpanded ? 'fixed inset-0 z-[100] bg-[var(--background)]' : ''}`}>
+                    <div className="flex-1 relative">
                         <Mug3DViewer
                             ref={canvasRef}
                             elements={elements}
@@ -422,72 +402,51 @@ export default function CustomizerPage() {
                             showCanvas={!isExpanded}
                             onToggleExpand={() => setIsExpanded(!isExpanded)}
                         />
-
-                        {/* Información del diseño (solo visible si no está expandido) */}
-                        {!isExpanded && (
-                            <div className="mt-4 p-4 bg-[var(--background)] border border-[var(--border)] rounded-lg">
-                                <p className="text-sm font-text text-[var(--foreground)]">
-                                    <span className="font-semibold">Elementos:</span> {elements.length} |
-                                    <span className="font-semibold ml-2">Seleccionado:</span> {selectedId || 'Ninguno'}
-                                </p>
-                                {selectedId && (
-                                    <p className="text-xs text-[var(--foreground)] opacity-70 mt-2 font-text">
-                                        💡 Tip: Arrastrá para mover, usa los controles de las esquinas para redimensionar
-                                    </p>
-                                )}
-                            </div>
-                        )}
                     </div>
+
+                    {!isExpanded && (
+                        <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
+                            <div className="px-3 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-[10px] font-black uppercase tracking-widest text-white/70">
+                                {elements.length} {elements.length === 1 ? 'Elemento' : 'Elementos'}
+                            </div>
+                            {selectedId && (
+                                <div className="px-3 py-1.5 bg-[var(--accent)]/20 backdrop-blur-md border border-[var(--accent)]/30 rounded-full text-[10px] font-black uppercase tracking-widest text-[var(--accent)] animate-in fade-in slide-in-from-right-2">
+                                    Editando selección
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* Footer fijo - Botón Agregar al Carrito */}
             {!isExpanded && (
-                <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[var(--border)] shadow-lg z-50">
-                    <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => setShowLibrary(true)}
-                                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-text font-semibold transition-colors flex items-center gap-2"
-                            >
-                                <LuFolderHeart size={18} /> Mis Diseños
-                            </button>
-                            <button
-                                onClick={() => setShowSaveModal(true)}
-                                disabled={elements.length === 0}
-                                className={`px-4 py-2 rounded-lg font-text font-semibold transition-colors ${elements.length > 0
-                                    ? 'bg-green-500 text-white hover:bg-green-600'
-                                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                    }`}
-                            >
-                                <LuSave size={18} /> Guardar
-                            </button>
-                            <div className="flex items-center gap-2">
-                                <LuShoppingCart size={24} className="text-[var(--accent)]" />
-                                <div>
-                                    <p className="text-lg font-title font-bold text-zinc-900">$3.500</p>
-                                    <p className="text-xs text-zinc-500">Taza personalizada</p>
-                                </div>
-                            </div>
+                <footer className="h-20 flex-shrink-0 border-t border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-md px-8 flex items-center justify-between z-50">
+                    <div className="flex items-center gap-6">
+                        <div className="flex flex-col">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Precio Estimado</span>
+                            <span className="text-2xl font-black text-[var(--foreground)]">$3.500</span>
                         </div>
-                        <button
-                            onClick={handleAddToCart}
-                            disabled={elements.length === 0}
-                            className={`px-8 py-3 rounded-lg font-text font-semibold transition-all text-base ${elements.length > 0
-                                ? 'bg-[var(--accent)] text-[var(--foreground)] hover:opacity-90 cursor-pointer shadow-md hover:shadow-lg'
-                                : 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
-                                }`}
-                        >
-                            <span className="flex items-center gap-2">
-                                <LuShoppingBag size={20} />
-                                Añadir al carrito
-                            </span>
-                        </button>
+                        <div className="h-8 w-px bg-[var(--border)] hidden sm:block"></div>
+                        <div className="hidden md:flex items-center gap-2 text-xs text-gray-400 font-medium">
+                            <LuCircleCheck className="text-green-500" />
+                            Calidad Premium Garantizada
+                        </div>
                     </div>
-                </div>
+
+                    <button
+                        onClick={handleAddToCart}
+                        disabled={elements.length === 0}
+                        className={`group px-8 py-3.5 rounded-2xl font-black flex items-center gap-3 transition-all shadow-xl ${elements.length > 0
+                                ? "bg-[var(--accent)] text-[var(--foreground)] hover:scale-[1.05] active:scale-[0.95] shadow-[var(--accent)]/20"
+                                : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-50"
+                            }`}
+                    >
+                        <LuShoppingBag size={20} className="group-hover:rotate-12 transition-transform" />
+                        AÑADIR AL CARRITO
+                    </button>
+                </footer>
             )}
 
-            {/* Tooltip de confirmación */}
             {showTooltip && (
                 <div className="fixed bottom-24 right-8 bg-[var(--accent)] text-[var(--foreground)] px-6 py-4 rounded-lg shadow-lg font-text font-semibold animate-slide-up flex items-center gap-3 z-50">
                     <LuCircleCheck className="h-4 w-4 text-[var(--accent)]" />
@@ -495,39 +454,52 @@ export default function CustomizerPage() {
                 </div>
             )}
 
-            {/* Modal para guardar diseño */}
             {showSaveModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl">
-                        <h2 className="text-xl font-title font-bold text-gray-900 mb-4">Guardar Diseño</h2>
-                        <input
-                            type="text"
-                            placeholder="Nombre del diseño"
-                            value={designName}
-                            onChange={(e) => setDesignName(e.target.value)}
-                            style={{ color: '#111827' }}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 font-text"
-                            onKeyPress={(e) => e.key === 'Enter' && handleSaveDesign()}
-                        />
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setShowSaveModal(false)}
-                                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-text font-semibold"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={handleSaveDesign}
-                                className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-text font-semibold"
-                            >
-                                Guardar
-                            </button>
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-[2.5rem] p-8 w-full max-w-md shadow-2xl border border-[var(--border)] animate-in fade-in zoom-in-95 duration-300">
+                        <div className="flex items-center gap-4 mb-8">
+                            <div className="p-3 bg-blue-50 text-blue-500 rounded-2xl">
+                                <LuSave size={24} />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-black text-gray-900 tracking-tight">Guardar Diseño</h2>
+                                <p className="text-sm text-gray-500 font-medium">Dale un nombre único a tu creación</p>
+                            </div>
+                        </div>
+                        <div className="space-y-6">
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 block ml-1">
+                                    Nombre del Proyecto
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Ej: Taza Galáctica..."
+                                    value={designName}
+                                    onChange={(e) => setDesignName(e.target.value)}
+                                    className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[var(--accent)]/20 focus:border-[var(--accent)] transition-all outline-none font-bold text-gray-900"
+                                    onKeyPress={(e) => e.key === 'Enter' && handleSaveDesign()}
+                                    autoFocus
+                                />
+                            </div>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setShowSaveModal(false)}
+                                    className="flex-1 px-6 py-4 bg-gray-100 text-gray-500 rounded-2xl hover:bg-gray-200 font-black transition-all"
+                                >
+                                    CANCELAR
+                                </button>
+                                <button
+                                    onClick={handleSaveDesign}
+                                    className="flex-1 px-6 py-4 bg-[var(--foreground)] text-[var(--background)] rounded-2xl hover:scale-105 transition-all font-black shadow-lg shadow-black/10"
+                                >
+                                    GUARDAR
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Modal de biblioteca de diseños */}
             <DesignLibrary
                 isOpen={showLibrary}
                 onClose={() => setShowLibrary(false)}
