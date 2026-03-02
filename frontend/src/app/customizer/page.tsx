@@ -10,7 +10,8 @@ import { saveDesign, updateDesign, Design } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { templates } from "@/data/templates";
-import { LuFolderHeart, LuSave, LuShoppingBag, LuCircleCheck, LuArrowLeft } from "react-icons/lu";
+import { LuFolderHeart, LuSave, LuShoppingBag, LuCircleCheck, LuArrowLeft, LuRefreshCw, LuPencil, LuCheck, LuX } from "react-icons/lu";
+import { getProductBySlug, updateProduct } from "@/lib/api";
 
 // Importación dinámica de Mug3DViewer para evitar errores de SSR con Three.js y Konva
 const Mug3DViewer = dynamic(() => import("@/components/Mug3DViewer"), {
@@ -50,6 +51,12 @@ export default function CustomizerPage() {
     const [designName, setDesignName] = useState("");
     const [currentDesignId, setCurrentDesignId] = useState<string | null>(null);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [basePrice, setBasePrice] = useState<number>(3500);
+    const [isLoadingPrice, setIsLoadingPrice] = useState(true);
+    const [isEditingPrice, setIsEditingPrice] = useState(false);
+    const [tempPrice, setTempPrice] = useState<number>(3500);
+    const [isSavingPrice, setIsSavingPrice] = useState(false);
+    const [customMugId, setCustomMugId] = useState<string | null>(null);
 
     const canvasRef = useRef<any>(null);
     const addToCart = useCartStore((state) => state.addToCart);
@@ -215,7 +222,7 @@ export default function CustomizerPage() {
             addToCart({
                 id: Date.now().toString(),
                 name: "Taza Personalizada",
-                price: 3500,
+                price: basePrice,
                 image: uri,
                 description: `Taza personalizada con ${elements.length} elemento(s)`,
                 designId: currentDesignId || undefined
@@ -288,6 +295,38 @@ export default function CustomizerPage() {
             } catch (e) { }
         }
     }, [user]);
+
+    useEffect(() => {
+        const fetchPrice = async () => {
+            try {
+                const product = await getProductBySlug('taza-personalizada');
+                if (product) {
+                    setBasePrice(product.price);
+                    setTempPrice(product.price);
+                    setCustomMugId(product.id);
+                }
+            } catch (error) {
+                console.error("Error fetching custom mug price:", error);
+            } finally {
+                setIsLoadingPrice(false);
+            }
+        };
+        fetchPrice();
+    }, []);
+
+    const handleUpdatePrice = async () => {
+        if (!customMugId) return;
+        try {
+            setIsSavingPrice(true);
+            await updateProduct(customMugId, { price: tempPrice });
+            setBasePrice(tempPrice);
+            setIsEditingPrice(false);
+        } catch (error) {
+            alert("Error al actualizar el precio");
+        } finally {
+            setIsSavingPrice(false);
+        }
+    };
 
     return (
         <main className="w-full h-screen bg-[var(--background)] overflow-hidden flex flex-col">
@@ -424,7 +463,55 @@ export default function CustomizerPage() {
                     <div className="flex items-center gap-6">
                         <div className="flex flex-col">
                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Precio Estimado</span>
-                            <span className="text-2xl font-black text-[var(--foreground)]">$3.500</span>
+                            <div className="flex items-center gap-3">
+                                {isLoadingPrice ? (
+                                    <LuRefreshCw className="animate-spin text-[var(--accent)]" size={16} />
+                                ) : isEditingPrice ? (
+                                    <div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">
+                                        <div className="relative">
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-black">$</span>
+                                            <input
+                                                type="number"
+                                                value={tempPrice}
+                                                onChange={(e) => setTempPrice(Number(e.target.value))}
+                                                className="w-24 pl-6 pr-2 py-1 bg-gray-100 border border-[var(--accent)]/30 rounded-lg font-black text-lg outline-none"
+                                                autoFocus
+                                            />
+                                        </div>
+                                        <button
+                                            onClick={handleUpdatePrice}
+                                            disabled={isSavingPrice}
+                                            className="p-2 bg-green-500 text-white rounded-lg hover:scale-110 active:scale-90 transition-all shadow-lg shadow-green-500/20"
+                                        >
+                                            {isSavingPrice ? <LuRefreshCw className="animate-spin" size={14} /> : <LuCheck size={14} />}
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setIsEditingPrice(false);
+                                                setTempPrice(basePrice);
+                                            }}
+                                            className="p-2 bg-gray-100 text-gray-500 rounded-lg hover:scale-110 active:scale-90 transition-all font-black"
+                                        >
+                                            <LuX size={14} />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-3 group/price">
+                                        <span className="text-2xl font-black text-[var(--foreground)]">
+                                            ${basePrice.toLocaleString('es-AR')}
+                                        </span>
+                                        {user?.is_admin && (
+                                            <button
+                                                onClick={() => setIsEditingPrice(true)}
+                                                className="opacity-0 group-hover/price:opacity-100 p-2 hover:bg-[var(--accent)]/10 text-[var(--accent)] rounded-lg transition-all"
+                                                title="Editar precio (Admin)"
+                                            >
+                                                <LuPencil size={14} />
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                         <div className="h-8 w-px bg-[var(--border)] hidden sm:block"></div>
                         <div className="hidden md:flex items-center gap-2 text-xs text-gray-400 font-medium">
@@ -437,8 +524,8 @@ export default function CustomizerPage() {
                         onClick={handleAddToCart}
                         disabled={elements.length === 0}
                         className={`group px-8 py-3.5 rounded-2xl font-black flex items-center gap-3 transition-all shadow-xl ${elements.length > 0
-                                ? "bg-[var(--accent)] text-[var(--foreground)] hover:scale-[1.05] active:scale-[0.95] shadow-[var(--accent)]/20"
-                                : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-50"
+                            ? "bg-[var(--accent)] text-[var(--foreground)] hover:scale-[1.05] active:scale-[0.95] shadow-[var(--accent)]/20"
+                            : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-50"
                             }`}
                     >
                         <LuShoppingBag size={20} className="group-hover:rotate-12 transition-transform" />
@@ -450,7 +537,7 @@ export default function CustomizerPage() {
             {showTooltip && (
                 <div className="fixed bottom-24 right-8 bg-[var(--accent)] text-[var(--foreground)] px-6 py-4 rounded-lg shadow-lg font-text font-semibold animate-slide-up flex items-center gap-3 z-50">
                     <LuCircleCheck className="h-4 w-4 text-[var(--accent)]" />
-                    ¡Taza agregada al carrito! ($3.500)
+                    ¡Taza agregada al carrito! (${basePrice.toLocaleString('es-AR')})
                 </div>
             )}
 

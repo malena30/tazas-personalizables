@@ -97,14 +97,7 @@ export default function Navbar() {
           <Link href="/customizer" className="hover:text-[var(--accent)] transition-colors">Personalizar</Link>
           {user && !user.is_admin && (
             <>
-              <Link href="/favorites" className="relative p-2 hover:text-[var(--accent)] rounded-xl transition-colors" title="Mis Favoritos">
-                <LuHeart size={20} className={favorites.length > 0 ? "fill-[var(--accent)] text-[var(--accent)]" : ""} />
-                {favorites.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[var(--accent)] text-[var(--background)] text-[8px] font-black w-4 h-4 flex items-center justify-center rounded-full">
-                    {favorites.length}
-                  </span>
-                )}
-              </Link>
+
               <Link href="/orders" className="hover:text-[var(--accent)] transition-colors">Mis Pedidos</Link>
               <Link href="/profile" className="hover:text-[var(--accent)] transition-colors">Mi Perfil</Link>
             </>
@@ -229,10 +222,7 @@ export default function Navbar() {
           </Link>
           {user && (
             <>
-              <Link href="/favorites" onClick={() => setOpen(false)} className="text-lg font-bold flex items-center gap-3">
-                <span className="w-8 h-8 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-lg flex items-center justify-center">❤️</span>
-                Mis Favoritos {favorites.length > 0 && `(${favorites.length})`}
-              </Link>
+
               <Link href="/orders" onClick={() => setOpen(false)} className="text-lg font-bold flex items-center gap-3">
                 <span className="w-8 h-8 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-lg flex items-center justify-center">📦</span>
                 Mis Pedidos

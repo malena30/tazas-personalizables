@@ -199,6 +199,29 @@ def init_db():
     except Exception as e:
         print(f"⚠️  Error en auto-migración: {e}")
 
+    # Asegurar que el producto "Taza Personalizada" existe
+    db = SessionLocal()
+    try:
+        custom_mug = db.query(Product).filter(Product.slug == "taza-personalizada").first()
+        if not custom_mug:
+            print("✨ Creando producto base: Taza Personalizada")
+            new_custom_mug = Product(
+                name="Taza Personalizada",
+                slug="taza-personalizada",
+                description="Tu propio diseño en una taza de cerámica premium.",
+                price=3500.0,
+                category="personalizado",
+                is_active=True,
+                stock=999
+            )
+            db.add(new_custom_mug)
+            db.commit()
+    except Exception as e:
+        print(f"⚠️ Error al crear producto base: {e}")
+        db.rollback()
+    finally:
+        db.close()
+
 try:
     init_db()
 except Exception as e:

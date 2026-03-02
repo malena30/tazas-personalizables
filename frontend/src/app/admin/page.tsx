@@ -37,6 +37,7 @@ import {
     LuInfo,
     LuArrowLeft,
     LuTrendingUp,
+    LuSave,
     LuX
 } from "react-icons/lu";
 
@@ -274,11 +275,10 @@ export default function AdminPanel() {
                             <button
                                 key={item.id}
                                 onClick={() => setActiveTab(item.id as any)}
-                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === item.id
-                                    ? "bg-purple-50 dark:bg-purple-900/30"
-                                    : "hover:bg-purple-50/15 dark:hover:bg-purple-900/10 hover:text-purple-600 dark:hover:text-purple-300"
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === item.id
+                                    ? "bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 shadow-sm"
+                                    : "text-[var(--foreground)] opacity-50 hover:opacity-100 hover:bg-purple-50/50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400"
                                     }`}
-                                style={activeTab === item.id ? { color: '#7C3AED', fontWeight: '700' } : { color: '#333333' }}
                             >
                                 <span className="text-lg">{item.icon}</span>
                                 {item.label}
@@ -290,9 +290,9 @@ export default function AdminPanel() {
                 <div className="mt-auto p-8 border-t border-[var(--border)]">
                     <button
                         onClick={() => router.push("/")}
-                        className="flex items-center gap-2 text-sm text-gray-500 hover:text-purple-600 transition-colors"
+                        className="flex items-center gap-2 text-xs font-bold text-[var(--foreground)] opacity-50 hover:opacity-100 hover:text-purple-600 transition-all"
                     >
-                        <LuArrowLeft size={12} />
+                        <LuArrowLeft size={14} />
                         Volver a la tienda
                     </button>
                 </div>
@@ -337,11 +337,11 @@ export default function AdminPanel() {
                                         +12%
                                     </span>
                                 </div>
-                                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Ventas</div>
+                                <div className="text-sm font-black text-[var(--foreground)] opacity-50">Total Ventas</div>
                                 <div className="text-3xl font-black text-[var(--foreground)] mt-1">
                                     ${stats.total_sales.toLocaleString('es-AR')}
                                 </div>
-                                <div className="text-xs text-gray-400 mt-4">
+                                <div className="text-xs text-[var(--foreground)] opacity-40 mt-4">
                                     De {stats.paid_orders} órdenes pagadas
                                 </div>
                             </div>
@@ -374,11 +374,11 @@ export default function AdminPanel() {
                                         <LuUsers size={20} />
                                     </div>
                                 </div>
-                                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Usuarios</div>
+                                <div className="text-sm font-black text-[var(--foreground)] opacity-50">Usuarios</div>
                                 <div className="text-3xl font-black text-[var(--foreground)] mt-1">
                                     {stats.total_users}
                                 </div>
-                                <div className="text-xs text-gray-400 mt-4">
+                                <div className="text-xs text-[var(--foreground)] opacity-40 mt-4">
                                     Clientes registrados
                                 </div>
                             </div>
@@ -390,12 +390,12 @@ export default function AdminPanel() {
                                         <LuWand size={20} />
                                     </div>
                                 </div>
-                                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Diseños</div>
+                                <div className="text-sm font-black text-[var(--foreground)] opacity-50">Órdenes</div>
                                 <div className="text-3xl font-black text-[var(--foreground)] mt-1">
-                                    {stats.total_designs}
+                                    {stats.total_orders}
                                 </div>
-                                <div className="text-xs text-gray-400 mt-4">
-                                    Personalizaciones creadas
+                                <div className="text-xs text-[var(--foreground)] opacity-40 mt-4">
+                                    {stats.pending_orders} pendientes de pago
                                 </div>
                             </div>
                         </div>
@@ -497,7 +497,7 @@ export default function AdminPanel() {
                                                         {order.status === 'paid' ? 'Pagado' : order.status === 'pending' ? 'Pendiente' : 'Fallido'}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-black dark:text-gray-400">
+                                                <td className="px-6 py-4 text-sm text-[var(--foreground)] opacity-70">
                                                     {new Date(order.created_at).toLocaleDateString()}
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
@@ -540,16 +540,16 @@ export default function AdminPanel() {
                                                 <div className="w-10 h-10 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold">
                                                     {u.username.substring(0, 2).toUpperCase()}
                                                 </div>
-                                                <span style={{ color: '#404040', fontWeight: '700' }} className="text-sm">{u.username}</span>
+                                                <span className="text-sm font-bold text-[var(--foreground)] opacity-90">{u.username}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4"><span style={{ color: '#000000', fontWeight: '600', opacity: 1 }} className="text-sm">{u.email}</span></td>
+                                        <td className="px-6 py-4"><span className="text-sm font-semibold text-[var(--foreground)] opacity-80">{u.email}</span></td>
                                         <td className="px-6 py-4">
                                             <div className="flex gap-4 text-xs">
-                                                <span className="flex items-center gap-1 text-black dark:text-gray-300">
+                                                <span className="flex items-center gap-1 text-[var(--foreground)] opacity-70">
                                                     <LuShoppingBag size={10} /> {u.order_count}
                                                 </span>
-                                                <span className="flex items-center gap-1 text-black dark:text-gray-300">
+                                                <span className="flex items-center gap-1 text-[var(--foreground)] opacity-70">
                                                     <LuWand size={10} /> {u.design_count}
                                                 </span>
                                             </div>
@@ -562,7 +562,7 @@ export default function AdminPanel() {
                                                 {u.is_admin ? "Administrador" : "Cliente"}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-black dark:text-gray-400">
+                                        <td className="px-6 py-4 text-sm text-[var(--foreground)] opacity-70">
                                             {new Date(u.created_at).toLocaleDateString()}
                                         </td>
                                     </tr>
@@ -617,61 +617,63 @@ export default function AdminPanel() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[var(--border)]">
-                                    {products.map((p) => (
-                                        <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group">
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 bg-gray-100 dark:bg-zinc-800 rounded-xl overflow-hidden flex-shrink-0 border border-[var(--border)] relative">
-                                                        {p.image_url ? (
-                                                            <Image src={p.image_url} alt={p.name} fill className="object-contain" />
-                                                        ) : (
-                                                            <div className="w-full h-full flex items-center justify-center text-xl">☕</div>
-                                                        )}
+                                    {products
+                                        .filter(p => p.slug !== 'taza-personalizada')
+                                        .map((p) => (
+                                            <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group">
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 bg-gray-100 dark:bg-zinc-800 rounded-xl overflow-hidden flex-shrink-0 border border-[var(--border)] relative">
+                                                            {p.image_url ? (
+                                                                <Image src={p.image_url} alt={p.name} fill className="object-contain" />
+                                                            ) : (
+                                                                <div className="w-full h-full flex items-center justify-center text-xl">☕</div>
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm font-bold text-[var(--foreground)]">{p.name}</p>
+                                                            <p className="text-xs text-[var(--foreground)] opacity-60 truncate max-w-[200px]">{p.description || 'Sin descripción'}</p>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <p className="text-sm font-bold text-white">{p.name}</p>
-                                                        <p className="text-xs text-white/50 truncate max-w-[200px]">{p.description || 'Sin descripción'}</p>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className="text-sm font-black text-[var(--foreground)]">
+                                                        ${p.price.toLocaleString('es-AR')}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className={`text-sm font-bold ${p.stock && p.stock < 10 ? 'text-red-400' : 'text-[var(--foreground)]'}`}>
+                                                        {p.stock} uds.
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${p.is_active
+                                                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                                                        : "bg-gray-100 text-black dark:bg-gray-800 dark:text-gray-400"
+                                                        }`}>
+                                                        {p.is_active ? "Activo" : "Inactivo"}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-right">
+                                                    <div className="flex justify-end gap-2">
+                                                        <button
+                                                            onClick={() => openEditModal(p)}
+                                                            className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
+                                                            title="Editar"
+                                                        >
+                                                            <LuPencil size={16} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteProduct(p.id)}
+                                                            className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
+                                                            title="Eliminar"
+                                                        >
+                                                            <LuTrash2 size={16} />
+                                                        </button>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className="text-sm font-black text-white">
-                                                    ${p.price.toLocaleString('es-AR')}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className={`text-sm font-bold ${p.stock && p.stock < 10 ? 'text-red-400' : 'text-white'}`}>
-                                                    {p.stock} uds.
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${p.is_active
-                                                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                                                    : "bg-gray-100 text-black dark:bg-gray-800 dark:text-gray-400"
-                                                    }`}>
-                                                    {p.is_active ? "Activo" : "Inactivo"}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-right">
-                                                <div className="flex justify-end gap-2">
-                                                    <button
-                                                        onClick={() => openEditModal(p)}
-                                                        className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
-                                                        title="Editar"
-                                                    >
-                                                        <LuPencil size={16} />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDeleteProduct(p.id)}
-                                                        className="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
-                                                        title="Eliminar"
-                                                    >
-                                                        <LuTrash2 size={16} />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                                </td>
+                                            </tr>
+                                        ))}
                                 </tbody>
                             </table>
                         </div>

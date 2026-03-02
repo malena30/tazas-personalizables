@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
     updateUserProfile,
     getUserStats,
@@ -31,19 +31,37 @@ import {
     LuMail,
     LuPhone,
     LuInfo,
-    LuCheck
+    LuCheck,
+    LuHeart
 } from "react-icons/lu";
 import Image from "next/image";
+import ProductCard from "@/components/ProductCard";
+import { useFavoriteStore } from "@/store/favoriteStore";
+import { useCartStore } from "@/store/cartStore";
+import { getApiUrl } from "@/lib/api";
 import ProfileSkeleton from "@/components/ProfileSkeleton";
 import Skeleton from "@/components/Skeleton";
 
 export default function ProfilePage() {
     const { user, refreshUser } = useAuth();
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<"info" | "addresses" | "stats" | "designs" | "orders">("info");
+    const searchParams = useSearchParams();
+    const tabParam = searchParams.get("tab") as any;
+    const [activeTab, setActiveTab] = useState<"info" | "addresses" | "stats" | "designs" | "orders" | "favorites">("info");
     const [loading, setLoading] = useState(false);
+    const [favoriteProducts, setFavoriteProducts] = useState<any[]>([]);
+    const [favoritesLoading, setFavoritesLoading] = useState(false);
+    const { token } = useAuth();
+    const { favorites } = useFavoriteStore();
+    const addToCart = useCartStore((state) => state.addToCart);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+
+    useEffect(() => {
+        if (tabParam && ["info", "addresses", "stats", "designs", "orders", "favorites"].includes(tabParam)) {
+            setActiveTab(tabParam);
+        }
+    }, [tabParam]);
 
     // Personal Info
     const [email, setEmail] = useState("");
@@ -85,7 +103,28 @@ export default function ProfilePage() {
         loadStats();
         loadOrders();
         loadDesigns();
-    }, [user, router]);
+        loadFavoriteProducts();
+    }, [user, router, token]);
+
+    const loadFavoriteProducts = async () => {
+        if (!token) return;
+        try {
+            setFavoritesLoading(true);
+            const res = await fetch(`${getApiUrl()}/api/favorites`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setFavoriteProducts(data);
+            }
+        } catch (error) {
+            console.error("Error loading favorite products:", error);
+        } finally {
+            setFavoritesLoading(false);
+        }
+    };
 
     const loadDesigns = async () => {
         try {
@@ -223,6 +262,7 @@ export default function ProfilePage() {
         { id: "addresses", label: "Direcciones", icon: LuMapPin, count: addresses.length },
         { id: "stats", label: "Estadísticas", icon: LuActivity },
         { id: "designs", label: "Mis Diseños", icon: LuPalette, count: designs.length },
+        { id: "favorites", label: "Mis Favoritos", icon: LuHeart, count: favoriteProducts.length },
         { id: "orders", label: "Mis Pedidos", icon: LuShoppingBag, count: orders.length },
     ];
 
@@ -234,7 +274,7 @@ export default function ProfilePage() {
                     <h1 className="text-4xl font-bold text-[var(--foreground)] tracking-tight">
                         Mi Perfil
                     </h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-2">
+                    <p className="text-[var(--foreground)] opacity-60 mt-2 font-medium">
                         Gestiona tu cuenta, direcciones y revisa tus creaciones.
                     </p>
                 </div>
@@ -250,7 +290,7 @@ export default function ProfilePage() {
                                         onClick={() => setActiveTab(item.id as any)}
                                         className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all whitespace-nowrap ${activeTab === item.id
                                             ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-                                            : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-zinc-800"
+                                            : "text-[var(--foreground)] opacity-50 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:opacity-100"
                                             }`}
                                     >
                                         <div className="flex items-center gap-3">
@@ -258,9 +298,9 @@ export default function ProfilePage() {
                                             <span className="lg:inline">{item.label}</span>
                                         </div>
                                         {item.count !== undefined && (
-                                            <span className={`ml-3 px-2 py-0.5 rounded-lg text-[10px] ${activeTab === item.id
+                                            <span className={`ml-3 px-2 py-0.5 rounded-lg text-[10px] font-bold ${activeTab === item.id
                                                 ? "bg-white/20 text-white"
-                                                : "bg-gray-100 dark:bg-zinc-800 text-gray-500"
+                                                : "bg-[var(--foreground)]/10 text-[var(--foreground)] opacity-50"
                                                 }`}>
                                                 {item.count}
                                             </span>
@@ -337,7 +377,7 @@ export default function ProfilePage() {
                                         </div>
                                         <div className="text-center md:text-left">
                                             <h3 className="text-2xl font-black text-[var(--foreground)]">{user.username}</h3>
-                                            <p className="text-gray-500 dark:text-gray-400 font-medium">{user.email}</p>
+                                            <p className="text-[var(--foreground)] opacity-60 font-medium">{user.email}</p>
                                             <div className="flex items-center gap-2 mt-3 justify-center md:justify-start">
                                                 <span className="px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-blue-100 dark:border-blue-900/30">
                                                     Cliente Premium
@@ -350,7 +390,7 @@ export default function ProfilePage() {
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             {/* Email */}
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                                                <label className="text-xs font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest ml-1">
                                                     Email
                                                 </label>
                                                 <div className="relative">
@@ -368,7 +408,7 @@ export default function ProfilePage() {
 
                                             {/* Phone */}
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                                                <label className="text-xs font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest ml-1">
                                                     Teléfono
                                                 </label>
                                                 <div className="relative">
@@ -399,7 +439,7 @@ export default function ProfilePage() {
 
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                                                    <label className="text-xs font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest ml-1">
                                                         Contraseña Actual
                                                     </label>
                                                     <input
@@ -411,7 +451,7 @@ export default function ProfilePage() {
                                                 </div>
 
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                                                    <label className="text-xs font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest ml-1">
                                                         Nueva Contraseña
                                                     </label>
                                                     <input
@@ -423,7 +463,7 @@ export default function ProfilePage() {
                                                 </div>
 
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                                                    <label className="text-xs font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest ml-1">
                                                         Confirmar Nueva
                                                     </label>
                                                     <input
@@ -466,7 +506,7 @@ export default function ProfilePage() {
                                         <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
                                             No tienes órdenes todavía
                                         </h3>
-                                        <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto">
+                                        <p className="text-[var(--foreground)] opacity-60 mb-8 max-w-sm mx-auto font-medium">
                                             ¡Crea tu primer diseño y personaliza tu taza hoy mismo!
                                         </p>
                                         <button
@@ -511,7 +551,7 @@ export default function ProfilePage() {
                                                             <p className="text-sm font-bold text-[var(--foreground)]">
                                                                 Orden #{order.id.substring(0, 8)}
                                                             </p>
-                                                            <p className="text-xs text-gray-500">
+                                                            <p className="text-xs text-[var(--foreground)] opacity-50 font-medium">
                                                                 {new Date(order.created_at).toLocaleDateString()} • {order.items.length} items
                                                             </p>
                                                         </div>
@@ -570,7 +610,7 @@ export default function ProfilePage() {
                                                 >
                                                     <div className="flex-1">
                                                         <p className="font-bold text-[var(--foreground)] text-sm">{addr.name}</p>
-                                                        <p className="text-xs text-gray-500 mt-2 leading-relaxed">
+                                                        <p className="text-xs text-[var(--foreground)] opacity-60 mt-2 leading-relaxed font-medium">
                                                             {addr.street}<br />
                                                             {addr.city}, {addr.state}<br />
                                                             CP: {addr.postal_code}
@@ -856,7 +896,71 @@ export default function ProfilePage() {
                                 )}
                             </div>
                         )}
+                        {/* Favorites Tab */}
+                        {activeTab === "favorites" && (
+                            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
+                                        <LuHeart size={20} />
+                                    </div>
+                                    <h2 className="text-xl font-bold text-[var(--foreground)]">
+                                        Mis Favoritos
+                                    </h2>
+                                </div>
+
+                                {favoritesLoading ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {[1, 2, 3].map((i) => (
+                                            <div key={i} className="h-64 bg-gray-100 dark:bg-zinc-800 animate-pulse rounded-3xl" />
+                                        ))}
+                                    </div>
+                                ) : favoriteProducts.length === 0 ? (
+                                    <div className="bg-[var(--cream)] dark:bg-zinc-900 p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
+                                        <div className="w-20 h-20 bg-gray-50 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                                            <LuHeart size={32} className="text-gray-300" />
+                                        </div>
+                                        <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
+                                            Tu lista de favoritos está vacía
+                                        </h3>
+                                        <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto">
+                                            ¿Aún no encontraste tu taza ideal? Explorá nuestras colecciones y marcá con un ❤️ lo que más te guste.
+                                        </p>
+                                        <button
+                                            onClick={() => router.push("/products")}
+                                            className="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/25"
+                                        >
+                                            Explorar Tienda
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {favoriteProducts.map((product) => (
+                                            <ProductCard
+                                                key={product.id}
+                                                id={product.id}
+                                                slug={product.slug}
+                                                name={product.name}
+                                                price={product.price}
+                                                image={product.image_url}
+                                                description={product.description || ""}
+                                                image_fit={product.image_fit}
+                                                image_scale={product.image_scale}
+                                                onAddToCart={() => addToCart({
+                                                    id: product.id,
+                                                    name: product.name,
+                                                    description: product.description || "",
+                                                    price: product.price,
+                                                    image: product.image_url || "",
+                                                    quantity: 1
+                                                })}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </main>
+
                 </div>
             </div>
         </div>
