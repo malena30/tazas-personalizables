@@ -1,6 +1,7 @@
 "use client";
 
 import { useCheckout } from "@/context/CheckoutContext";
+import { LuCreditCard, LuBuilding2, LuBanknote, LuCheck } from "react-icons/lu";
 
 export default function PaymentMethods() {
     const { payment, setPayment } = useCheckout();
@@ -14,57 +15,75 @@ export default function PaymentMethods() {
             id: "mercadopago",
             title: "Mercado Pago",
             description: "Tarjetas de crédito, débito y dinero en cuenta.",
-            icon: "💳",
-            featured: true
+            icon: <LuCreditCard size={28} />,
+            featured: true,
+            color: "blue"
         },
         {
             id: "transferencia",
             title: "Transferencia Bancaria",
             description: "Pagá desde tu homebanking. Te enviamos los datos.",
-            icon: "🏦",
-            featured: false
+            icon: <LuBuilding2 size={28} />,
+            featured: false,
+            color: "amber"
         },
         {
             id: "efectivo",
             title: "Efectivo / Rapipago",
             description: "10% de descuento pagando en efectivo.",
-            icon: "💵",
-            featured: false
+            icon: <LuBanknote size={28} />,
+            featured: false,
+            color: "green"
         }
     ];
 
     return (
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-5">
             {methods.map((m) => (
                 <button
                     key={m.id}
                     onClick={() => handleSelect(m.id)}
-                    className={`flex items-center p-8 rounded-[2rem] border-2 text-left transition-all duration-500 group relative overflow-hidden ${payment === m.id
-                        ? "border-[var(--accent)] bg-[var(--cream)] shadow-lg shadow-black/5"
-                        : "border-gray-100 dark:border-zinc-800 hover:border-[var(--accent)]/30 bg-[var(--cream)] dark:bg-zinc-900"
+                    className={`flex items-center p-6 sm:p-8 rounded-[2.5rem] border-2 text-left transition-all duration-500 group relative overflow-hidden ${payment === m.id
+                        ? "border-[var(--accent)] bg-white shadow-[0_20px_50px_rgba(0,0,0,0.08)] scale-[1.02]"
+                        : "border-[var(--border)] bg-white/50 hover:border-[var(--accent)]/30 hover:bg-white transition-all shadow-sm"
                         }`}
                 >
-                    <div className={`flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mr-6 transition-transform duration-500 group-hover:scale-110 ${payment === m.id ? "bg-[var(--accent)] text-white shadow-lg shadow-black/10" : "bg-gray-50 dark:bg-zinc-800 text-gray-400"
+                    {/* Decorative Background Element */}
+                    {payment === m.id && (
+                        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-32 h-32 bg-[var(--accent)]/5 rounded-full blur-3xl animate-pulse" />
+                    )}
+
+                    <div className={`flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 ${payment === m.id
+                        ? "bg-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/20 rotate-3"
+                        : "bg-gray-50 text-gray-400 group-hover:text-gray-600"
                         }`}>
                         {m.icon}
                     </div>
 
-                    <div className="flex-1">
+                    <div className="flex-1 ml-6">
                         <div className="flex items-center gap-3">
-                            <h3 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">{m.title}</h3>
+                            <h3 className={`text-lg font-black tracking-tight transition-colors ${payment === m.id ? "text-[var(--foreground)]" : "text-gray-500"}`}>
+                                {m.title}
+                            </h3>
                             {m.featured && (
-                                <span className="text-[10px] font-black bg-[var(--accent)] text-white px-3 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-black/10">
+                                <span className="text-[9px] font-black bg-[var(--accent)] text-white px-3 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-[var(--accent)]/20">
                                     Recomendado
                                 </span>
                             )}
                         </div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">{m.description}</p>
+                        <p className={`text-xs font-bold mt-1.5 leading-relaxed transition-colors ${payment === m.id ? "text-gray-600" : "text-gray-400"}`}>
+                            {m.description}
+                        </p>
                     </div>
 
-                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-500 ${payment === m.id ? "border-[var(--accent)] bg-[var(--accent)] shadow-lg shadow-black/10" : "border-gray-200 dark:border-zinc-700"
+                    <div className={`w-10 h-10 rounded-2xl border-2 flex items-center justify-center transition-all duration-500 ${payment === m.id
+                        ? "border-[var(--accent)] bg-[var(--accent)] shadow-lg shadow-[var(--accent)]/20 rotate-12"
+                        : "border-gray-100 bg-white"
                         }`}>
-                        {payment === m.id && (
-                            <div className="w-2.5 h-2.5 rounded-full bg-white animate-in zoom-in duration-300" />
+                        {payment === m.id ? (
+                            <LuCheck size={24} className="text-white animate-in zoom-in duration-300" />
+                        ) : (
+                            <div className="w-3 h-3 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-colors" />
                         )}
                     </div>
                 </button>

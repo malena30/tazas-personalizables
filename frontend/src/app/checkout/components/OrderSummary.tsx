@@ -6,25 +6,27 @@ import { useCheckout } from "@/context/CheckoutContext";
 import { useCartStore } from "@/store/cartStore";
 import { createOrder } from "@/lib/api";
 import Image from "next/image";
-import { LuShoppingBag, LuArrowRight, LuLock, LuShieldCheck } from "react-icons/lu";
+import { LuShoppingBag, LuArrowRight, LuShieldCheck, LuInfo } from "react-icons/lu";
 
 export default function OrderSummary() {
     const { subtotal, shipping, total, buyer, payment } = useCheckout();
     const { cart } = useCartStore();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleCheckout = async () => {
+        setError(null);
         if (!cart || cart.length === 0) {
-            alert("El carrito está vacío");
+            setError("El carrito está vacío");
             return;
         }
         if (!buyer.name || !buyer.email || !buyer.address) {
-            alert("Por favor completa los datos de envío");
+            setError("Por favor completa los datos de envío");
             return;
         }
         if (!payment) {
-            alert("Por favor selecciona un método de pago");
+            setError("Por favor selecciona un método de pago");
             return;
         }
 
@@ -49,100 +51,122 @@ export default function OrderSummary() {
             } else {
                 router.push(`/checkout/success?orderId=${order.id}`);
             }
-        } catch (error: any) {
-            alert(error.message || "Hubo un error al procesar tu pedido");
+        } catch (err: any) {
+            setError(err.message || "Hubo un error al procesar tu pedido");
         } finally {
             setLoading(false);
         }
     };
 
+    const finalTotal = payment === 'efectivo' ? total * 0.9 : total;
+
     return (
-        <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] shadow-2xl shadow-black/5 border border-[var(--border)] overflow-hidden">
-            <div className="p-10">
-                <h2 className="text-2xl font-bold text-[var(--foreground)] mb-8">Resumen</h2>
+        <div className="bg-white/70 backdrop-blur-xl rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.05)] border border-white overflow-hidden animate-in fade-in slide-in-from-right-4 duration-700">
+            <div className="p-8 sm:p-10">
+                <div className="flex items-center gap-4 mb-10">
+                    <div className="p-3 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl">
+                        <LuShoppingBag size={24} />
+                    </div>
+                    <h2 className="text-2xl font-black text-[var(--foreground)] tracking-tight">Tu Pedido</h2>
+                </div>
 
                 {/* Items List */}
-                <div className="space-y-6 mb-10 max-h-[400px] overflow-y-auto pr-4 custom-scrollbar">
+                <div className="space-y-6 mb-10 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                     {cart.map((item) => (
                         <div key={item.id} className="flex gap-5 group">
-                            <div className="relative w-20 h-20 rounded-2xl bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] overflow-hidden flex-shrink-0">
+                            <div className="relative w-20 h-20 rounded-[1.5rem] bg-gray-50 border border-gray-100 overflow-hidden flex-shrink-0 shadow-sm transition-transform group-hover:scale-105">
                                 {item.image ? (
-                                    <Image src={item.image} alt={item.name} fill className="object-contain group-hover:scale-110 transition-transform duration-500" />
+                                    <Image src={item.image} alt={item.name} fill className="object-contain" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-2xl">☕</div>
                                 )}
-                                <span className="absolute -top-1 -right-1 w-6 h-6 bg-[var(--accent)] text-white text-[10px] font-black rounded-lg flex items-center justify-center border-2 border-white dark:border-zinc-900 shadow-lg">
+                                <span className="absolute -top-1 -right-1 w-6 h-6 bg-[var(--foreground)] text-white text-[10px] font-black rounded-xl flex items-center justify-center border-2 border-white shadow-lg">
                                     {item.quantity}
                                 </span>
                             </div>
-                            <div className="flex-1 min-w-0 py-1">
-                                <h3 className="text-sm font-bold text-[var(--foreground)] truncate group-hover:text-[var(--accent)] transition-colors">{item.name}</h3>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                            <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                <h3 className="text-sm font-black text-gray-900 truncate leading-tight group-hover:text-[var(--accent)] transition-colors">
+                                    {item.name}
+                                </h3>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">
                                     ${item.price.toLocaleString('es-AR')} c/u
                                 </p>
                             </div>
-                            <div className="text-sm font-black text-[var(--foreground)] py-1">
+                            <div className="text-sm font-black text-gray-900 flex flex-col justify-center">
                                 ${(item.price * item.quantity).toLocaleString('es-AR')}
                             </div>
                         </div>
                     ))}
                 </div>
 
-                {/* Totals */}
-                <div className="space-y-4 pt-8 border-t border-[var(--border)]">
-                    <div className="flex justify-between items-center text-sm">
-                        <span className="text-gray-500 dark:text-gray-400 font-medium">Subtotal</span>
-                        <span className="font-bold text-[var(--foreground)]">${subtotal.toLocaleString('es-AR')}</span>
+                {/* Breakdown */}
+                <div className="space-y-4 pt-8 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-xs font-bold">
+                        <span className="text-gray-400 uppercase tracking-widest">Subtotal</span>
+                        <span className="text-gray-900">${subtotal.toLocaleString('es-AR')}</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm">
-                        <span className="text-gray-500 dark:text-gray-400 font-medium">Envío</span>
-                        <span className={`font-bold ${shipping.cost > 0 ? 'text-[var(--accent)]' : 'text-gray-300'}`}>
-                            {shipping.cost > 0 ? `$${shipping.cost.toLocaleString('es-AR')}` : (shipping.method === 'correo' ? 'Calculando...' : 'Gratis')}
+
+                    <div className="flex justify-between items-center text-xs font-bold">
+                        <span className="text-gray-400 uppercase tracking-widest">Envío</span>
+                        <span className={shipping.cost > 0 ? 'text-[var(--accent)]' : 'text-green-500'}>
+                            {shipping.cost > 0 ? `$${shipping.cost.toLocaleString('es-AR')}` : '¡GRATIS!'}
                         </span>
                     </div>
 
                     {payment === 'efectivo' && (
-                        <div className="flex justify-between items-center text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/10 p-3 rounded-xl border border-green-100 dark:border-green-900/20">
-                            <span className="font-bold uppercase text-[10px] tracking-widest">Descuento Efectivo (10%)</span>
-                            <span className="font-black">-${(subtotal * 0.1).toLocaleString('es-AR')}</span>
+                        <div className="flex justify-between items-center text-xs font-black text-green-500 bg-green-50 px-4 py-3 rounded-2xl border border-green-100 animate-in zoom-in-95">
+                            <span className="uppercase tracking-widest">Descuento Efectivo (10%)</span>
+                            <span>-${(subtotal * 0.1).toLocaleString('es-AR')}</span>
                         </div>
                     )}
 
-                    <div className="flex justify-between items-center pt-6 border-t border-[var(--border)] mt-4">
-                        <span className="text-xl font-bold text-[var(--foreground)]">Total Final</span>
-                        <div className="text-right">
-                            <span className="block text-3xl font-black text-[var(--accent)]">
-                                ${(payment === 'efectivo' ? total * 0.9 : total).toLocaleString('es-AR')}
-                            </span>
-                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">IVA Incluido</span>
+                    <div className="pt-6 border-t border-gray-100 mt-6 group">
+                        <div className="flex justify-between items-end">
+                            <div>
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-1">Total Final</span>
+                                <span className="text-4xl font-black text-[var(--foreground)] tracking-tighter leading-none group-hover:text-[var(--accent)] transition-colors">
+                                    ${finalTotal.toLocaleString('es-AR')}
+                                </span>
+                            </div>
+                            <div className="text-right pb-1">
+                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">IVA Incluido</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                {/* Error Box */}
+                {error && (
+                    <div className="mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-3 text-red-500 animate-in shake-1 duration-500">
+                        <LuInfo size={20} className="shrink-0" />
+                        <p className="text-xs font-bold uppercase tracking-wide leading-tight">{error}</p>
+                    </div>
+                )}
+
                 <button
                     onClick={handleCheckout}
                     disabled={loading || cart.length === 0}
-                    className={`mt-10 w-full py-5 rounded-[1.5rem] font-bold text-xl shadow-xl transition-all flex justify-center items-center gap-3 ${loading || cart.length === 0
-                        ? 'bg-gray-100 dark:bg-zinc-800 text-gray-400 cursor-not-allowed shadow-none'
-                        : 'bg-[var(--accent)] text-white hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] shadow-black/5'
+                    className={`mt-8 w-full py-5 rounded-[2rem] font-black text-lg transition-all flex justify-center items-center gap-3 shadow-2xl relative overflow-hidden group ${loading || cart.length === 0
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-[var(--foreground)] text-white hover:scale-[1.02] active:scale-[0.98] shadow-black/10'
                         }`}
                 >
                     {loading ? (
                         <>
-                            <span className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin"></span>
-                            <span>Procesando...</span>
+                            <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                            <span className="uppercase tracking-widest">Procesando...</span>
                         </>
                     ) : (
                         <>
-                            <span>Confirmar Compra</span>
-                            <LuArrowRight className="w-6 h-6" />
+                            <span className="uppercase tracking-[0.1em]">Finalizar Compra</span>
+                            <LuArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                         </>
                     )}
                 </button>
 
-                <div className="flex items-center justify-center gap-2 mt-8 text-gray-400">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                    <p className="text-[10px] font-bold uppercase tracking-widest">Pago Seguro Encriptado</p>
+                <div className="mt-8 flex items-center justify-center gap-3 py-4 bg-gray-50/50 rounded-2xl">
+                    <LuShieldCheck className="text-blue-500" size={18} />
+                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Pago 100% Protegido</span>
                 </div>
             </div>
         </div>
