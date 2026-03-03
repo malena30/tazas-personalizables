@@ -43,7 +43,7 @@ import ProfileSkeleton from "@/components/ProfileSkeleton";
 import Skeleton from "@/components/Skeleton";
 
 export default function ProfilePage() {
-    const { user, refreshUser } = useAuth();
+    const { user, refreshUser, loading: authLoading } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
     const tabParam = searchParams.get("tab") as any;
@@ -89,6 +89,8 @@ export default function ProfilePage() {
     const [designs, setDesigns] = useState<Design[]>([]);
 
     useEffect(() => {
+        if (authLoading) return;
+
         if (!user) {
             router.push("/login?redirect=/profile");
             return;

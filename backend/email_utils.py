@@ -114,7 +114,7 @@ def get_order_confirmation_template(order_id, total_amount):
                 </div>
 
                 <div style="text-align: center;">
-                    <a href="{os.getenv('FRONTEND_URL', 'https://tazas-personalizables.vercel.app')}/profile" 
+                    <a href="{os.getenv('FRONTEND_URL', 'https://tazas-personalizables.vercel.app')}/orders" 
                        style="background-color: #1a1a1a; color: white; padding: 14px 28px; text-decoration: none; border-radius: 12px; font-weight: 900; display: inline-block; font-size: 13px; text-transform: uppercase;">
                         Ver mi pedido
                     </a>

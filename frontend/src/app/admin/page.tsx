@@ -42,7 +42,7 @@ import {
 } from "react-icons/lu";
 
 export default function AdminPanel() {
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<"dashboard" | "orders" | "users" | "products">("dashboard");
     const [loading, setLoading] = useState(true);
@@ -82,6 +82,8 @@ export default function AdminPanel() {
     });
 
     useEffect(() => {
+        if (authLoading) return;
+
         if (!user) {
             router.push("/login?redirect=/admin");
             return;

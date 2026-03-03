@@ -15,10 +15,16 @@ function LoginForm() {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
-    const { login, register } = useAuth();
-    const router = useRouter();
     const searchParams = useSearchParams();
     const redirectPath = searchParams.get('redirect') || '/';
+    const { login, register, user, loading: authLoading } = useAuth();
+
+    // Redirigir si ya está autenticado
+    useEffect(() => {
+        if (!authLoading && user) {
+            router.push(redirectPath);
+        }
+    }, [user, authLoading, router, redirectPath]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -217,7 +223,12 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4 pt-20">
             <div className="max-w-md w-full">
-                <Suspense fallback={<div className="text-center text-[var(--foreground)]">Cargando...</div>}>
+                <Suspense fallback={
+                    <div className="flex flex-col items-center justify-center min-h-[400px]">
+                        <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mb-4" />
+                        <p className="text-[var(--foreground)]/50 font-medium animate-pulse">Comprobando sesión...</p>
+                    </div>
+                }>
                     <LoginForm />
                 </Suspense>
             </div>
