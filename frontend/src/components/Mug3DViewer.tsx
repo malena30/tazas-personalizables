@@ -439,23 +439,26 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
     }));
 
     return (
-        <div className={`flex flex-col ${isExpanded ? 'h-full w-full' : 'lg:flex-row lg:gap-8'} gap-3 items-center justify-center w-full max-w-full`}>
+        <div className={`flex flex-col ${isExpanded ? 'h-full w-full' : 'lg:flex-row lg:gap-8 h-full'} gap-3 items-center justify-center w-full max-w-full p-4 lg:p-8`}>
+
             {/* Canvas 2D para el diseño */}
             {showCanvas && (
                 <div
                     className={`bg-white rounded-lg shadow-lg border-2 border-dashed border-gray-300 relative flex-shrink-0 transition-all duration-300 group/viewer`}
                     style={{
                         width: isExpanded ? Math.min(500, typeof window !== 'undefined' ? window.innerWidth * 0.4 : 500) : Math.min(designWidth, typeof window !== 'undefined' ? window.innerWidth - 100 : designWidth),
-                        height: isExpanded ? Math.min(600, typeof window !== 'undefined' ? window.innerHeight * 0.7 : 600) : designHeight
+                        height: isExpanded ? '100%' : '100%',
+                        maxHeight: isExpanded ? 'none' : '650px'
                     }}
                 >
+
                     <div className="absolute top-2 left-2 text-xs text-gray-500 font-semibold z-20">
                         ✏️ Área de diseño
                     </div>
 
                     <Stage
                         width={isExpanded ? Math.min(500, typeof window !== 'undefined' ? window.innerWidth * 0.4 : 500) : designWidth}
-                        height={isExpanded ? Math.min(600, typeof window !== 'undefined' ? window.innerHeight * 0.7 : 600) : designHeight}
+                        height={isExpanded ? 600 : 540} // Aumentado para llenar más espacio
                         ref={konvaStageRef}
                         onMouseDown={(e: any) => {
                             if (e.target === e.target.getStage()) {
@@ -512,10 +515,12 @@ const Mug3DViewer = forwardRef(function Mug3DViewer(
                 className={`bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-inner flex-shrink-0 transition-all duration-300 relative group/3dviewer ${!showCanvas ? 'w-full h-full rounded-none' : ''}`}
                 style={showCanvas ? {
                     width: isExpanded ? Math.min(600, typeof window !== 'undefined' ? window.innerWidth * 0.5 : 600) : Math.min(500, typeof window !== 'undefined' ? window.innerWidth - 100 : 500),
-                    height: isExpanded ? Math.min(600, typeof window !== 'undefined' ? window.innerHeight * 0.7 : 600) : 400,
+                    height: '100%',
+                    maxHeight: '650px',
                     minHeight: '400px'
                 } : { width: '100%', height: '100%', minHeight: '500px' }}
             >
+
                 {/* Botón de Expandir/Contraer (dentro del visor 3D) */}
                 {onToggleExpand && (
                     <button

@@ -152,7 +152,8 @@ export default function Toolbar({
     return (
         <div className="flex h-full w-full max-w-[450px] border-r border-[var(--border)] overflow-hidden bg-[var(--background)]">
             {/* Sidebar de iconos - Izquierda */}
-            <aside className="w-20 border-r border-[var(--border)] flex flex-col items-center py-6 gap-6 bg-white shrink-0">
+            <aside className="w-20 border-r border-[var(--border)] flex flex-col items-center py-4 gap-2 bg-white shrink-0 overflow-y-auto h-full scrollbar-hidden">
+
                 {tabs.map((item) => (
                     <button
                         key={item.id}
@@ -618,8 +619,12 @@ export default function Toolbar({
                                     <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-4 ml-1">
                                         Ilustraciones Premium
                                     </h3>
-                                    <div className="grid grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-3 gap-2">
                                         {[
+                                            { id: 'minimalist-coffee', url: '/stickers/kyathos_collection/coffee.png?v=3', name: 'Café Minimal' },
+                                            { id: 'morning-sun', url: '/stickers/kyathos_collection/sun.png?v=3', name: 'Sol de Mañana' },
+                                            { id: 'abstract-stain', url: '/stickers/kyathos_collection/stain.png?v=3', name: 'Mancha Artística' },
+                                            { id: 'cozy-books', url: '/stickers/kyathos_collection/books.png?v=3', name: 'Libros y Café' },
                                             { id: 'cat', url: '/stickers/cat.png', name: 'Gatito' },
                                             { id: 'mug', url: '/stickers/mug.png', name: 'Taza' },
                                             { id: 'heart', url: '/stickers/heart.png', name: 'Corazón' },
@@ -628,7 +633,7 @@ export default function Toolbar({
                                             <button
                                                 key={sticker.id}
                                                 onClick={() => onAddImage(sticker.url)}
-                                                className="aspect-square bg-white border border-gray-100 rounded-3xl hover:border-blue-500 hover:shadow-[0_12px_40px_rgba(59,130,246,0.15)] hover:-translate-y-2 transition-all p-4 flex items-center justify-center group"
+                                                className="aspect-square bg-white border border-gray-100 rounded-2xl hover:border-[var(--accent)] hover:shadow-[0_8px_30px_rgba(var(--accent-rgb),0.1)] hover:-translate-y-1 transition-all p-2 flex items-center justify-center group"
                                             >
                                                 <div className="relative w-full h-full">
                                                     <Image
@@ -641,6 +646,7 @@ export default function Toolbar({
                                             </button>
                                         ))}
                                     </div>
+
                                 </section>
 
                                 <div className="h-px bg-gradient-to-r from-transparent via-gray-100 to-transparent" />

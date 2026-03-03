@@ -267,16 +267,18 @@ export default function ProfilePage() {
     ];
 
     return (
-        <div className="min-h-screen bg-cream pt-32 pb-20 px-6">
+        <div className="min-h-screen bg-[var(--background)] pt-32 pb-20 px-6">
+
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="mb-10">
-                    <h1 className="text-4xl font-bold text-[var(--foreground)] tracking-tight">
+                    <h1 className="text-4xl font-black text-[var(--foreground)] tracking-tight">
                         Mi Perfil
                     </h1>
-                    <p className="text-[var(--foreground)] opacity-60 mt-2 font-medium">
+                    <p className="text-[var(--foreground)]/70 mt-2 font-medium">
                         Gestiona tu cuenta, direcciones y revisa tus creaciones.
                     </p>
+
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-8">
@@ -290,9 +292,11 @@ export default function ProfilePage() {
                                         onClick={() => setActiveTab(item.id as any)}
                                         className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all whitespace-nowrap ${activeTab === item.id
                                             ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-                                            : "text-[var(--foreground)] opacity-50 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:opacity-100"
+                                            : "text-[var(--foreground)]/40 hover:bg-[var(--background)] hover:text-[var(--foreground)]"
                                             }`}
                                     >
+
+
                                         <div className="flex items-center gap-3">
                                             <item.icon size={18} />
                                             <span className="lg:inline">{item.label}</span>
@@ -300,11 +304,12 @@ export default function ProfilePage() {
                                         {item.count !== undefined && (
                                             <span className={`ml-3 px-2 py-0.5 rounded-lg text-[10px] font-bold ${activeTab === item.id
                                                 ? "bg-white/20 text-white"
-                                                : "bg-[var(--foreground)]/10 text-[var(--foreground)] opacity-50"
+                                                : "bg-[var(--foreground)]/5 text-[var(--foreground)]/60"
                                                 }`}>
                                                 {item.count}
                                             </span>
                                         )}
+
                                     </button>
                                 ))}
                             </div>
@@ -315,26 +320,31 @@ export default function ProfilePage() {
                     <main className="flex-grow">
                         {/* Alerts */}
                         {error && (
-                            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl text-red-600 dark:text-red-400 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-600 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
                                 <LuInfo />
                                 {error}
                             </div>
                         )}
                         {success && (
-                            <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl text-green-600 dark:text-green-400 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-2xl text-green-600 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
                                 <LuCheck />
                                 {success}
                             </div>
                         )}
 
+
                         {/* Personal Info Tab */}
                         {activeTab === "info" && (
                             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
+                                <div className="bg-[var(--card)] rounded-3xl p-8 border border-[var(--border)] shadow-sm">
+
+
+
                                     <div className="flex items-center gap-3 mb-8">
-                                        <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
                                             <LuUser size={20} />
                                         </div>
+
                                         <h2 className="text-xl font-bold text-[var(--foreground)]">
                                             Información Personal
                                         </h2>
@@ -342,7 +352,8 @@ export default function ProfilePage() {
 
                                     <div className="flex flex-col md:flex-row items-center gap-8 mb-12 pb-12 border-b border-[var(--border)]">
                                         <div className="relative group">
-                                            <div className="w-32 h-32 rounded-[2.5rem] bg-gray-100 dark:bg-zinc-800 overflow-hidden border-4 border-white dark:border-zinc-900 shadow-xl group-hover:shadow-blue-500/20 transition-all duration-500">
+                                            <div className="w-32 h-32 rounded-[2.5rem] bg-[var(--background)] overflow-hidden border-4 border-[var(--card)] shadow-xl group-hover:shadow-blue-500/20 transition-all duration-500">
+
                                                 {user.avatar_url ? (
                                                     <Image src={user.avatar_url} alt={user.username} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                                                 ) : (
@@ -351,8 +362,9 @@ export default function ProfilePage() {
                                                     </div>
                                                 )}
                                             </div>
-                                            <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-white dark:bg-zinc-800 rounded-2xl shadow-lg border border-[var(--border)] flex items-center justify-center cursor-pointer hover:scale-110 hover:bg-blue-600 hover:text-white transition-all duration-300 group-hover:rotate-12">
+                                            <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-[var(--card)] rounded-2xl shadow-lg border border-[var(--border)] flex items-center justify-center cursor-pointer hover:scale-110 hover:bg-blue-600 hover:text-white transition-all duration-300 group-hover:rotate-12">
                                                 <LuPencil size={14} />
+
                                                 <input type="file" className="hidden" accept="image/*" onChange={async (e) => {
                                                     const file = e.target.files?.[0];
                                                     if (file) {
@@ -377,12 +389,14 @@ export default function ProfilePage() {
                                         </div>
                                         <div className="text-center md:text-left">
                                             <h3 className="text-2xl font-black text-[var(--foreground)]">{user.username}</h3>
-                                            <p className="text-[var(--foreground)] opacity-60 font-medium">{user.email}</p>
+                                            <p className="text-[var(--foreground)]/70 font-medium">{user.email}</p>
+
                                             <div className="flex items-center gap-2 mt-3 justify-center md:justify-start">
-                                                <span className="px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-blue-100 dark:border-blue-900/30">
+                                                <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest rounded-full border border-blue-100">
                                                     Cliente Premium
                                                 </span>
                                             </div>
+
                                         </div>
                                     </div>
 
@@ -390,9 +404,10 @@ export default function ProfilePage() {
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             {/* Email */}
                                             <div className="space-y-2">
-                                                <label className="text-xs font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest ml-1">
+                                                <label className="text-xs font-black text-[var(--foreground)]/60 uppercase tracking-widest ml-1">
                                                     Email
                                                 </label>
+
                                                 <div className="relative">
                                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                                                         <LuMail size={14} />
@@ -408,9 +423,10 @@ export default function ProfilePage() {
 
                                             {/* Phone */}
                                             <div className="space-y-2">
-                                                <label className="text-xs font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest ml-1">
+                                                <label className="text-xs font-black text-[var(--foreground)]/60 uppercase tracking-widest ml-1">
                                                     Teléfono
                                                 </label>
+
                                                 <div className="relative">
                                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                                                         <LuPhone size={14} />
@@ -429,9 +445,10 @@ export default function ProfilePage() {
                                         {/* Change Password Section */}
                                         <div className="pt-8 mt-8 border-t border-[var(--border)]">
                                             <div className="flex items-center gap-3 mb-6">
-                                                <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                                                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
                                                     <LuLock size={18} />
                                                 </div>
+
                                                 <h3 className="text-lg font-bold text-[var(--foreground)]">
                                                     Seguridad
                                                 </h3>
@@ -439,9 +456,10 @@ export default function ProfilePage() {
 
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest ml-1">
+                                                    <label className="text-xs font-black text-[var(--foreground)]/60 uppercase tracking-widest ml-1">
                                                         Contraseña Actual
                                                     </label>
+
                                                     <input
                                                         type="password"
                                                         value={currentPassword}
@@ -499,10 +517,14 @@ export default function ProfilePage() {
                         {activeTab === "orders" && (
                             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 {orders.length === 0 ? (
-                                    <div className="bg-[var(--cream)] dark:bg-zinc-900 p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
-                                        <div className="w-20 h-20 bg-gray-50 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                                            <LuShoppingBag size={32} className="text-gray-300" />
+                                    <div className="bg-[var(--card)] p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
+
+
+
+                                        <div className="w-20 h-20 bg-[var(--background)] rounded-full flex items-center justify-center mx-auto mb-6">
+                                            <LuShoppingBag size={32} className="text-[var(--foreground)]/20" />
                                         </div>
+
                                         <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
                                             No tienes órdenes todavía
                                         </h3>
@@ -518,11 +540,14 @@ export default function ProfilePage() {
                                     </div>
                                 ) : (
                                     <div className="bg-[var(--card)] rounded-3xl p-8 border border-[var(--border)] shadow-sm">
+
+
                                         <div className="flex items-center justify-between mb-8">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                                                <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
                                                     <LuShoppingBag size={20} />
                                                 </div>
+
                                                 <h2 className="text-xl font-bold text-[var(--foreground)]">
                                                     Mis Pedidos
                                                 </h2>
@@ -544,9 +569,10 @@ export default function ProfilePage() {
                                                     onClick={() => router.push("/orders")}
                                                 >
                                                     <div className="flex items-center gap-4">
-                                                        <div className="w-12 h-12 bg-[var(--cream)] dark:bg-zinc-900 rounded-xl flex items-center justify-center border border-[var(--border)]">
-                                                            <LuShoppingBag className="text-gray-400" />
+                                                        <div className="w-12 h-12 bg-[var(--background)] rounded-xl flex items-center justify-center border border-[var(--border)]">
+                                                            <LuShoppingBag className="text-[var(--foreground)]/30" />
                                                         </div>
+
                                                         <div>
                                                             <p className="text-sm font-bold text-[var(--foreground)]">
                                                                 Orden #{order.id.substring(0, 8)}
@@ -585,12 +611,16 @@ export default function ProfilePage() {
                         {activeTab === "addresses" && (
                             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 {/* Existing Addresses */}
-                                <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
+                                <div className="bg-[var(--card)] rounded-3xl p-8 border border-[var(--border)] shadow-sm">
+
+
+
                                     <div className="flex items-center justify-between mb-8">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                                            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
                                                 <LuMapPin size={20} />
                                             </div>
+
                                             <h2 className="text-xl font-bold text-[var(--foreground)]">
                                                 Mis Direcciones
                                             </h2>
@@ -598,29 +628,33 @@ export default function ProfilePage() {
                                     </div>
 
                                     {addresses.length === 0 ? (
-                                        <div className="text-center py-10 bg-gray-50 dark:bg-zinc-800/50 rounded-2xl border border-dashed border-[var(--border)]">
-                                            <p className="text-gray-400 text-sm">No tienes direcciones guardadas.</p>
+                                        <div className="text-center py-10 bg-[var(--background)] rounded-2xl border border-dashed border-[var(--border)]">
+                                            <p className="text-[var(--foreground)]/40 text-sm">No tienes direcciones guardadas.</p>
                                         </div>
+
                                     ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             {addresses.map((addr, index) => (
                                                 <div
                                                     key={index}
-                                                    className="p-5 bg-gray-50 dark:bg-zinc-800/50 border border-[var(--border)] rounded-2xl flex justify-between items-start group hover:border-blue-500/30 transition-all"
+                                                    className="p-5 bg-[var(--background)] border border-[var(--border)] rounded-2xl flex justify-between items-start group hover:border-blue-500/30 transition-all"
                                                 >
+
                                                     <div className="flex-1">
                                                         <p className="font-bold text-[var(--foreground)] text-sm">{addr.name}</p>
-                                                        <p className="text-xs text-[var(--foreground)] opacity-60 mt-2 leading-relaxed font-medium">
+                                                        <p className="text-xs text-[var(--foreground)]/80 mt-2 leading-relaxed font-medium">
                                                             {addr.street}<br />
                                                             {addr.city}, {addr.state}<br />
                                                             CP: {addr.postal_code}
                                                         </p>
+
                                                         {addr.phone && (
-                                                            <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 mt-3 flex items-center gap-1">
+                                                            <p className="text-[10px] font-bold text-blue-600 mt-3 flex items-center gap-1">
                                                                 <LuPhone size={8} />
                                                                 {addr.phone}
                                                             </p>
                                                         )}
+
                                                     </div>
                                                     <button
                                                         onClick={() => handleDeleteAddress(index)}
@@ -653,11 +687,15 @@ export default function ProfilePage() {
                                 </div>
 
                                 {/* Add New Address */}
-                                <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl p-8 border border-[var(--border)] shadow-sm">
+                                <div className="bg-[var(--card)] rounded-3xl p-8 border border-[var(--border)] shadow-sm">
+
+
+
                                     <div className="flex items-center gap-3 mb-8">
-                                        <div className="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400">
+                                        <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-600">
                                             <LuPlus size={18} />
                                         </div>
+
                                         <h2 className="text-xl font-bold text-[var(--foreground)]">
                                             Agregar Nueva Dirección
                                         </h2>
@@ -666,9 +704,10 @@ export default function ProfilePage() {
                                     <div className="space-y-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                                                <label className="text-xs font-black text-[var(--foreground)]/60 uppercase tracking-widest ml-1">
                                                     Nombre Destinatario *
                                                 </label>
+
                                                 <input
                                                     type="text"
                                                     value={newAddress.name}
@@ -679,9 +718,10 @@ export default function ProfilePage() {
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                                                <label className="text-xs font-black text-[var(--foreground)]/60 uppercase tracking-widest ml-1">
                                                     Calle y Número *
                                                 </label>
+
                                                 <input
                                                     type="text"
                                                     value={newAddress.street}
@@ -692,9 +732,10 @@ export default function ProfilePage() {
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                                                <label className="text-xs font-black text-[var(--foreground)]/60 uppercase tracking-widest ml-1">
                                                     Ciudad *
                                                 </label>
+
                                                 <input
                                                     type="text"
                                                     value={newAddress.city}
@@ -705,9 +746,10 @@ export default function ProfilePage() {
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                                                <label className="text-xs font-black text-[var(--foreground)]/60 uppercase tracking-widest ml-1">
                                                     Provincia *
                                                 </label>
+
                                                 <input
                                                     type="text"
                                                     value={newAddress.state}
@@ -718,9 +760,10 @@ export default function ProfilePage() {
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                                                <label className="text-xs font-black text-[var(--foreground)]/60 uppercase tracking-widest ml-1">
                                                     Código Postal *
                                                 </label>
+
                                                 <input
                                                     type="text"
                                                     value={newAddress.postal_code}
@@ -731,9 +774,10 @@ export default function ProfilePage() {
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                                                <label className="text-xs font-black text-[var(--foreground)]/60 uppercase tracking-widest ml-1">
                                                     Teléfono
                                                 </label>
+
                                                 <input
                                                     type="tel"
                                                     value={newAddress.phone}
@@ -747,8 +791,10 @@ export default function ProfilePage() {
                                         <button
                                             type="button"
                                             onClick={handleAddAddress}
-                                            className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gray-900 dark:bg-zinc-800 text-white rounded-2xl font-bold hover:bg-black dark:hover:bg-zinc-700 transition-all"
+                                            className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[var(--accent)] text-white rounded-2xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-[var(--accent)]/20"
                                         >
+
+
                                             <LuPlus size={14} />
                                             Agregar a mi lista
                                         </button>
@@ -761,46 +807,55 @@ export default function ProfilePage() {
                         {activeTab === "stats" && stats && (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 {/* Total Spent */}
-                                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-3xl text-white shadow-lg shadow-emerald-500/20 relative overflow-hidden group">
-                                    <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                                <div className="bg-[var(--card)] p-8 rounded-3xl border border-[var(--border)] shadow-sm relative overflow-hidden group">
+                                    <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform duration-500 text-emerald-500">
+
                                         <LuActivity size={120} />
                                     </div>
                                     <div className="relative z-10">
-                                        <p className="text-emerald-100 text-xs font-bold uppercase tracking-wider mb-2">Total Gastado</p>
-                                        <h3 className="text-3xl font-bold mb-4">${stats.total_spent.toLocaleString()}</h3>
-                                        <div className="flex items-center gap-2 text-xs text-emerald-100/80">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
+                                        <p className="text-emerald-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Total Gastado</p>
+                                        <h3 className="text-3xl font-black mb-4 text-[var(--foreground)]">${stats.total_spent.toLocaleString()}</h3>
+
+                                        <div className="flex items-center gap-2 text-xs text-gray-500 font-bold">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+
                                             En {stats.paid_orders} compras exitosas
                                         </div>
                                     </div>
                                 </div>
 
+
                                 {/* Total Orders */}
-                                <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-8 rounded-3xl text-white shadow-lg shadow-blue-500/20 relative overflow-hidden group">
-                                    <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                                <div className="bg-[var(--card)] p-8 rounded-3xl border border-[var(--border)] shadow-sm relative overflow-hidden group">
+                                    <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform duration-500 text-blue-500">
                                         <LuShoppingBag size={120} />
                                     </div>
                                     <div className="relative z-10">
-                                        <p className="text-blue-100 text-xs font-bold uppercase tracking-wider mb-2">Órdenes Totales</p>
-                                        <h3 className="text-3xl font-bold mb-4">{stats.total_orders}</h3>
+                                        <p className="text-blue-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Órdenes Totales</p>
+                                        <h3 className="text-3xl font-black mb-4 text-[var(--foreground)]">{stats.total_orders}</h3>
                                         <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest">
-                                            <span className="flex items-center gap-1"><div className="w-1 h-1 rounded-full bg-green-400" /> {stats.paid_orders} Pagadas</span>
-                                            <span className="flex items-center gap-1"><div className="w-1 h-1 rounded-full bg-amber-400" /> {stats.pending_orders} Pendientes</span>
+                                            <span className="flex items-center gap-1 text-green-600"><div className="w-1 h-1 rounded-full bg-green-500" /> {stats.paid_orders} Pagadas</span>
+                                            <span className="flex items-center gap-1 text-amber-600"><div className="w-1 h-1 rounded-full bg-amber-500" /> {stats.pending_orders} Pendientes</span>
                                         </div>
                                     </div>
                                 </div>
 
+
+
                                 {/* Total Designs */}
-                                <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-8 rounded-3xl text-white shadow-lg shadow-purple-500/20 relative overflow-hidden group">
-                                    <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                                <div className="bg-[var(--card)] p-8 rounded-3xl border border-[var(--border)] shadow-sm relative overflow-hidden group">
+                                    <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform duration-500 text-purple-500">
                                         <LuPalette size={120} />
                                     </div>
                                     <div className="relative z-10">
-                                        <p className="text-purple-100 text-xs font-bold uppercase tracking-wider mb-2">Diseños Creados</p>
-                                        <h3 className="text-3xl font-bold mb-4">{stats.total_designs}</h3>
-                                        <p className="text-xs text-purple-100/80">Tus creaciones personalizadas</p>
+                                        <p className="text-purple-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Diseños Creados</p>
+                                        <h3 className="text-3xl font-black mb-4 text-[var(--foreground)]">{stats.total_designs}</h3>
+                                        <p className="text-xs text-gray-500 font-bold">Tus creaciones personalizadas</p>
+
                                     </div>
                                 </div>
+
+
                             </div>
                         )}
 
@@ -809,9 +864,10 @@ export default function ProfilePage() {
                             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-900/20 flex items-center justify-center text-pink-600 dark:text-pink-400">
+                                        <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-pink-600">
                                             <LuPalette size={20} />
                                         </div>
+
                                         <h2 className="text-xl font-bold text-[var(--foreground)]">
                                             Mis Diseños Guardados
                                         </h2>
@@ -826,14 +882,16 @@ export default function ProfilePage() {
                                 </div>
 
                                 {designs.length === 0 ? (
-                                    <div className="bg-[var(--cream)] dark:bg-zinc-900 p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
-                                        <div className="w-20 h-20 bg-gray-50 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                                            <LuPalette size={32} className="text-gray-300" />
+                                    <div className="bg-[var(--card)] p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
+
+
+                                        <div className="w-20 h-20 bg-[var(--background)] rounded-full flex items-center justify-center mx-auto mb-6">
+                                            <LuPalette size={32} className="text-[var(--foreground)]/20" />
                                         </div>
                                         <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
                                             Aún no tienes diseños guardados
                                         </h3>
-                                        <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto">
+                                        <p className="text-[var(--foreground)]/50 mb-8 max-w-sm mx-auto">
                                             ¡Empieza a crear tus propias tazas personalizadas y guárdalas aquí!
                                         </p>
                                         <button
@@ -848,9 +906,11 @@ export default function ProfilePage() {
                                         {designs.map((design) => (
                                             <div
                                                 key={design.id}
-                                                className="group bg-[var(--cream)] dark:bg-zinc-900 rounded-3xl border border-[var(--border)] overflow-hidden hover:shadow-xl hover:shadow-blue-500/5 hover:border-blue-500/30 transition-all duration-300"
+                                                className="group bg-[var(--card)] rounded-3xl border border-[var(--border)] overflow-hidden hover:shadow-xl hover:shadow-blue-500/5 hover:border-blue-500/30 transition-all duration-300"
                                             >
-                                                <div className="aspect-square bg-gray-50 dark:bg-zinc-800 relative flex items-center justify-center p-6 overflow-hidden">
+
+                                                <div className="aspect-square bg-[var(--background)] relative flex items-center justify-center p-6 overflow-hidden">
+
                                                     {design.thumbnail ? (
                                                         <Image
                                                             src={design.thumbnail}
@@ -879,10 +939,11 @@ export default function ProfilePage() {
                                                     </div>
                                                 </div>
                                                 <div className="p-5">
-                                                    <h3 className="font-bold text-[var(--foreground)] truncate text-sm">
+                                                    <h3 className="font-title font-black text-[var(--foreground)] truncate text-sm">
                                                         {design.name}
                                                     </h3>
-                                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                                                    <p className="text-[10px] font-black text-[var(--foreground)]/40 uppercase tracking-widest mt-1">
+
                                                         {new Date(design.created_at).toLocaleDateString("es-AR", {
                                                             day: "numeric",
                                                             month: "short",
@@ -900,9 +961,10 @@ export default function ProfilePage() {
                         {activeTab === "favorites" && (
                             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
+                                    <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center text-red-600">
                                         <LuHeart size={20} />
                                     </div>
+
                                     <h2 className="text-xl font-bold text-[var(--foreground)]">
                                         Mis Favoritos
                                     </h2>
@@ -911,20 +973,23 @@ export default function ProfilePage() {
                                 {favoritesLoading ? (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {[1, 2, 3].map((i) => (
-                                            <div key={i} className="h-64 bg-gray-100 dark:bg-zinc-800 animate-pulse rounded-3xl" />
+                                            <div key={i} className="h-64 bg-[var(--card)] animate-pulse rounded-3xl" />
                                         ))}
                                     </div>
                                 ) : favoriteProducts.length === 0 ? (
-                                    <div className="bg-[var(--cream)] dark:bg-zinc-900 p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
-                                        <div className="w-20 h-20 bg-gray-50 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                                            <LuHeart size={32} className="text-gray-300" />
+                                    <div className="bg-[var(--card)] p-12 rounded-3xl border border-[var(--border)] text-center shadow-sm">
+
+
+                                        <div className="w-20 h-20 bg-[var(--background)] rounded-full flex items-center justify-center mx-auto mb-6">
+                                            <LuHeart size={32} className="text-[var(--foreground)]/20" />
                                         </div>
                                         <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
                                             Tu lista de favoritos está vacía
                                         </h3>
-                                        <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto">
+                                        <p className="text-[var(--foreground)]/50 mb-8 max-w-sm mx-auto">
                                             ¿Aún no encontraste tu taza ideal? Explorá nuestras colecciones y marcá con un ❤️ lo que más te guste.
                                         </p>
+
                                         <button
                                             onClick={() => router.push("/products")}
                                             className="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/25"
