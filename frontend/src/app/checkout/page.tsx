@@ -51,7 +51,7 @@ export default function CheckoutPage() {
                     <div className="flex-1 space-y-8">
                         <header className="mb-8">
                             <h1 className="text-3xl font-bold text-[var(--foreground)] tracking-tight">Finalizar Compra</h1>
-                            <p className="text-gray-500 dark:text-gray-400 mt-2">Completá tus datos para procesar el pedido.</p>
+                            <p className="text-[var(--foreground)]/50 mt-2">Completá tus datos para procesar el pedido.</p>
                         </header>
 
                         <div className="space-y-8">
@@ -67,7 +67,7 @@ export default function CheckoutPage() {
                                 </div>
                             </section>
 
-                            <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-sm border border-[var(--border)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 delay-75">
+                            <section className="bg-[var(--card)] rounded-[2.5rem] shadow-sm border border-[var(--border)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 delay-75">
                                 <div className="p-10">
                                     <div className="flex items-center gap-4 mb-8">
                                         <div className="w-10 h-10 rounded-xl bg-[var(--accent)] text-white flex items-center justify-center font-black shadow-lg shadow-[var(--accent)]/30">
@@ -79,7 +79,7 @@ export default function CheckoutPage() {
                                 </div>
                             </section>
 
-                            <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-sm border border-[var(--border)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+                            <section className="bg-[var(--card)] rounded-[2.5rem] shadow-sm border border-[var(--border)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
                                 <div className="p-10">
                                     <div className="flex items-center gap-4 mb-8">
                                         <div className="w-10 h-10 rounded-xl bg-[var(--accent)] text-white flex items-center justify-center font-black shadow-lg shadow-[var(--accent)]/30">
@@ -97,7 +97,7 @@ export default function CheckoutPage() {
                     <aside className="lg:w-[400px]">
                         <div className="sticky top-32">
                             <OrderSummary />
-                            <div className="mt-8 flex items-center justify-center gap-3 text-gray-400">
+                            <div className="mt-8 flex items-center justify-center gap-3 text-[var(--foreground)]/40">
                                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                                 <p className="text-[10px] font-bold uppercase tracking-widest">Pago 100% Seguro</p>
                             </div>

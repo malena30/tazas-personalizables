@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useSearchParams } from 'next/navigation';
@@ -17,6 +17,7 @@ function LoginForm() {
 
     const searchParams = useSearchParams();
     const redirectPath = searchParams.get('redirect') || '/';
+    const router = useRouter();
     const { login, register, user, loading: authLoading } = useAuth();
 
     // Redirigir si ya está autenticado

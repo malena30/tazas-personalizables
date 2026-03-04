@@ -38,12 +38,12 @@ export default function ShippingOptions() {
                         key={m.id}
                         onClick={() => handleSelect(m.id, m.id === "retiro" ? 0 : shipping.cost)}
                         className={`flex flex-col p-8 rounded-[2rem] border-2 text-left transition-all duration-500 group relative overflow-hidden ${shipping.method === m.id
-                            ? "border-[var(--accent)] bg-[var(--cream)] shadow-lg shadow-black/5"
-                            : "border-gray-100 dark:border-zinc-800 hover:border-[var(--accent)]/30 bg-[var(--cream)] dark:bg-zinc-900"
+                            ? "border-[var(--accent)] bg-[var(--card)] shadow-lg shadow-black/5"
+                            : "border-[var(--border)] hover:border-[var(--accent)]/30 bg-[var(--card)]"
                             }`}
                     >
                         <div className="flex justify-between items-start mb-6">
-                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl transition-transform duration-500 group-hover:scale-110 ${shipping.method === m.id ? "bg-[var(--accent)] text-white shadow-lg shadow-black/10" : "bg-gray-50 dark:bg-zinc-800 text-gray-400"
+                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl transition-transform duration-500 group-hover:scale-110 ${shipping.method === m.id ? "bg-[var(--accent)] text-white shadow-lg shadow-black/10" : "bg-[var(--background)] text-[var(--foreground)]/40"
                                 }`}>
                                 {m.icon}
                             </div>
@@ -56,9 +56,9 @@ export default function ShippingOptions() {
                             )}
                         </div>
                         <h3 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">{m.title}</h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 flex-1 leading-relaxed">{m.description}</p>
+                        <p className="text-sm text-[var(--foreground)]/50 mt-2 flex-1 leading-relaxed">{m.description}</p>
                         <div className="mt-6 flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Costo</span>
+                            <span className="text-[10px] font-bold text-[var(--foreground)]/30 uppercase tracking-widest">Costo</span>
                             <span className="text-lg font-black text-[var(--accent)]">{m.price}</span>
                         </div>
                     </button>
@@ -66,7 +66,7 @@ export default function ShippingOptions() {
             </div>
 
             {shipping.method === "correo" && (
-                <div className="mt-6 p-6 bg-gray-50 dark:bg-zinc-800/50 rounded-2xl border border-gray-100 dark:border-zinc-800 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="mt-6 p-6 bg-[var(--background)] rounded-2xl border border-[var(--border)] animate-in fade-in slide-in-from-top-2 duration-300">
                     <h4 className="text-sm font-bold text-[var(--foreground)] mb-4 uppercase tracking-wider">Calcular costo de envío</h4>
                     <ShippingCalculator />
                 </div>

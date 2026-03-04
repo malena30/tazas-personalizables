@@ -30,8 +30,8 @@ export default function BuyerForm() {
         });
     };
 
-    const inputClasses = "w-full px-5 py-4 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700 rounded-2xl focus:ring-4 focus:ring-[var(--accent)]/10 focus:border-[var(--accent)] outline-none transition-all text-[var(--foreground)] placeholder:text-gray-400 font-medium";
-    const labelClasses = "block text-xs font-black text-gray-400 dark:text-gray-500 mb-2 ml-1 uppercase tracking-widest";
+    const inputClasses = "w-full px-5 py-4 bg-[var(--background)] border border-[var(--border)] rounded-2xl focus:ring-4 focus:ring-[var(--accent)]/10 focus:border-[var(--accent)] outline-none transition-all text-[var(--foreground)] placeholder:text-[var(--foreground)]/30 font-medium";
+    const labelClasses = "block text-xs font-black text-[var(--foreground)]/40 mb-2 ml-1 uppercase tracking-widest";
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

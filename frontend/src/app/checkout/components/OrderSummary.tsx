@@ -147,8 +147,8 @@ export default function OrderSummary() {
                     onClick={handleCheckout}
                     disabled={loading || cart.length === 0}
                     className={`mt-8 w-full py-5 rounded-[2rem] font-black text-lg transition-all flex justify-center items-center gap-3 shadow-2xl relative overflow-hidden group ${loading || cart.length === 0
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-[var(--foreground)] text-white hover:scale-[1.02] active:scale-[0.98] shadow-black/10'
+                        ? 'bg-[var(--foreground)]/10 text-[var(--foreground)]/30 cursor-not-allowed'
+                        : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] shadow-blue-500/20'
                         }`}
                 >
                     {loading ? (

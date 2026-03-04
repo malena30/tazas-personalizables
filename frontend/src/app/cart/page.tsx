@@ -62,24 +62,24 @@ export default function CartPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 py-20 px-6">
+    <div className="min-h-screen bg-[var(--background)] py-20 px-6">
       <div className="max-w-7xl mx-auto">
         <header className="mb-12">
           <h1 className="text-4xl md:text-5xl font-black text-[var(--foreground)] tracking-tight">
             Tu <span className="text-[var(--accent)]">Carrito</span>
           </h1>
-          <p className="text-gray-500 dark:text-gray-300 mt-4 text-lg">
+          <p className="text-[var(--foreground)]/50 mt-4 text-lg">
             Revisá tus productos antes de finalizar la compra.
           </p>
         </header>
 
         {cart.length === 0 ? (
-          <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-[3rem] p-20 text-center border border-[var(--border)] shadow-sm animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="w-32 h-32 bg-[var(--cream)] dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-8">
+          <div className="bg-[var(--card)] rounded-[3rem] p-20 text-center border border-[var(--border)] shadow-sm animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="w-32 h-32 bg-[var(--background)] rounded-full flex items-center justify-center mx-auto mb-8">
               <LuShoppingBag className="text-5xl text-[var(--accent)]" />
             </div>
             <h2 className="text-3xl font-bold text-[var(--foreground)] mb-4">Tu carrito está vacío</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-10 max-w-md mx-auto text-lg leading-relaxed">
+            <p className="text-[var(--foreground)]/50 mb-10 max-w-md mx-auto text-lg leading-relaxed">
               Parece que aún no has añadido nada. ¡Explora nuestros productos y personaliza tu taza ideal!
             </p>
             <Link
@@ -94,15 +94,15 @@ export default function CartPage() {
           <div className="flex flex-col lg:flex-row gap-12">
             {/* COLUMNA IZQUIERDA: LISTA DE PRODUCTOS */}
             <div className="flex-1 space-y-8">
-              <div className="bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] overflow-hidden shadow-sm">
+              <div className="bg-[var(--card)] rounded-[2.5rem] border border-[var(--border)] overflow-hidden shadow-sm">
                 <div className="divide-y divide-[var(--border)]">
                   {cart.map((item) => (
                     <div
                       key={item.id}
-                      className="p-8 flex flex-col sm:flex-row gap-8 hover:bg-gray-50 dark:hover:bg-zinc-800/30 transition-all group"
+                      className="p-8 flex flex-col sm:flex-row gap-8 hover:bg-[var(--background)] transition-all group"
                     >
                       {/* Imagen */}
-                      <div className="w-full sm:w-40 h-40 bg-gray-50 dark:bg-zinc-800 rounded-3xl overflow-hidden flex-shrink-0 border border-[var(--border)] relative">
+                      <div className="w-full sm:w-40 h-40 bg-[var(--background)] rounded-3xl overflow-hidden flex-shrink-0 border border-[var(--border)] relative">
                         {item.image ? (
                           <Image
                             src={item.image}
@@ -123,7 +123,7 @@ export default function CartPage() {
                               {item.name}
                             </h3>
                             <div className="flex items-center gap-2 mt-2">
-                              <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Precio Unitario:</span>
+                              <span className="text-xs font-bold text-[var(--foreground)]/40 uppercase tracking-widest">Precio Unitario:</span>
                               <span className="text-sm font-bold text-[var(--accent)]">
                                 ${item.price.toLocaleString('es-AR')}
                               </span>
@@ -131,7 +131,7 @@ export default function CartPage() {
                           </div>
                           <button
                             onClick={() => removeFromCart(item.id)}
-                            className="p-3 text-gray-400 hover:text-red-500 transition-all rounded-2xl hover:bg-red-50 dark:hover:bg-red-900/20"
+                            className="p-3 text-[var(--foreground)]/30 hover:text-red-500 transition-all rounded-2xl hover:bg-red-50"
                             title="Eliminar"
                           >
                             <LuTrash2 size={20} />
@@ -140,7 +140,7 @@ export default function CartPage() {
 
                         <div className="flex flex-wrap justify-between items-end mt-6 gap-4">
                           {/* Controles de cantidad */}
-                          <div className="flex items-center bg-gray-50 dark:bg-zinc-800 rounded-2xl p-1.5 border border-[var(--border)]">
+                          <div className="flex items-center bg-[var(--background)] rounded-2xl p-1.5 border border-[var(--border)]">
                             <button
                               onClick={() =>
                                 updateQuantity(item.id, Math.max(1, item.quantity - 1))
@@ -160,7 +160,7 @@ export default function CartPage() {
                             </button>
                           </div>
                           <div className="text-right">
-                            <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Subtotal Item</p>
+                            <p className="text-[10px] font-bold text-[var(--foreground)]/40 uppercase tracking-widest mb-1">Subtotal Item</p>
                             <p className="text-2xl font-black text-[var(--foreground)]">
                               ${(item.price * item.quantity).toLocaleString('es-AR')}
                             </p>
@@ -176,7 +176,7 @@ export default function CartPage() {
               <div className="flex justify-start">
                 <button
                   onClick={clearCart}
-                  className="text-gray-400 hover:text-red-500 flex items-center gap-2 text-sm font-bold transition-all px-6 py-3 rounded-2xl hover:bg-red-50 dark:hover:bg-red-900/10"
+                  className="text-[var(--foreground)]/30 hover:text-red-500 flex items-center gap-2 text-sm font-bold transition-all px-6 py-3 rounded-2xl hover:bg-red-50"
                 >
                   <LuTrash2 size={16} />
                   Vaciar mi carrito
@@ -186,13 +186,13 @@ export default function CartPage() {
 
             {/* COLUMNA DERECHA: RESUMEN + ENVÍO */}
             <aside className="lg:w-[400px]">
-              <div className="sticky top-32 bg-[var(--cream)] dark:bg-zinc-900 rounded-[2.5rem] border border-[var(--border)] shadow-2xl shadow-black/5 overflow-hidden">
+              <div className="sticky top-32 bg-[var(--card)] rounded-[2.5rem] border border-[var(--border)] shadow-2xl shadow-black/5 overflow-hidden">
                 <div className="p-10">
                   <h2 className="text-2xl font-bold text-[var(--foreground)] mb-8">Resumen</h2>
 
                   <div className="space-y-6">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600 dark:text-gray-300 font-medium">Subtotal</span>
+                      <span className="text-[var(--foreground)]/60 font-medium">Subtotal</span>
                       <span className="font-bold text-xl text-[var(--foreground)]">
                         ${subtotal.toLocaleString('es-AR')}
                       </span>
@@ -200,14 +200,14 @@ export default function CartPage() {
 
                     {/* SELECT DE PROVINCIA */}
                     <div className="pt-6 border-t border-[var(--border)]">
-                      <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3 ml-1">
+                      <label className="block text-xs font-black text-[var(--foreground)]/40 uppercase tracking-widest mb-3 ml-1">
                         Calcular Envío
                       </label>
                       <div className="relative">
                         <select
                           value={province}
                           onChange={handleProvinceChange}
-                          className="w-full p-4 bg-gray-50 dark:bg-zinc-800 border border-[var(--border)] rounded-2xl text-[var(--foreground)] font-bold focus:ring-2 focus:ring-[var(--accent)]/20 focus:border-[var(--accent)] outline-none transition-all appearance-none cursor-pointer"
+                          className="w-full p-4 bg-[var(--background)] border border-[var(--border)] rounded-2xl text-[var(--foreground)] font-bold focus:ring-2 focus:ring-[var(--accent)]/20 focus:border-[var(--accent)] outline-none transition-all appearance-none cursor-pointer"
                         >
                           <option value="">Seleccionar provincia</option>
                           <option>Buenos Aires</option>
@@ -229,7 +229,7 @@ export default function CartPage() {
                       </div>
 
                       <div className="flex justify-between items-center mt-6">
-                        <span className="text-gray-600 dark:text-gray-300 font-medium">Costo de envío</span>
+                        <span className="text-[var(--foreground)]/60 font-medium">Costo de envío</span>
                         <span className={`font-bold ${shippingCost > 0 ? 'text-[var(--accent)]' : 'text-gray-400 dark:text-gray-600'}`}>
                           {shippingCost > 0 ? `$${shippingCost.toLocaleString('es-AR')}` : '—'}
                         </span>
@@ -243,7 +243,7 @@ export default function CartPage() {
                           <span className="block text-3xl font-black text-[var(--accent)]">
                             ${total.toLocaleString('es-AR')}
                           </span>
-                          <span className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-tighter">IVA Incluido</span>
+                          <span className="text-[10px] text-[var(--foreground)]/40 font-bold uppercase tracking-tighter">IVA Incluido</span>
                         </div>
                       </div>
                     </div>

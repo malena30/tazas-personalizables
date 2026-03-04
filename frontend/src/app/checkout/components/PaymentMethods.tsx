@@ -44,8 +44,8 @@ export default function PaymentMethods() {
                     key={m.id}
                     onClick={() => handleSelect(m.id)}
                     className={`flex items-center p-6 sm:p-8 rounded-[2.5rem] border-2 text-left transition-all duration-500 group relative overflow-hidden ${payment === m.id
-                        ? "border-[var(--accent)] bg-white shadow-[0_20px_50px_rgba(0,0,0,0.08)] scale-[1.02]"
-                        : "border-[var(--border)] bg-white/50 hover:border-[var(--accent)]/30 hover:bg-white transition-all shadow-sm"
+                        ? "border-[var(--accent)] bg-[var(--card)] shadow-[0_20px_50px_rgba(0,0,0,0.08)] scale-[1.02]"
+                        : "border-[var(--border)] bg-[var(--card)] hover:border-[var(--accent)]/30 transition-all shadow-sm"
                         }`}
                 >
                     {/* Decorative Background Element */}
@@ -55,14 +55,14 @@ export default function PaymentMethods() {
 
                     <div className={`flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 ${payment === m.id
                         ? "bg-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/20 rotate-3"
-                        : "bg-gray-50 text-gray-400 group-hover:text-gray-600"
+                        : "bg-[var(--background)] text-[var(--foreground)]/40 group-hover:text-[var(--foreground)]/60"
                         }`}>
                         {m.icon}
                     </div>
 
                     <div className="flex-1 ml-6">
                         <div className="flex items-center gap-3">
-                            <h3 className={`text-lg font-black tracking-tight transition-colors ${payment === m.id ? "text-[var(--foreground)]" : "text-gray-500"}`}>
+                            <h3 className={`text-lg font-black tracking-tight transition-colors ${payment === m.id ? "text-[var(--foreground)]" : "text-[var(--foreground)]/50"}`}>
                                 {m.title}
                             </h3>
                             {m.featured && (
@@ -71,19 +71,19 @@ export default function PaymentMethods() {
                                 </span>
                             )}
                         </div>
-                        <p className={`text-xs font-bold mt-1.5 leading-relaxed transition-colors ${payment === m.id ? "text-gray-600" : "text-gray-400"}`}>
+                        <p className={`text-xs font-bold mt-1.5 leading-relaxed transition-colors ${payment === m.id ? "text-[var(--foreground)]/60" : "text-[var(--foreground)]/30"}`}>
                             {m.description}
                         </p>
                     </div>
 
                     <div className={`w-10 h-10 rounded-2xl border-2 flex items-center justify-center transition-all duration-500 ${payment === m.id
                         ? "border-[var(--accent)] bg-[var(--accent)] shadow-lg shadow-[var(--accent)]/20 rotate-12"
-                        : "border-gray-100 bg-white"
+                        : "border-[var(--border)] bg-[var(--card)]"
                         }`}>
                         {payment === m.id ? (
                             <LuCheck size={24} className="text-white animate-in zoom-in duration-300" />
                         ) : (
-                            <div className="w-3 h-3 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-colors" />
+                            <div className="w-3 h-3 rounded-full bg-[var(--border)] group-hover:bg-[var(--foreground)]/20 transition-colors" />
                         )}
                     </div>
                 </button>
