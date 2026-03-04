@@ -1,12 +1,11 @@
 "use client";
 
-import { LuTrash2, LuPlus, LuMinus, LuArrowRight, LuShoppingBag, LuX } from "react-icons/lu";
-import { useCartStore } from "@/store/cartStore";
-import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { useCartStore } from "@/store/cartStore";
+import { LuTrash2, LuPlus, LuMinus, LuArrowRight, LuShoppingBag, LuTruck } from "react-icons/lu";
 
 export default function CartPage() {
   const { user } = useAuth();
@@ -16,42 +15,9 @@ export default function CartPage() {
     updateQuantity,
     removeFromCart,
     clearCart,
-    shippingCost,
-    setShippingCost,
   } = useCartStore();
 
-  const [province, setProvince] = useState("");
-
-  const calculateSubtotal = () => {
-    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  };
-
-  const calculateShipping = (prov: string) => {
-    const table: Record<string, number> = {
-      "Buenos Aires": 4500,
-      CABA: 3500,
-      Córdoba: 6000,
-      "Santa Fe": 6500,
-      Mendoza: 7000,
-      Tucumán: 7500,
-      Salta: 8000,
-      Neuquén: 9000,
-      "Río Negro": 9200,
-      Chubut: 10000,
-      "Santa Cruz": 12000,
-      "Tierra del Fuego": 15000,
-    };
-    return table[prov] || 0;
-  };
-
-  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const prov = e.target.value;
-    setProvince(prov);
-    setShippingCost(calculateShipping(prov));
-  };
-
-  const subtotal = calculateSubtotal();
-  const total = subtotal + shippingCost;
+  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const handleCheckout = () => {
     if (!user) {
@@ -184,7 +150,7 @@ export default function CartPage() {
               </div>
             </div>
 
-            {/* COLUMNA DERECHA: RESUMEN + ENVÍO */}
+            {/* COLUMNA DERECHA: RESUMEN */}
             <aside className="lg:w-[400px]">
               <div className="sticky top-32 bg-[var(--card)] rounded-[2.5rem] border border-[var(--border)] shadow-2xl shadow-black/5 overflow-hidden">
                 <div className="p-10">
@@ -192,71 +158,38 @@ export default function CartPage() {
 
                   <div className="space-y-6">
                     <div className="flex justify-between items-center">
-                      <span className="text-[var(--foreground)]/60 font-medium">Subtotal</span>
+                      <span className="text-[var(--foreground)]/60 font-medium">Subtotal ({cart.reduce((s, i) => s + i.quantity, 0)} productos)</span>
                       <span className="font-bold text-xl text-[var(--foreground)]">
                         ${subtotal.toLocaleString('es-AR')}
                       </span>
                     </div>
 
-                    {/* SELECT DE PROVINCIA */}
-                    <div className="pt-6 border-t border-[var(--border)]">
-                      <label className="block text-xs font-black text-[var(--foreground)]/40 uppercase tracking-widest mb-3 ml-1">
-                        Calcular Envío
-                      </label>
-                      <div className="relative">
-                        <select
-                          value={province}
-                          onChange={handleProvinceChange}
-                          className="w-full p-4 bg-[var(--background)] border border-[var(--border)] rounded-2xl text-[var(--foreground)] font-bold focus:ring-2 focus:ring-[var(--accent)]/20 focus:border-[var(--accent)] outline-none transition-all appearance-none cursor-pointer"
-                        >
-                          <option value="">Seleccionar provincia</option>
-                          <option>Buenos Aires</option>
-                          <option>CABA</option>
-                          <option>Córdoba</option>
-                          <option>Santa Fe</option>
-                          <option>Mendoza</option>
-                          <option>Tucumán</option>
-                          <option>Salta</option>
-                          <option>Neuquén</option>
-                          <option>Río Negro</option>
-                          <option>Chubut</option>
-                          <option>Santa Cruz</option>
-                          <option>Tierra del Fuego</option>
-                        </select>
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-400">
-                          <LuPlus size={10} className="rotate-45" />
-                        </div>
-                      </div>
-
-                      <div className="flex justify-between items-center mt-6">
-                        <span className="text-[var(--foreground)]/60 font-medium">Costo de envío</span>
-                        <span className={`font-bold ${shippingCost > 0 ? 'text-[var(--accent)]' : 'text-gray-400 dark:text-gray-600'}`}>
-                          {shippingCost > 0 ? `$${shippingCost.toLocaleString('es-AR')}` : '—'}
-                        </span>
-                      </div>
+                    <div className="flex items-center gap-3 p-4 bg-[var(--background)] rounded-2xl border border-[var(--border)]">
+                      <LuTruck size={18} className="text-[var(--accent)] flex-shrink-0" />
+                      <p className="text-xs font-bold text-[var(--foreground)]/50 leading-relaxed">
+                        El costo de envío se calcula en el checkout con tu código postal
+                      </p>
                     </div>
 
-                    <div className="pt-8 border-t border-[var(--border)]">
+                    <div className="pt-6 border-t border-[var(--border)]">
                       <div className="flex justify-between items-center">
-                        <span className="text-xl font-bold text-[var(--foreground)]">Total Final</span>
-                        <div className="text-right">
-                          <span className="block text-3xl font-black text-[var(--accent)]">
-                            ${total.toLocaleString('es-AR')}
-                          </span>
-                          <span className="text-[10px] text-[var(--foreground)]/40 font-bold uppercase tracking-tighter">IVA Incluido</span>
-                        </div>
+                        <span className="text-xl font-bold text-[var(--foreground)]">Subtotal</span>
+                        <span className="block text-3xl font-black text-[var(--accent)]">
+                          ${subtotal.toLocaleString('es-AR')}
+                        </span>
                       </div>
+                      <p className="text-[10px] text-[var(--foreground)]/30 font-bold uppercase tracking-tighter mt-1 text-right">+ Envío a confirmar</p>
                     </div>
 
                     <button
                       onClick={handleCheckout}
-                      className="w-full mt-10 bg-[var(--accent)] text-white py-5 rounded-[1.5rem] font-bold text-xl shadow-xl shadow-black/5 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+                      className="w-full mt-4 bg-[var(--accent)] text-white py-5 rounded-[1.5rem] font-bold text-xl shadow-xl shadow-black/5 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
                     >
                       Finalizar Compra
                       <LuArrowRight size={18} />
                     </button>
 
-                    <div className="flex items-center justify-center gap-2 mt-6 text-gray-400">
+                    <div className="flex items-center justify-center gap-2 mt-2 text-[var(--foreground)]/30">
                       <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
                       <p className="text-[10px] font-bold uppercase tracking-widest">Pago Seguro Encriptado</p>
                     </div>

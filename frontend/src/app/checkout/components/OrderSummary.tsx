@@ -6,14 +6,15 @@ import { useCheckout } from "@/context/CheckoutContext";
 import { useCartStore } from "@/store/cartStore";
 import { createOrder } from "@/lib/api";
 import Image from "next/image";
-import { LuShoppingBag, LuArrowRight, LuShieldCheck, LuInfo } from "react-icons/lu";
+import { LuShoppingBag, LuArrowRight, LuShieldCheck, LuInfo, LuCircleCheck, LuExternalLink } from "react-icons/lu";
 
 export default function OrderSummary() {
     const { subtotal, shipping, total, buyer, payment } = useCheckout();
-    const { cart } = useCartStore();
+    const { cart, clearCart } = useCartStore();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [confirmedOrder, setConfirmedOrder] = useState<{ id: string; checkoutUrl?: string } | null>(null);
 
     const handleCheckout = async () => {
         setError(null);
@@ -47,9 +48,11 @@ export default function OrderSummary() {
             const order = await createOrder(orderData);
 
             if (order.checkout_url) {
-                window.location.href = order.checkout_url;
+                // MP: mostrar botón prominente para ir a pagar
+                setConfirmedOrder({ id: order.id, checkoutUrl: order.checkout_url });
             } else {
-                router.push(`/checkout/success?orderId=${order.id}`);
+                // Transferencia / Efectivo: mostrar panel de confirmación
+                setConfirmedOrder({ id: order.id });
             }
         } catch (err: any) {
             setError(err.message || "Hubo un error al procesar tu pedido");
@@ -143,26 +146,59 @@ export default function OrderSummary() {
                     </div>
                 )}
 
-                <button
-                    onClick={handleCheckout}
-                    disabled={loading || cart.length === 0}
-                    className={`mt-8 w-full py-5 rounded-[2rem] font-black text-lg transition-all flex justify-center items-center gap-3 shadow-2xl relative overflow-hidden group ${loading || cart.length === 0
-                        ? 'bg-[var(--foreground)]/10 text-[var(--foreground)]/30 cursor-not-allowed'
-                        : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] shadow-blue-500/20'
-                        }`}
-                >
-                    {loading ? (
-                        <>
-                            <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
-                            <span className="uppercase tracking-widest">Procesando...</span>
-                        </>
-                    ) : (
-                        <>
-                            <span className="uppercase tracking-[0.1em]">Finalizar Compra</span>
-                            <LuArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                        </>
-                    )}
-                </button>
+                {/* Panel confirmación de pedido creado */}
+                {confirmedOrder ? (
+                    <div className="mt-8 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="flex items-center gap-3 p-4 bg-green-50/50 dark:bg-green-950/20 border border-green-500/30 rounded-2xl">
+                            <LuCircleCheck size={22} className="text-green-500 flex-shrink-0" />
+                            <div>
+                                <p className="text-sm font-black text-[var(--foreground)]">¡Pedido #{confirmedOrder.id.slice(0, 8).toUpperCase()} creado!</p>
+                                <p className="text-[10px] text-[var(--foreground)]/40 font-bold uppercase tracking-wide mt-0.5">Te enviamos los detalles por email</p>
+                            </div>
+                        </div>
+
+                        {confirmedOrder.checkoutUrl ? (
+                            /* Mercado Pago button */
+                            <a
+                                href={confirmedOrder.checkoutUrl}
+                                className="flex items-center justify-center gap-3 w-full py-5 rounded-[2rem] font-black text-lg bg-[#009EE3] text-white hover:bg-[#0087C8] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-[#009EE3]/20"
+                            >
+                                <span className="uppercase tracking-[0.1em]">Ir a Pagar con Mercado Pago</span>
+                                <LuExternalLink className="w-5 h-5" />
+                            </a>
+                        ) : (
+                            /* Transfer / Cash: go to orders */
+                            <button
+                                onClick={() => router.push('/orders')}
+                                className="flex items-center justify-center gap-3 w-full py-5 rounded-[2rem] font-black text-lg bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                            >
+                                <span className="uppercase tracking-[0.1em]">Ver mis Pedidos</span>
+                                <LuArrowRight className="w-5 h-5" />
+                            </button>
+                        )}
+                    </div>
+                ) : (
+                    <button
+                        onClick={handleCheckout}
+                        disabled={loading || cart.length === 0}
+                        className={`mt-8 w-full py-5 rounded-[2rem] font-black text-lg transition-all flex justify-center items-center gap-3 shadow-2xl relative overflow-hidden group ${loading || cart.length === 0
+                            ? 'bg-[var(--foreground)]/10 text-[var(--foreground)]/30 cursor-not-allowed'
+                            : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] shadow-blue-500/20'
+                            }`}
+                    >
+                        {loading ? (
+                            <>
+                                <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                                <span className="uppercase tracking-widest">Procesando...</span>
+                            </>
+                        ) : (
+                            <>
+                                <span className="uppercase tracking-[0.1em]">Finalizar Compra</span>
+                                <LuArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                            </>
+                        )}
+                    </button>
+                )}
 
                 <div className="mt-8 flex items-center justify-center gap-3 py-4 bg-[var(--background)] rounded-2xl">
                     <LuShieldCheck className="text-blue-500" size={18} />

@@ -40,6 +40,7 @@ from email_utils import (
     get_payment_success_template,
     get_password_reset_template
 )
+from correo_api import get_shipping_rate
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
@@ -468,6 +469,26 @@ async def list_orders(
         joinedload(Order.items).joinedload(OrderItem.design)
     ).filter(Order.user_id == current_user.id).order_by(Order.created_at.desc()).offset(skip).limit(limit).all()
     return orders
+
+# --- SHIPPING ENDPOINT ---
+
+from pydantic import BaseModel as PydanticBase
+
+class ShippingRateRequest(PydanticBase):
+    postal_code: str
+    weight_kg: float = 0.5
+
+@app.post("/api/shipping/rate")
+async def shipping_rate(data: ShippingRateRequest):
+    """
+    Cotiza un envío de Correo Argentino a partir del código postal de destino.
+    Usa la API real de MiCorreo si hay credenciales en .env, o precios estimados por zona como fallback.
+    """
+    result = await get_shipping_rate(
+        dest_postal_code=data.postal_code,
+        weight_kg=data.weight_kg,
+    )
+    return result
 
 # --- FAVORITES ENDPOINTS ---
 
