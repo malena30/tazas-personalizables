@@ -3,13 +3,15 @@ import { getProductBySlug } from "@/lib/api";
 import ProductDetailView from "@/components/ProductDetailView";
 import Link from "next/link";
 
-interface Props {
-    params: { slug: string };
-}
+// Next.js 15: params is a Promise
+type Props = {
+    params: Promise<{ slug: string }>;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     try {
-        const product = await getProductBySlug(params.slug);
+        const { slug } = await params;
+        const product = await getProductBySlug(slug);
 
         return {
             title: product.name,
@@ -20,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                 images: product.image_url ? [{ url: product.image_url }] : [],
             },
         };
-    } catch (error) {
+    } catch {
         return {
             title: "Producto | KYATHOS",
             description: "Calidad premium y estilo único.",
@@ -30,7 +32,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
     try {
-        const product = await getProductBySlug(params.slug);
+        const { slug } = await params;
+        const product = await getProductBySlug(slug);
 
         if (!product) {
             return (
@@ -47,7 +50,7 @@ export default async function Page({ params }: Props) {
         }
 
         return <ProductDetailView product={product} />;
-    } catch (error) {
+    } catch {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
                 <h1 className="text-2xl font-bold mb-4">Error al cargar el producto</h1>
