@@ -76,41 +76,32 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"detail": "Internal server error", "error_type": type(exc).__name__},
     )
 
-# Middleware para Forzar HTTPS (solo si no es localhost)
+# Middleware consolidado para Seguridad y Redirección (Interno)
 @app.middleware("http")
-async def force_https_middleware(request: Request, call_next):
+async def custom_security_middleware(request: Request, call_next):
+    # 1. Forzar HTTPS en producción
     if os.getenv("ENV") == "production" and request.url.scheme == "http":
         url = request.url.replace(scheme="https")
         return RedirectResponse(url, status_code=301)
-    return await call_next(request)
-
-# Middleware para Headers de Seguridad (Solo en Producción)
-@app.middleware("http")
-async def add_security_headers(request: Request, call_next):
+    
     response = await call_next(request)
+    
+    # 2. Headers de seguridad en producción
     if os.getenv("ENV") == "production":
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
         response.headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' data: https:; script-src 'self'; style-src 'self' 'unsafe-inline';"
+    
     return response
 
-# CORS — configuración explícita para evitar problemas con preflight o credenciales
-_default_origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://kyathos-shops.vercel.app"
-]
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
-ALLOWED_ORIGINS = [o.strip() for o in ALLOWED_ORIGINS if o.strip()]
-if not ALLOWED_ORIGINS:
-    ALLOWED_ORIGINS = _default_origins
-
+# CORS — configurado AL FINAL para que sea el middleware más externo
+# Usamos "*" y allow_credentials=False para mayor compatibilidad y robustez
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -119,7 +110,7 @@ app.add_middleware(
 async def root():
     return {
         'message': 'Backend iniciado correctamente 🚀', 
-        'version': '1.0.2-v2-restored',
+        'version': '1.0.3-final-cors-fix',
         'env': os.getenv("ENV", "development")
     }
 
