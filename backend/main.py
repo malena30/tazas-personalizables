@@ -98,7 +98,7 @@ app.add_middleware(
 
 @app.api_route('/', methods=["GET", "HEAD"])
 async def root():
-    return {'message': 'Backend iniciado correctamente 🚀'}
+    return {'message': 'Backend iniciado correctamente 🚀', 'version': '1.0.1-debug-cors'}
 
 @app.get("/api/debug-sentry")
 async def trigger_error():
