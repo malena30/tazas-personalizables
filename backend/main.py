@@ -87,15 +87,21 @@ async def add_security_headers(request: Request, call_next):
         response.headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' data: https:; script-src 'self'; style-src 'self' 'unsafe-inline';"
     return response
 
-# CORS — permitir todos los orígenes (la seguridad la maneja JWT en cada endpoint)
-_default_origins = "http://localhost:3000,http://127.0.0.1:3000,https://kyathos-shops.vercel.app"
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", _default_origins).split(",")
+# CORS — configuración explícita para evitar problemas con preflight o credenciales
+_default_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://kyathos-shops.vercel.app"
+]
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
 ALLOWED_ORIGINS = [o.strip() for o in ALLOWED_ORIGINS if o.strip()]
+if not ALLOWED_ORIGINS:
+    ALLOWED_ORIGINS = _default_origins
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
