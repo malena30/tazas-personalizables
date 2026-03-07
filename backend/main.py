@@ -9,7 +9,7 @@ from fastapi import FastAPI, Depends, HTTPException, status, Request, Response
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import func
+from sqlalchemy import func, text
 from typing import List, Optional
 from datetime import timedelta, datetime
 import uuid
@@ -67,13 +67,37 @@ app = FastAPI(title="Tazas Personalizables API")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Handler global para errores no controlados
+# Handler global para errores no controlados (500)
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    print(f"Error crítico: {exc}") # Registro básico en logs del servidor
+    print(f"Error crítico: {exc}")
+    # Retornamos manualmente los headers de CORS porque en errores 500 
+    # a veces se salta la cadena de middlewares.
     return JSONResponse(
         status_code=500,
-        content={"detail": "Internal server error", "error_type": type(exc).__name__},
+        content={
+            "detail": "Internal server error", 
+            "error_type": type(exc).__name__,
+            "error_detail": str(exc) # Solo para depuración, quitar en prod real
+        },
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        }
+    )
+
+# Handler para errores de validación (422)
+@app.exception_handler(status.HTTP_422_UNPROCESSABLE_ENTITY)
+async def validation_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=422,
+        content={"detail": str(exc)},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        }
     )
 
 # Middleware consolidado para Seguridad y Redirección (Interno)
@@ -110,9 +134,21 @@ app.add_middleware(
 async def root():
     return {
         'message': 'Backend iniciado correctamente 🚀', 
-        'version': '1.0.3-final-cors-fix',
+        'version': '1.0.4-cors-emergency-fix',
         'env': os.getenv("ENV", "development")
     }
+
+@app.get("/api/health-db")
+async def health_db(db: Session = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+        return {"status": "ok", "database": "connected"}
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "message": str(e)},
+            headers={"Access-Control-Allow-Origin": "*"}
+        )
 
 @app.get("/api/debug-sentry")
 async def trigger_error():
