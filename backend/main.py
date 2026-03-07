@@ -67,17 +67,13 @@ app = FastAPI(title="Tazas Personalizables API")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Handler global: agrega CORS headers incluso en respuestas de error 500
+# Handler global para errores no controlados
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    print(f"Error crítico: {exc}") # Registro básico en logs del servidor
     return JSONResponse(
         status_code=500,
-        content={"detail": "Internal server error"},
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "*",
-            "Access-Control-Allow-Headers": "*",
-        },
+        content={"detail": "Internal server error", "error_type": type(exc).__name__},
     )
 
 # Middleware para Forzar HTTPS (solo si no es localhost)
@@ -100,22 +96,32 @@ async def add_security_headers(request: Request, call_next):
         response.headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' data: https:; script-src 'self'; style-src 'self' 'unsafe-inline';"
     return response
 
-# CORS — permitir todos los orígenes (la seguridad la maneja JWT en cada endpoint)
-_default_origins = "http://localhost:3000,http://127.0.0.1:3000,https://kyathos-shops.vercel.app"
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", _default_origins).split(",")
+# CORS — configuración explícita para evitar problemas con preflight o credenciales
+_default_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://kyathos-shops.vercel.app"
+]
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
 ALLOWED_ORIGINS = [o.strip() for o in ALLOWED_ORIGINS if o.strip()]
+if not ALLOWED_ORIGINS:
+    ALLOWED_ORIGINS = _default_origins
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 @app.api_route('/', methods=["GET", "HEAD"])
 async def root():
-    return {'message': 'Backend iniciado correctamente 🚀'}
+    return {
+        'message': 'Backend iniciado correctamente 🚀', 
+        'version': '1.0.2-v2-restored',
+        'env': os.getenv("ENV", "development")
+    }
 
 @app.get("/api/debug-sentry")
 async def trigger_error():
