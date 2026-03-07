@@ -67,13 +67,13 @@ app = FastAPI(title="Tazas Personalizables API")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Middleware para Forzar HTTPS (solo si no es localhost)
-@app.middleware("http")
-async def force_https_middleware(request: Request, call_next):
-    if os.getenv("ENV") == "production" and request.url.scheme == "http":
-        url = request.url.replace(scheme="https")
-        return RedirectResponse(url, status_code=301)
-    return await call_next(request)
+# Middleware para Forzar HTTPS (desactivado temporalmente para depurar CORS)
+# @app.middleware("http")
+# async def force_https_middleware(request: Request, call_next):
+#     if os.getenv("ENV") == "production" and request.url.scheme == "http":
+#         url = request.url.replace(scheme="https")
+#         return RedirectResponse(url, status_code=301)
+#     return await call_next(request)
 
 # Middleware para Headers de Seguridad (Solo en Producción)
 @app.middleware("http")
