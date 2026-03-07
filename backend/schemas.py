@@ -1,101 +1,97 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional, Any
 from datetime import datetime
 
+# Schema para crear un diseño
+class DesignCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100)
+    mug_color: str = Field(..., pattern=r'^#[0-9A-Fa-f]{6}$')
+    elements: List[Any]  # Array de CanvasElement
+    thumbnail: Optional[str] = None
 
-# --- ADDRESS ---
+# Schema para actualizar un diseño
+class DesignUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=1, max_length=100)
+    mug_color: Optional[str] = Field(None, pattern=r'^#[0-9A-Fa-f]{6}$')
+    elements: Optional[List[Any]] = None
+    thumbnail: Optional[str] = None
 
-class Address(BaseModel):
-    street: Optional[str] = None
-    city: Optional[str] = None
-    state: Optional[str] = None
-    postal_code: Optional[str] = None
-    country: Optional[str] = None
-    name: Optional[str] = None
-    phone: Optional[str] = None
+# Schema para respuesta de diseño
+class DesignResponse(BaseModel):
+    id: str
+    user_id: Optional[str]
+    name: str
+    mug_color: str
+    elements: List[Any]
+    thumbnail: Optional[str]
+    is_favorite: bool = False
+    created_at: datetime
+    updated_at: datetime
 
+from pydantic import BaseModel, Field, field_validator
+import re
 
-# --- AUTH SCHEMAS ---
-
+# Schema para registro de usuario
 class UserRegister(BaseModel):
-    username: str
-    email: str
-    password: str
+    username: str = Field(..., min_length=3, max_length=50)
+    email: str = Field(..., pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$') # Regex simple para email
+    password: str = Field(..., min_length=8)
 
+    @field_validator('password')
+    @classmethod
+    def password_complexity(cls, v: str) -> str:
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('La contraseña debe contener al menos una letra mayúscula')
+        if not re.search(r'\d', v):
+            raise ValueError('La contraseña debe contener al menos un número')
+        if not re.search(r'[@$!%*?&]', v):
+            raise ValueError('La contraseña debe contener al menos un carácter especial (@$!%*?&)')
+        return v
+
+# Schema para login
 class UserLogin(BaseModel):
     username: str
     password: str
 
+# Schema para respuesta de usuario
 class UserResponse(BaseModel):
     id: str
     username: str
     email: str
-    is_admin: bool
+    is_admin: bool = False
     phone: Optional[str] = None
-    addresses: Optional[List[Any]] = None
-    created_at: Optional[datetime] = None
+    addresses: Optional[List[Any]] = []
+    created_at: datetime
 
     class Config:
         from_attributes = True
 
+# Schema para Token
 class Token(BaseModel):
     access_token: str
     token_type: str
 
+# Schema para solicitar recuperación de contraseña
 class PasswordResetRequest(BaseModel):
-    email: str
+    email: str = Field(..., pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')
 
+# Schema para confirmar reset de contraseña
 class PasswordResetConfirm(BaseModel):
     token: str
-    new_password: str
+    new_password: str = Field(..., min_length=8)
 
-class UserProfileUpdate(BaseModel):
-    email: Optional[str] = None
-    phone: Optional[str] = None
-    addresses: Optional[List[Address]] = None
-    current_password: Optional[str] = None
-    new_password: Optional[str] = None
+    @field_validator('new_password')
+    @classmethod
+    def reset_password_complexity(cls, v: str) -> str:
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('La contraseña debe contener al menos una letra mayúscula')
+        if not re.search(r'\d', v):
+            raise ValueError('La contraseña debe contener al menos un número')
+        if not re.search(r'[@$!%*?&]', v):
+            raise ValueError('La contraseña debe contener al menos un carácter especial (@$!%*?&)')
+        return v
 
-class UserStats(BaseModel):
-    total_spent: float
-    total_orders: int
-    paid_orders: int
-    pending_orders: int
-    failed_orders: int
-    total_designs: int
-
-
-# --- DESIGN SCHEMAS ---
-
-class DesignCreate(BaseModel):
-    name: str
-    mug_color: str
-    elements: Any
-    thumbnail: Optional[str] = None
-
-class DesignUpdate(BaseModel):
-    name: Optional[str] = None
-    mug_color: Optional[str] = None
-    elements: Optional[Any] = None
-    thumbnail: Optional[str] = None
-    is_favorite: Optional[bool] = None
-
-class DesignResponse(BaseModel):
-    id: str
-    name: str
-    mug_color: str
-    elements: Any
-    thumbnail: Optional[str] = None
-    is_favorite: bool = False
-    user_id: Optional[str] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
-
-    class Config:
-        from_attributes = True
-
-
-# --- ORDER SCHEMAS ---
+# --- Order Schemas ---
 
 class OrderItemCreate(BaseModel):
     design_id: Optional[str] = None
@@ -103,10 +99,16 @@ class OrderItemCreate(BaseModel):
     quantity: int
     price: float
 
+class OrderCreate(BaseModel):
+    items: List[OrderItemCreate]
+    shipping_address: Any # JSON con datos del comprador
+    payment_method: str
+    total_amount: float
+
 class OrderItemResponse(BaseModel):
     id: str
-    design_id: Optional[str] = None
-    product_id: Optional[str] = None
+    design_id: Optional[str]
+    product_id: Optional[str]
     quantity: int
     price: float
     design: Optional[DesignResponse] = None
@@ -114,33 +116,24 @@ class OrderItemResponse(BaseModel):
     class Config:
         from_attributes = True
 
-class OrderCreate(BaseModel):
-    total_amount: float
-    shipping_address: Any
-    payment_method: str
-    items: List[OrderItemCreate]
-
 class OrderResponse(BaseModel):
     id: str
-    user_id: Optional[str] = None
+    user_id: Optional[str]
     total_amount: float
     status: str
     shipping_address: Any
     payment_method: str
     checkout_url: Optional[str] = None
-    created_at: Optional[datetime] = None
-    items: List[OrderItemResponse] = []
+    created_at: datetime
+    items: List[OrderItemResponse]
 
     class Config:
         from_attributes = True
 
-class OrderStatusUpdate(BaseModel):
-    status: str
-
-
-# --- ADMIN SCHEMAS ---
+# --- Admin Schemas ---
 
 class AdminStats(BaseModel):
+    """Estadísticas generales para el panel de admin"""
     total_sales: float
     total_orders: int
     pending_orders: int
@@ -149,12 +142,17 @@ class AdminStats(BaseModel):
     total_users: int
     total_designs: int
 
+class OrderStatusUpdate(BaseModel):
+    """Schema para actualizar el estado de una orden"""
+    status: str = Field(..., pattern=r'^(pending|paid|failed)$')
+
 class AdminUserResponse(BaseModel):
+    """Usuario con estadísticas adicionales para admin"""
     id: str
     username: str
     email: str
     is_admin: bool
-    created_at: Optional[datetime] = None
+    created_at: datetime
     order_count: int = 0
     design_count: int = 0
 
@@ -162,76 +160,121 @@ class AdminUserResponse(BaseModel):
         from_attributes = True
 
 class AdminOrderResponse(BaseModel):
+    """Orden con información del usuario para admin"""
     id: str
-    user_id: Optional[str] = None
+    user_id: Optional[str]
+    user: Optional[UserResponse] = None
     total_amount: float
     status: str
     shipping_address: Any
     payment_method: str
     checkout_url: Optional[str] = None
-    created_at: Optional[datetime] = None
-    items: List[OrderItemResponse] = []
-    user: Optional[UserResponse] = None
+    created_at: datetime
+    items: List[OrderItemResponse]
 
     class Config:
         from_attributes = True
 
+# --- Profile Schemas ---
 
-# --- PRODUCT SCHEMAS ---
+class Address(BaseModel):
+    """Dirección de envío"""
+    name: str  # Nombre del destinatario
+    street: str
+    city: str
+    state: str  # Provincia/Estado
+    postal_code: str
+    country: str = "Argentina"
+    phone: Optional[str] = None
+
+class UserProfileUpdate(BaseModel):
+    """Schema para actualizar el perfil del usuario"""
+    email: Optional[str] = Field(None, pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')
+    phone: Optional[str] = None
+    addresses: Optional[List[Address]] = None
+    current_password: Optional[str] = None  # Requerido si cambia contraseña
+    new_password: Optional[str] = Field(None, min_length=8)
+
+    @field_validator('new_password')
+    @classmethod
+    def new_password_complexity(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return v
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('La contraseña debe contener al menos una letra mayúscula')
+        if not re.search(r'\d', v):
+            raise ValueError('La contraseña debe contener al menos un número')
+        if not re.search(r'[@$!%*?&]', v):
+            raise ValueError('La contraseña debe contener al menos un carácter especial (@$!%*?&)')
+        return v
+
+class UserStats(BaseModel):
+    """Estadísticas del usuario para su perfil"""
+    total_spent: float
+    total_orders: int
+    paid_orders: int
+    pending_orders: int
+    failed_orders: int
+    total_designs: int
+
+# --- Product Schemas ---
 
 class ProductCreate(BaseModel):
-    name: str
+    """Schema para crear un producto"""
+    name: str = Field(..., min_length=1, max_length=200)
     slug: Optional[str] = None
     description: Optional[str] = None
-    price: float
+    price: float = Field(..., gt=0)
     image_url: Optional[str] = None
     gallery_urls: Optional[List[str]] = []
     material: Optional[str] = None
     capacity: Optional[str] = None
     care_instructions: Optional[str] = None
     finish: Optional[str] = None
-    stock: Optional[int] = 0
-    image_fit: Optional[str] = "contain"
-    image_scale: Optional[float] = 1.0
-    category: Optional[str] = "frases"
-    is_active: Optional[bool] = True
+    stock: Optional[int] = Field(default=0, ge=0)
+    image_fit: Optional[str] = Field(default="contain", pattern=r'^(contain|cover)$')
+    image_scale: Optional[float] = Field(default=1.0, ge=0.1, le=3.0)
+    category: Optional[str] = Field(default="frases", pattern=r'^(frases|formas)$')
+    is_active: bool = True
 
 class ProductUpdate(BaseModel):
-    name: Optional[str] = None
+    """Schema para actualizar un producto"""
+    name: Optional[str] = Field(None, min_length=1, max_length=200)
     slug: Optional[str] = None
     description: Optional[str] = None
-    price: Optional[float] = None
+    price: Optional[float] = Field(None, gt=0)
     image_url: Optional[str] = None
     gallery_urls: Optional[List[str]] = None
     material: Optional[str] = None
     capacity: Optional[str] = None
     care_instructions: Optional[str] = None
     finish: Optional[str] = None
-    stock: Optional[int] = None
-    image_fit: Optional[str] = None
-    image_scale: Optional[float] = None
-    category: Optional[str] = None
+    stock: Optional[int] = Field(None, ge=0)
+    image_fit: Optional[str] = Field(None, pattern=r'^(contain|cover)$')
+    image_scale: Optional[float] = Field(None, ge=0.1, le=3.0)
+    category: Optional[str] = Field(None, pattern=r'^(frases|formas)$')
     is_active: Optional[bool] = None
 
 class ProductResponse(BaseModel):
+    """Schema para respuesta de producto"""
     id: str
     name: str
-    slug: Optional[str] = None
-    description: Optional[str] = None
+    slug: Optional[str]
+    description: Optional[str]
     price: float
-    image_url: Optional[str] = None
-    gallery_urls: Optional[List[str]] = []
-    material: Optional[str] = None
-    capacity: Optional[str] = None
-    care_instructions: Optional[str] = None
-    finish: Optional[str] = None
-    stock: Optional[int] = 0
-    image_fit: Optional[str] = "contain"
-    image_scale: Optional[float] = 1.0
-    category: Optional[str] = None
-    is_active: bool = True
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    image_url: Optional[str]
+    gallery_urls: Optional[List[str]]
+    material: Optional[str]
+    capacity: Optional[str]
+    care_instructions: Optional[str]
+    finish: Optional[str]
+    stock: Optional[int]
+    image_fit: Optional[str]
+    image_scale: Optional[float]
+    category: Optional[str]
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True

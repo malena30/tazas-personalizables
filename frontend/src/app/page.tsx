@@ -1,152 +1,303 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import ProductCard from "@/components/ProductCard";
+import TestimonialCard from "@/components/TestimonialCard";
+import SimpleMugHero from "@/components/SimpleMugHero";
+import ProductSkeleton from "@/components/ProductSkeleton";
+import { getProducts, Product } from "@/lib/api";
+import { LuPalette, LuShoppingBag, LuArrowRight, LuStar, LuShieldCheck, LuTruck } from "react-icons/lu";
 
 export default function Home() {
-  return (
-    <main className="w-full flex flex-col items-center bg-[var(--background)] min-h-screen pb-20 -mt-10">
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-      {/* HERO BANNER */}
-      <section className="w-full bg-[var(--accent)] py-10 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between">
-          <div className="md:w-1/2 text-[var(--foreground)] mb-8 md:mb-0">
-            <h1 className="text-3xl md:text-5xl font-title font-semibold mb-4">
-              Creá tu taza <br /> <span className="font-bold">única y original</span>
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await getProducts();
+        // Mostrar 2 de Frases + 2 de Formas para un balance visual
+        const frases = data.filter((p: Product) => p.category === 'frases').slice(0, 2);
+        const formas = data.filter((p: Product) => p.category === 'formas').slice(0, 2);
+        const featured = [...frases, ...formas];
+        setProducts(featured.length >= 2 ? featured : data.slice(0, 4));
+
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProducts();
+  }, []);
+
+  return (
+    <main className="w-full bg-[var(--background)] min-h-screen">
+
+      {/* HERO SECTION */}
+      <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[var(--background)]">
+        {/* Subtle background texture/elements */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[var(--accent)] rounded-full blur-[120px]"></div>
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[var(--accent)] rounded-full blur-[120px]"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-16 items-center">
+          {/* Text Content */}
+          <div className="text-center md:text-left z-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full text-xs font-black uppercase tracking-widest mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <LuStar size={10} />
+              <span>Calidad Premium Garantizada</span>
+            </div>
+            <h1 className="text-6xl md:text-8xl font-title font-black text-[var(--foreground)] mb-8 leading-[0.9] tracking-tighter animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+              Lo cotidiano, <br />
+              <span className="text-[var(--accent)]">con intención.</span>
             </h1>
-            <p className="text-lg md:text-xl mb-6 font-text font-light">
-              Personalizala con tus fotos, frases o diseños favoritos.
+            <p className="text-xl md:text-2xl text-zinc-800 dark:text-gray-300 mb-12 font-text max-w-lg animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 font-medium">
+              Personaliza cada detalle y crea una pieza única que hable de vos. Calidad excepcional en cada sorbo.
             </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center md:justify-start animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
+              <Link
+                href="/customizer"
+                className="px-10 py-5 bg-[var(--cream-dark)] text-white rounded-2xl font-black text-lg shadow-2xl shadow-[var(--cream-dark)]/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+              >
+                <LuPalette size={20} />
+                Diseñar Ahora
+              </Link>
+              <Link
+                href="/products"
+                className="px-10 py-5 bg-white text-[var(--cream-dark)] rounded-2xl font-black text-lg border-2 border-[var(--cream-dark)] hover:bg-[var(--cream-dark)] hover:text-white transition-all flex items-center justify-center gap-3 shadow-lg shadow-black/5"
+              >
+                Ver Catálogo
+                <LuArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
+
+          {/* Hero Image (3D) */}
+          <div className="relative z-10 flex justify-center animate-in fade-in zoom-in duration-1000 delay-200">
+            <div className="relative w-full max-w-lg">
+              <div className="absolute inset-0 bg-[var(--accent)]/20 rounded-full filter blur-[100px] animate-pulse"></div>
+              <SimpleMugHero />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* STATS SECTION */}
+      <section className="w-full py-16 border-y border-[var(--border)] bg-[var(--stone)]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+            <div className="space-y-2">
+              <p className="text-5xl font-black text-[var(--gold)] tracking-tighter transition-colors">+1.5k</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--foreground)] opacity-70">Clientes Felices</p>
+            </div>
+            <div className="space-y-2">
+              <p className="text-5xl font-black text-[var(--gold)] tracking-tighter transition-colors">+500</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--foreground)] opacity-70">Diseños Únicos</p>
+            </div>
+            <div className="space-y-2">
+              <p className="text-5xl font-black text-[var(--gold)] tracking-tighter transition-colors">24h</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--foreground)] opacity-70">Producción Express</p>
+            </div>
+            <div className="space-y-2">
+              <p className="text-5xl font-black text-[var(--gold)] tracking-tighter transition-colors">100%</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--foreground)] opacity-70">Garantía Total</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS SECTION */}
+      <section className="w-full py-32 px-6 bg-[var(--background)]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-24">
+            <h2 className="text-5xl md:text-6xl font-title font-black text-[var(--foreground)] tracking-tighter mb-6">
+              ¿Cómo <span className="text-[var(--accent)]">Funciona?</span>
+            </h2>
+            <p className="text-zinc-800 dark:text-gray-300 text-xl leading-relaxed font-medium">
+              Tres simples pasos para transformar una idea en tu taza favorita.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-12">
+            {/* Step 1 */}
+            <div className="relative p-10 rounded-[3rem] border-2 border-[var(--border)] bg-[var(--cream)] group hover:border-[var(--accent)] transition-all duration-500 shadow-sm hover:shadow-xl">
+              <div className="w-16 h-16 mb-8 bg-[var(--background)] border-2 border-[var(--accent)] text-[var(--accent)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-[var(--accent)]/5 group-hover:scale-110 transition-transform duration-300">
+                01
+              </div>
+              <h3 className="text-2xl font-black mb-4 text-[var(--foreground)]">
+                Diseña
+              </h3>
+              <p className="leading-relaxed font-medium text-[var(--foreground)] opacity-70">
+                Usa nuestro editor intuitivo para agregar textos, imágenes y elementos únicos que reflejen tu personalidad.
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="relative p-10 rounded-[3rem] border-2 border-[var(--border)] bg-[var(--cream)] group hover:border-[var(--accent)] transition-all duration-500 shadow-sm hover:shadow-xl">
+              <div className="w-16 h-16 mb-8 bg-[var(--background)] border-2 border-[var(--accent)] text-[var(--accent)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-[var(--accent)]/5 group-hover:scale-110 transition-transform duration-300">
+                02
+              </div>
+              <h3 className="text-2xl font-black mb-4 text-[var(--foreground)]">
+                Compra
+              </h3>
+              <p className="leading-relaxed font-medium text-[var(--foreground)] opacity-70">
+                Agrega al carrito y completa tu pedido de forma segura con Mercado Pago. Aceptamos todas las tarjetas.
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="relative p-10 rounded-[3rem] border-2 border-[var(--border)] bg-[var(--cream)] group hover:border-[var(--accent)] transition-all duration-500 shadow-sm hover:shadow-xl">
+              <div className="w-16 h-16 mb-8 bg-[var(--background)] border-2 border-[var(--accent)] text-[var(--accent)] rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-[var(--accent)]/5 group-hover:scale-110 transition-transform duration-300">
+                03
+              </div>
+              <h3 className="text-2xl font-black mb-4 text-[var(--foreground)]">
+                Recibe
+              </h3>
+              <p className="leading-relaxed font-medium text-[var(--foreground)] opacity-70">
+                Tu taza personalizada llega a tu puerta en pocos días, protegida y lista para ser estrenada.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="productos" className="w-full py-32 px-6 bg-[var(--cream)] dark:bg-zinc-950" style={{ backgroundColor: 'var(--cream)' }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-end justify-between gap-8 mb-20">
+            <div className="max-w-2xl">
+              <h2 className="text-5xl md:text-6xl font-title font-black text-[var(--foreground)] tracking-tighter mb-6">
+                Productos <span className="text-[var(--accent)]">Destacados</span>
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 text-xl leading-relaxed">
+                Una selección de nuestras piezas más queridas, listas para ser el lienzo de tu creatividad.
+              </p>
+            </div>
             <Link
-              href="/customizer"
-              className="bg-[var(--foreground)] text-[var(--background)] font-text font-semibold px-6 py-3 rounded-lg hover:opacity-90 transition-all shadow-md inline-block"
+              href="/products"
+              className="px-8 py-4 bg-[var(--cream-dark)] text-white rounded-2xl font-black text-sm hover:scale-[1.05] transition-all shadow-xl shadow-[var(--cream-dark)]/10"
             >
-              Diseñar ahora
+              Ver Todo el Catálogo
             </Link>
           </div>
 
-          <div className="md:w-1/2 flex justify-center">
-            <div className="relative w-full max-w-md h-64 md:h-80 bg-[var(--background)] rounded-lg shadow-lg overflow-hidden border border-[var(--border)]">
-              <Image
-                src="https://images.pexels.com/photos/1415550/pexels-photo-1415550.jpeg"
-                alt="Banner Tazas"
-                fill
-                className="object-cover"
-              />
+          {loading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[1, 2, 3, 4].map((i) => (
+                <ProductSkeleton key={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  id={product.id}
+                  slug={product.slug}
+                  name={product.name}
+                  price={product.price}
+                  image={product.image_url || ""}
+                  description={product.description || ""}
+                  image_fit={product.image_fit}
+                  image_scale={product.image_scale}
+                  onAddToCart={() => { }}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* TRUST SECTION */}
+      <section className="w-full py-24 px-6 bg-[var(--cream)] border-y border-[var(--border)]">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl flex items-center justify-center shrink-0">
+              <LuTruck size={24} />
+            </div>
+            <div>
+              <h4 className="font-black text-[var(--gold)] text-lg">Envío Nacional</h4>
+              <p className="text-sm text-[var(--foreground)] opacity-70 font-medium">Llegamos a todo el país con seguimiento en tiempo real.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl flex items-center justify-center shrink-0">
+              <LuShieldCheck size={24} />
+            </div>
+            <div>
+              <h4 className="font-black text-[var(--gold)] text-lg">Pago 100% Seguro</h4>
+              <p className="text-sm text-[var(--foreground)] opacity-70 font-medium">Tus datos están protegidos con encriptación de grado bancario.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl flex items-center justify-center shrink-0">
+              <LuStar size={24} />
+            </div>
+            <div>
+              <h4 className="font-black text-[var(--gold)] text-lg">Calidad Premium</h4>
+              <p className="text-sm text-[var(--foreground)] opacity-70 font-medium">Solo usamos materiales de alta gama para resultados duraderos.</p>
             </div>
           </div>
         </div>
       </section>
 
+      {/* TESTIMONIALS SECTION */}
+      <section className="w-full py-32 px-6 bg-[var(--cream)]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-24">
+            <h2 className="text-5xl md:text-6xl font-title font-black text-[var(--foreground)] tracking-tighter mb-6">
+              Lo que dicen nuestros <span className="text-[var(--accent)]">clientes</span>
+            </h2>
+            <p className="text-[var(--foreground)] opacity-70 text-xl leading-relaxed font-medium">
+              Más de 1,000 personas ya disfrutan de sus tazas personalizadas.
+            </p>
+          </div>
 
-      {/* SECCIÓN DE PRODUCTOS */}
-      <section className="max-w-6xl w-full px-4 mt-12">
-        <div className="flex items-center gap-4 mb-6">
-          <h2 className="text-2xl font-title font-medium text-[var(--foreground)]">
-            PRODUCTOS DESTACADOS
+          <div className="grid md:grid-cols-3 gap-12">
+            <TestimonialCard
+              name="María González"
+              rating={5}
+              comment="¡Increíble calidad! La taza quedó exactamente como la diseñé. El envío fue súper rápido y el empaque muy cuidado. 100% recomendado."
+            />
+            <TestimonialCard
+              name="Juan Pérez"
+              rating={5}
+              comment="Compré un set para regalar en un aniversario y fue un éxito total. La impresión es de alta calidad y los colores muy vivos."
+            />
+            <TestimonialCard
+              name="Laura Martínez"
+              rating={5}
+              comment="Me encanta el diseñador, es muy fácil de usar. Pude crear una taza personalizada para mi mamá en minutos. ¡Le encantó!"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA SECTION */}
+      <section className="w-full py-32 px-6">
+        <div className="max-w-5xl mx-auto bg-[var(--background)] rounded-[4rem] p-16 md:p-24 text-center border-2 border-[var(--cream-dark)] shadow-2xl shadow-[var(--cream-dark)]/5 relative overflow-hidden">
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--cream-dark)]/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[var(--cream-dark)]/5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2"></div>
+
+          <h2 className="text-5xl md:text-7xl font-title font-black mb-8 relative z-10 tracking-tighter leading-none text-[var(--foreground)]">
+            ¿Listo para crear tu <br />
+            <span className="text-[var(--cream-dark)]">taza ideal?</span>
           </h2>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-
-          {/* Card 1 */}
-          <div className="bg-[var(--background)] border border-[var(--border)] rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
-            <div className="relative h-56 w-full border-b border-[var(--border)]">
-              <Image
-                src="https://images.pexels.com/photos/1415550/pexels-photo-1415550.jpeg"
-                alt="Taza Minimalista"
-                fill
-                className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="p-4">
-              <h3 className="text-2xl font-mono font-medium text-[var(--foreground)]">$ 3.500</h3>
-              <p className="text-sm text-[var(--foreground)] opacity-70 font-text mt-2 line-clamp-2">Taza Minimalista Cerámica Premium Personalizable</p>
-            </div>
-          </div>
-
-          {/* Card 2 */}
-          <div className="bg-[var(--background)] border border-[var(--border)] rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
-            <div className="relative h-56 w-full border-b border-[var(--border)]">
-              <Image
-                src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg"
-                alt="Taza con Foto"
-                fill
-                className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="p-4">
-              <h3 className="text-2xl font-mono font-medium text-[var(--foreground)]">$ 4.200</h3>
-              <p className="text-sm text-[var(--foreground)] opacity-70 font-text mt-2 line-clamp-2">Taza Personalizada Con Tu Foto Full Color</p>
-            </div>
-          </div>
-
-          {/* Card 3 */}
-          <div className="bg-[var(--background)] border border-[var(--border)] rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
-            <div className="relative h-56 w-full border-b border-[var(--border)]">
-              <Image
-                src="https://images.pexels.com/photos/326682/pexels-photo-326682.jpeg"
-                alt="Taza Ilustrada"
-                fill
-                className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="p-4">
-              <h3 className="text-2xl font-mono font-medium text-[var(--foreground)]">$ 3.900</h3>
-              <p className="text-sm text-[var(--foreground)] opacity-70 font-text mt-2 line-clamp-2">Taza Ilustrada Diseño Exclusivo Artístico</p>
-            </div>
-          </div>
-
-          {/* Card 4 */}
-          <div className="bg-[var(--background)] border border-[var(--border)] rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
-            <div className="relative h-56 w-full border-b border-[var(--border)]">
-              <Image
-                src="https://images.pexels.com/photos/1207918/pexels-photo-1207918.jpeg"
-                alt="Set de Tazas"
-                fill
-                className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="p-4">
-              <h3 className="text-2xl font-mono font-medium text-[var(--foreground)]">$ 7.500</h3>
-              <p className="text-sm text-[var(--foreground)] opacity-70 font-text mt-2 line-clamp-2">Set X2 Tazas Pareja Personalizadas Amor</p>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* BENEFICIOS */}
-      <section className="max-w-6xl w-full px-4 mt-12 mb-10">
-        <div className="bg-[var(--background)] border border-[var(--border)] rounded-lg shadow-sm p-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-4">
-            <div className="text-4xl">💳</div>
-            <div>
-              <h3 className="text-lg font-title font-semibold text-[var(--foreground)]">Pagá con tarjeta o en efectivo</h3>
-              <Link href="#" className="text-[var(--accent)] text-sm font-text hover:underline">Ver medios de pago</Link>
-            </div>
-          </div>
-
-          <div className="w-px h-12 bg-[var(--border)] hidden md:block"></div>
-
-          <div className="flex items-center gap-4">
-            <div className="text-4xl">📦</div>
-            <div>
-              <h3 className="text-lg font-title font-semibold text-[var(--foreground)]">Envío rápido a todo el país</h3>
-              <Link href="#" className="text-[var(--accent)] text-sm font-text hover:underline">Ver costos y tiempos</Link>
-            </div>
-          </div>
-
-          <div className="w-px h-12 bg-[var(--border)] hidden md:block"></div>
-
-          <div className="flex items-center gap-4">
-            <div className="text-4xl">🛡️</div>
-            <div>
-              <h3 className="text-lg font-title font-semibold text-[var(--foreground)]">Compra protegida</h3>
-              <Link href="#" className="text-[var(--accent)] text-sm font-text hover:underline">Se abren en una nueva pestaña</Link>
-            </div>
+          <p className="text-xl md:text-2xl text-[var(--foreground)] opacity-70 mb-12 relative z-10 max-w-2xl mx-auto font-bold">
+            Empieza a diseñar ahora y tené tu taza única en pocos días. El regalo perfecto está a un clic.
+          </p>
+          <div className="flex justify-center relative z-10">
+            <Link
+              href="/customizer"
+              className="px-12 py-6 bg-[var(--cream-dark)] text-white rounded-2xl font-black text-xl shadow-2xl shadow-[var(--cream-dark)]/30 hover:scale-[1.05] active:scale-[0.95] transition-all"
+            >
+              Comenzar a Diseñar
+            </Link>
           </div>
         </div>
       </section>
-
     </main>
   );
 }

@@ -53,11 +53,11 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
     phone = Column(String, nullable=True)
-    addresses = Column(SmartJSON(), default=list, nullable=True)
+    addresses = Column(SmartJSON(), default=list, nullable=True)  # Lista de direcciones
     reset_token = Column(String, nullable=True)
     reset_token_expires = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-
+    
     designs = relationship("Design", back_populates="owner")
     orders = relationship("Order", back_populates="user")
     favorites = relationship("UserFavorite", back_populates="user", cascade="all, delete-orphan")
@@ -68,21 +68,21 @@ class Product(Base):
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     name = Column(String, nullable=False)
-    slug = Column(String, unique=True, index=True, nullable=True)
+    slug = Column(String, unique=True, index=True, nullable=True) # Nullable for migration, then set to unique
     description = Column(String, nullable=True)
     price = Column(Float, nullable=False)
     image_url = Column(String, nullable=True)
-    gallery_urls = Column(SmartJSON(), default=list, nullable=True)
+    gallery_urls = Column(SmartJSON(), default=list, nullable=True) # Array de URLs de fotos reales
     material = Column(String, nullable=True)
     capacity = Column(String, nullable=True)
     care_instructions = Column(String, nullable=True)
     finish = Column(String, nullable=True)
     stock = Column(Integer, default=0, nullable=True)
-    image_fit = Column(String, default="contain", nullable=True)
-    image_scale = Column(Float, default=1.0, nullable=True)
-    category = Column(String, default="frases", nullable=True)
+    image_fit = Column(String, default="contain", nullable=True) # "contain" or "cover"
+    image_scale = Column(Float, default=1.0, nullable=True)      # Zoom level (1.0 = 100%)
+    category = Column(String, default="frases", nullable=True) # "frases" or "formas"
     is_active = Column(Boolean, default=True, nullable=False)
-
+    
     favorited_by = relationship("UserFavorite", back_populates="product", cascade="all, delete-orphan")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -95,12 +95,12 @@ class Design(Base):
     user_id = Column(String, ForeignKey("users.id"), nullable=True)
     name = Column(String, nullable=False)
     mug_color = Column(String, nullable=False)
-    elements = Column(SmartJSON(), nullable=False)
+    elements = Column(SmartJSON(), nullable=False)  # Array de CanvasElement
     thumbnail = Column(String, nullable=True)
     is_favorite = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
+    
     owner = relationship("User", back_populates="designs")
 
 # Modelo de Orden
@@ -110,7 +110,7 @@ class Order(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = Column(String, ForeignKey("users.id"), nullable=True)
     total_amount = Column(Float, nullable=False)
-    status = Column(String, default="pending")
+    status = Column(String, default="pending") # pending, paid, shipped
     shipping_address = Column(SmartJSON(), nullable=False)
     payment_method = Column(String, nullable=False)
     checkout_url = Column(String, nullable=True)
@@ -126,7 +126,7 @@ class OrderItem(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     order_id = Column(String, ForeignKey("orders.id"), nullable=False)
     design_id = Column(String, ForeignKey("designs.id"), nullable=True)
-    product_id = Column(String, nullable=True)
+    product_id = Column(String, nullable=True) # ID de producto de catálogo
     quantity = Column(Integer, nullable=False)
     price = Column(Float, nullable=False)
 
@@ -147,10 +147,12 @@ class UserFavorite(Base):
     product = relationship("Product", back_populates="favorited_by")
     design = relationship("Design")
 
-# Auto-migración
+# Auto-migración: agregar columnas nuevas si no existen (solo para SQLite, en Postgres create_all es suficiente)
 def _auto_migrate():
     from sqlalchemy import text, inspect
     inspector = inspect(engine)
+    # En PostgreSQL, create_all ya se encarga de las tablas y columnas nuevas
+    # Esta migración es principalmente para SQLite local
     try:
         cols = [c['name'] for c in inspector.get_columns('users')]
         with engine.connect() as conn:
@@ -197,6 +199,7 @@ def init_db():
     except Exception as e:
         print(f"⚠️  Error en auto-migración: {e}")
 
+    # Asegurar que el producto "Taza Personalizada" existe
     db = SessionLocal()
     try:
         custom_mug = db.query(Product).filter(Product.slug == "taza-personalizada").first()

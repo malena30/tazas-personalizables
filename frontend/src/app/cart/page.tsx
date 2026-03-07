@@ -1,187 +1,205 @@
 "use client";
 
-import { FaRegTrashAlt } from "react-icons/fa";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
-import { useState } from "react";
-import Link from "next/link"; // <-- IMPORTANTE
+import { LuTrash2, LuPlus, LuMinus, LuArrowRight, LuShoppingBag, LuTruck } from "react-icons/lu";
 
 export default function CartPage() {
+  const { user } = useAuth();
+  const router = useRouter();
   const {
     cart,
     updateQuantity,
     removeFromCart,
     clearCart,
-    shippingCost,
-    setShippingCost,
   } = useCartStore();
 
-  const [province, setProvince] = useState("");
+  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const calculateSubtotal = () => {
-    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const handleCheckout = () => {
+    if (!user) {
+      router.push("/login?redirect=/checkout");
+    } else {
+      router.push("/checkout");
+    }
   };
-
-  const calculateShipping = (prov: string) => {
-    const table: Record<string, number> = {
-      "Buenos Aires": 4500,
-      CABA: 3500,
-      Córdoba: 6000,
-      "Santa Fe": 6500,
-      Mendoza: 7000,
-      Tucumán: 7500,
-      Salta: 8000,
-      Neuquén: 9000,
-      "Río Negro": 9200,
-      Chubut: 10000,
-      "Santa Cruz": 12000,
-      "Tierra del Fuego": 15000,
-    };
-    return table[prov] || 0;
-  };
-
-  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const prov = e.target.value;
-    setProvince(prov);
-    setShippingCost(calculateShipping(prov));
-  };
-
-  const subtotal = calculateSubtotal();
-  const total = subtotal + shippingCost;
 
   return (
-    <div className="max-w-6xl mx-auto p-6 mt-20 grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* COLUMNA IZQUIERDA: LISTA DE PRODUCTOS */}
-      <div className="lg:col-span-2 space-y-4 text-[var(--foreground)]">
-        <h1 className="text-3xl font-title font-bold mb-4 text-[var(--foreground)]">Carrito</h1>
+    <div className="min-h-screen bg-[var(--background)] py-20 px-6">
+      <div className="max-w-7xl mx-auto">
+        <header className="mb-12">
+          <h1 className="text-4xl md:text-5xl font-black text-[var(--foreground)] tracking-tight">
+            Tu <span className="text-[var(--accent)]">Carrito</span>
+          </h1>
+          <p className="text-[var(--foreground)]/50 mt-4 text-lg">
+            Revisá tus productos antes de finalizar la compra.
+          </p>
+        </header>
 
         {cart.length === 0 ? (
-          <p className="text-[var(--foreground)] opacity-60 font-text text-lg">Tu carrito está vacío.</p>
-        ) : (
-          <>
-            {cart.map((item) => (
-              <div
-                key={item.id}
-                className="p-4 border border-[var(--border)] rounded-lg flex justify-between items-center bg-[var(--background)] shadow-sm"
-              >
-                {/* Nombre y precio */}
-                <div>
-                  <p className="font-title font-semibold text-[var(--foreground)]">{item.name}</p>
-                  <p className="text-[var(--foreground)] font-mono">${item.price}</p>
-                </div>
-
-                {/* Controles */}
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() =>
-                      updateQuantity(item.id, Math.max(1, item.quantity - 1))
-                    }
-                    className="px-3 py-1 border border-[var(--border)] rounded font-mono"
-                  >
-                    -
-                  </button>
-
-                  <span className="font-mono text-[var(--foreground)]">{item.quantity}</span>
-
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="px-3 py-1 border border-[var(--border)] rounded font-mono"
-                  >
-                    +
-                  </button>
-
-                  <button
-                    onClick={() => removeFromCart(item.id)}
-                    className="ml-4 text-red-600 hover:text-red-700 transition cursor-pointer"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      viewBox="0 0 24 24"
-                      className="w-6 h-6 hover:scale-110 transition-transform"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18" />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            ))}
-
-            {/* Botón Vaciar */}
-            <button
-              onClick={clearCart}
-              className="bg-red-500 text-white px-4 py-2 rounded font-text flex items-center gap-2 cursor-pointer hover:bg-red-600 transition-colors"
-            >
-              <FaRegTrashAlt size={18} />
-              Vaciar carrito
-            </button>
-          </>
-        )}
-      </div>
-
-      {/* COLUMNA DERECHA: RESUMEN + ENVÍO */}
-      {cart.length > 0 && (
-        <div className="p-6 border border-[var(--border)] rounded-lg bg-[var(--background)] shadow-md h-fit sticky top-24">
-          <h2 className="text-2xl font-title font-bold mb-4 text-[var(--foreground)]">Resumen de compra</h2>
-
-          <div className="text-lg">
-            <p className="flex justify-between mb-2 text-[var(--foreground)] font-text">
-              <span>Productos</span>
-              <span className="font-mono">${subtotal}</span>
-            </p>
-
-            {/* SELECT DE PROVINCIA */}
-            <div className="my-4">
-              <label className="font-text font-medium text-[var(--foreground)]">Envío</label>
-              <select
-                value={province}
-                onChange={handleProvinceChange}
-                className="w-full mt-2 p-2 border border-[var(--border)] rounded text-[var(--foreground)] bg-[var(--background)] font-text"
-              >
-                <option value="">Seleccionar provincia</option>
-                <option>Buenos Aires</option>
-                <option>CABA</option>
-                <option>Córdoba</option>
-                <option>Santa Fe</option>
-                <option>Mendoza</option>
-                <option>Tucumán</option>
-                <option>Salta</option>
-                <option>Neuquén</option>
-                <option>Río Negro</option>
-                <option>Chubut</option>
-                <option>Santa Cruz</option>
-                <option>Tierra del Fuego</option>
-              </select>
-
-              <p className="mt-2 flex justify-between text-[var(--foreground)] font-text">
-                <span>Costo de envío</span>
-                <span className="font-mono">${shippingCost}</span>
-              </p>
+          <div className="bg-[var(--card)] rounded-[3rem] p-20 text-center border border-[var(--border)] shadow-sm animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="w-32 h-32 bg-[var(--background)] rounded-full flex items-center justify-center mx-auto mb-8">
+              <LuShoppingBag className="text-5xl text-[var(--accent)]" />
             </div>
-
-            <hr className="my-4" />
-
-            <p className="text-2xl font-title font-bold flex justify-between text-[var(--foreground)]">
-              <span>Total</span>
-              <span className="font-mono">${total}</span>
+            <h2 className="text-3xl font-bold text-[var(--foreground)] mb-4">Tu carrito está vacío</h2>
+            <p className="text-[var(--foreground)]/50 mb-10 max-w-md mx-auto text-lg leading-relaxed">
+              Parece que aún no has añadido nada. ¡Explora nuestros productos y personaliza tu taza ideal!
             </p>
-
-            {/* BOTÓN COMPRAR → LLEVA A /checkout */}
             <Link
-              href="/checkout"
-              className="w-full mt-6 bg-[var(--accent)] text-[var(--foreground)] py-3 text-lg font-text font-semibold rounded-lg shadow hover:opacity-90 transition-opacity block text-center"
+              href="/products"
+              className="inline-flex items-center gap-3 bg-[var(--accent)] text-white px-10 py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all shadow-xl shadow-black/10 hover:scale-105 active:scale-95"
             >
-              Comprar
+              Explorar Productos
+              <LuArrowRight size={16} />
             </Link>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="flex flex-col lg:flex-row gap-12">
+            {/* COLUMNA IZQUIERDA: LISTA DE PRODUCTOS */}
+            <div className="flex-1 space-y-8">
+              <div className="bg-[var(--card)] rounded-[2.5rem] border border-[var(--border)] overflow-hidden shadow-sm">
+                <div className="divide-y divide-[var(--border)]">
+                  {cart.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-8 flex flex-col sm:flex-row gap-8 hover:bg-[var(--background)] transition-all group"
+                    >
+                      {/* Imagen */}
+                      <div className="w-full sm:w-40 h-40 bg-[var(--background)] rounded-3xl overflow-hidden flex-shrink-0 border border-[var(--border)] relative">
+                        {item.image ? (
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-contain group-hover:scale-110 transition-transform duration-700 ease-out"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-5xl">☕</div>
+                        )}
+                      </div>
+
+                      {/* Detalles */}
+                      <div className="flex-1 flex flex-col justify-between py-2">
+                        <div className="flex justify-between items-start gap-4">
+                          <div>
+                            <h3 className="text-xl font-bold text-[var(--foreground)] leading-tight group-hover:text-[var(--accent)] transition-colors">
+                              {item.name}
+                            </h3>
+                            <div className="flex items-center gap-2 mt-2">
+                              <span className="text-xs font-bold text-[var(--foreground)]/40 uppercase tracking-widest">Precio Unitario:</span>
+                              <span className="text-sm font-bold text-[var(--accent)]">
+                                ${item.price.toLocaleString('es-AR')}
+                              </span>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="p-3 text-[var(--foreground)]/30 hover:text-red-500 transition-all rounded-2xl hover:bg-red-50"
+                            title="Eliminar"
+                          >
+                            <LuTrash2 size={20} />
+                          </button>
+                        </div>
+
+                        <div className="flex flex-wrap justify-between items-end mt-6 gap-4">
+                          {/* Controles de cantidad */}
+                          <div className="flex items-center bg-[var(--background)] rounded-2xl p-1.5 border border-[var(--border)]">
+                            <button
+                              onClick={() =>
+                                updateQuantity(item.id, Math.max(1, item.quantity - 1))
+                              }
+                              className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-[var(--accent)] transition-colors"
+                            >
+                              <LuMinus size={12} />
+                            </button>
+                            <span className="w-12 text-center font-black text-lg text-[var(--foreground)]">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-[var(--accent)] transition-colors"
+                            >
+                              <LuPlus size={12} />
+                            </button>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-[10px] font-bold text-[var(--foreground)]/40 uppercase tracking-widest mb-1">Subtotal Item</p>
+                            <p className="text-2xl font-black text-[var(--foreground)]">
+                              ${(item.price * item.quantity).toLocaleString('es-AR')}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Botón Vaciar */}
+              <div className="flex justify-start">
+                <button
+                  onClick={clearCart}
+                  className="text-[var(--foreground)]/30 hover:text-red-500 flex items-center gap-2 text-sm font-bold transition-all px-6 py-3 rounded-2xl hover:bg-red-50"
+                >
+                  <LuTrash2 size={16} />
+                  Vaciar mi carrito
+                </button>
+              </div>
+            </div>
+
+            {/* COLUMNA DERECHA: RESUMEN */}
+            <aside className="lg:w-[400px]">
+              <div className="sticky top-32 bg-[var(--card)] rounded-[2.5rem] border border-[var(--border)] shadow-2xl shadow-black/5 overflow-hidden">
+                <div className="p-10">
+                  <h2 className="text-2xl font-bold text-[var(--foreground)] mb-8">Resumen</h2>
+
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[var(--foreground)]/60 font-medium">Subtotal ({cart.reduce((s, i) => s + i.quantity, 0)} productos)</span>
+                      <span className="font-bold text-xl text-[var(--foreground)]">
+                        ${subtotal.toLocaleString('es-AR')}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3 p-4 bg-[var(--background)] rounded-2xl border border-[var(--border)]">
+                      <LuTruck size={18} className="text-[var(--accent)] flex-shrink-0" />
+                      <p className="text-xs font-bold text-[var(--foreground)]/50 leading-relaxed">
+                        El costo de envío se calcula en el checkout con tu código postal
+                      </p>
+                    </div>
+
+                    <div className="pt-6 border-t border-[var(--border)]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xl font-bold text-[var(--foreground)]">Subtotal</span>
+                        <span className="block text-3xl font-black text-[var(--accent)]">
+                          ${subtotal.toLocaleString('es-AR')}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-[var(--foreground)]/30 font-bold uppercase tracking-tighter mt-1 text-right">+ Envío a confirmar</p>
+                    </div>
+
+                    <button
+                      onClick={handleCheckout}
+                      className="w-full mt-4 bg-[var(--accent)] text-white py-5 rounded-[1.5rem] font-bold text-xl shadow-xl shadow-black/5 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+                    >
+                      Finalizar Compra
+                      <LuArrowRight size={18} />
+                    </button>
+
+                    <div className="flex items-center justify-center gap-2 mt-2 text-[var(--foreground)]/30">
+                      <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                      <p className="text-[10px] font-bold uppercase tracking-widest">Pago Seguro Encriptado</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

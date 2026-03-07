@@ -1,450 +1,272 @@
-# Documentación del Proyecto: Tazas Personalizables
+# README: KYATHOS tazas
 
-## Resumen Ejecutivo
-
-**Tazas Personalizables** es una aplicación e-commerce fullstack para la venta de tazas personalizadas. El proyecto consta de un backend FastAPI (Python) y un frontend Next.js 16 (React 19, TypeScript) con diseño inspirado en Mercado Libre.
-
-> 📖 **¿Primera vez leyendo esta documentación?** Consulta el [WALKTHROUGH.md](./WALKTHROUGH.md) para conocer el orden de lectura recomendado y guías por perfil (desarrollador, PM, onboarding).
+> **Aplicación web completa** para diseñar, personalizar y comprar tazas personalizadas con editor 3D en tiempo real.
 
 ---
 
-## 📊 Arquitectura Global
+## 📋 Índice
 
-### Stack Tecnológico
-
-#### Backend
-- **Framework**: FastAPI 
-- **Base de Datos**: Pendiente de implementación (preparado para SQLAlchemy)
-- **Cloud Storage**: Cloudinary (configurado en venv)
-
-#### Frontend
-- **Framework**: Next.js 16.0.3 (App Router)
-- **UI Library**: React 19.2.0
-- **Lenguaje**: TypeScript 5.9.3
-- **Estilización**: Tailwind CSS v4 (Beta)
-- **Estado Global**: Zustand 5.0.8
-- **Iconos**: React Icons 5.5.0
-
-### Flujos Principales
-
-```mermaid
-graph TD
-    A[Usuario] --> B[Landing Page]
-    B --> C[Catálogo/products]
-    C --> D[Agregar al Carrito]
-    D --> E[/cart]
-    E --> F{¿Comprar?}
-    F -->|Sí| G[/checkout]
-    G --> H[BuyerForm]
-    H --> I[ShippingOptions]
-    I --> J[PaymentMethods]
-    J--> K[OrderSummary]
-    K --> L[Confirmar Orden]
-    L --> M[Backend API]
-    M --> N[Confirmación/Pago]
-```
-
-### Gestión de Estado
-
-#### Zustand (Global)
-- **cartStore**: Carrito de compras
-  - Productos agregados
-  - Cantidades
-  - Costo de envío
-  - Persistencia en localStorage
-
-#### React Context (Checkout)
-- **CheckoutContext**: Estado del flujo de checkout
-  - Datos del comprador
-  - Método de envío seleccionado
-  - Método de pago
-  - Cálculos de totales
-  - Persistencia en localStorage
+- [Stack Tecnológico](#stack-tecnológico)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Funcionalidades](#funcionalidades)
+- [Configuración y Deploy](#configuración-y-deploy)
+- [Documentación](#documentación)
+- [Estado del Proyecto](#estado-del-proyecto)
 
 ---
 
-## 📁 Estructura del Repositorio
+## 🚀 Stack Tecnológico
+
+### Frontend
+- **Framework**: Next.js 15 (App Router)
+- **UI**: React 19, TailwindCSS 4
+- **3D**: Three.js + React Three Fiber
+- **State**: Zustand + Context API
+- **Payments**: Mercado Pago Checkout Pro
+- **Analytics**: Google Analytics, Sentry
+
+### Backend
+- **Framework**: FastAPI (Python)
+- **Database**: SQLite (dev) / PostgreSQL (prod)
+- **ORM**: SQLAlchemy
+- **Auth**: JWT
+- **Storage**: Cloudinary
+- **Email**: Resend (con fallback SMTP)
+- **Payments**: Mercado Pago SDK
+
+---
+
+## 📁 Estructura del Proyecto
 
 ```
 tazas-personalizables/
-├── backend/
-│   ├── main.py                    # Aplicación FastAPI
-│   ├── database.py                # Configuración DB (vacío)
-│   └── venv/                      # Entorno virtual Python
-│
 ├── frontend/
 │   ├── src/
-│   │   ├── app/                   # App Router (Next.js 13+)
-│   │   │   ├── page.tsx           # Landing page
-│   │   │   ├── layout.tsx         # Layout raíz
-│   │   │   ├── globals.css        # Estilos globales
-│   │   │   ├── products/
-│   │   │   │   └── page.tsx       # Catálogo
-│   │   │   ├── customizer/
-│   │   │   │   └── page.tsx       # Personalizador de tazas
-│   │   │   ├── cart/
-│   │   │   │   └── page.tsx       # Carrito
-│   │   │   └── checkout/
-│   │   │       ├── layout.jsx     # Provider de contexto
-│   │   │       ├── page.jsx       # Página checkout
-│   │   │       └── components/
-│   │   │           ├── BuyerForm.jsx
-│ │   │           ├── ShippingOptions.jsx
-│   │   │           ├── PaymentMethods.jsx
-│   │   │           ├── OrderSummary.jsx
-│   │   │           └── CheckoutSuccess.jsx
-│   │   ├── components/            # Componentes compartidos
-│   │   │   ├── Navbar.tsx
-│   │   │   ├── Footer.tsx
-│   │   │   ├── Cart.tsx
-│   │   │   ├── Toolbar.tsx          # Editor del customizer
-│   │   │   ├── MugCanvas.tsx        # Canvas 3D de la taza
-│   │   │   ├── ShippingCalculator.tsx
-│   │   │   └── CheckoutForm.tsx
-│   │   ├── context/
-│   │   │   └── CheckoutContext.jsx
-│   │   ├── store/
-│   │   │   └── cartStore.ts       # Zustand store
-│   │   └── hooks/
-│   │       └── useCheckout.js
-│   ├── public/
-│   │   └── sounds/
-│   │       └── click.wav
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── next.config.ts
-│   ├── postcss.config.js
-│   └── eslint.config.mjs
+│   │   ├── app/              # Pages (Next.js App Router)
+│   │   │   ├── page.tsx      # Landing
+│   │   │   ├── products/     # Catálogo
+│   │   │   ├── customizer/   # Editor 3D
+│   │   │   ├── cart/         # Carrito
+│   │   │   ├── checkout/     # Checkout
+│   │   │   ├── admin/        # Panel admin
+│   │   │   ├── profile/      # Perfil
+│   │   │   ├── orders/       # Historial
+│   │   │   ├── terms/        # Términos legales
+│   │   │   └── privacy/      # Privacidad
+│   │   ├── components/       # Componentes reutilizables
+│   │   ├── context/          # Context API
+│   │   ├── store/            # Zustand stores
+│   │   ├── lib/              # API client y utilidades
+│   │   └── data/             # Templates y datos estáticos
+│   ├── public/               # Archivos estáticos
+│   └── next.config.ts        # Configuración Next.js
 │
-└── docs/                          # ← Esta documentación
-    ├── README.md                  # ← Estás aquí
-    ├── backend/
-    └── frontend/
+├── backend/
+│   ├── main.py              # FastAPI app
+│   ├── database.py          # Modelos SQLAlchemy
+│   ├── auth.py              # Autenticación JWT
+│   ├── payments.py          # Mercado Pago
+│   ├── email_utils.py       # Sistema de emails
+│   ├── cloudinary_utils.py  # Upload de imágenes
+│   ├── admin_utils.py       # Helpers para admin
+│   ├── make_admin.py        # Script para crear admins
+│   └── requirements.txt     # Dependencias Python
+│
+└── docs/
+    ├── README.md            # Este archivo
+    ├── PRODUCTION_GUIDE.md  # Guía de producción
+    ├── WALKTHROUGH.md       # Sistema de diseño
+    └── ...                  # Docs por componente
 ```
 
 ---
 
-## 📚 Índice Completo de Documentación
+## ✨ Funcionalidades
 
-### Backend (2 archivos)
+### Para Usuarios
 
-| Archivo | Descripción | Enlace |
-|---------|-------------|--------|
-| `main.py` | Aplicación FastAPI principal con endpoint de health check | [Documentación](./backend/main.py.md) |
-| `database.py` | Configuración de base de datos ⚠️ Vacío | [Documentación](./backend/database.py.md) |
+#### 🎨 Editor de Tazas 3D
+- Vista 3D interactiva con rotación libre
+- Agregar texto con fuentes personalizadas
+- Cargar imágenes y stickers
+- Colores de taza personalizables
+- Guardar y cargar diseños
+- Preview en tiempo real
 
----
+#### 🛒 E-commerce Completo
+- Catálogo de productos
+- Carrito de compras persistente
+- Checkout integrado con Mercado Pago
+- Historial de órdenes
+- Perfil de usuario con direcciones guardadas
 
-### Frontend - Páginas (8 archivos)
+#### 🔐 Autenticación
+- Registro y login
+- JWT tokens
+- Sesiones persistentes
+- Protección de rutas
 
-#### App Router
+### Para Administradores
 
-| Archivo | Ruta | Descripción | Enlace |
-|---------|------|-------------|--------|
-| `app/page.tsx` | `/` | Landing page con hero banner y productos destacados | [Documentación](./frontend/app/page.tsx.md) |
-| `app/layout.tsx` | - | Layout raíz con Navbar, Footer y metadata SEO | [Documentación](./frontend/app/layout.tsx.md) |
-| `app/products/page.tsx` | `/products` | Catálogo completo con filtros y agregar al carrito | [Documentación](./frontend/app/products/page.tsx.md) |
-| `app/customizer/page.tsx` | `/customizer` | Personalizador de tazas con rotación 3D y edición | [Documentación](./frontend/app/customizer/page.tsx.md) |
-| `app/cart/page.tsx` | `/cart` | Carrito con edición de cantidades y cálculo de envío | [Documentación](./frontend/app/cart/page.tsx.md) |
+#### 📊 Dashboard
+- Estadísticas de ventas
+- Total de órdenes y usuarios
+- Diseños creados
+- Actividad reciente
 
-#### Checkout Flow
-
-| Archivo | Ruta | Descripción | Enlace |
-|---------|------|-------------|--------|
-| `app/checkout/layout.jsx` | - | Layout que provee CheckoutContext | [Documentación](./frontend/app/checkout/layout.jsx.md) |
-| `app/checkout/page.jsx` | `/checkout` | Orquestador del flujo de checkout | [Documentación](./frontend/app/checkout/page.jsx.md) |
-
----
-
-### Frontend - Componentes de Checkout (5 archivos)
-
-| Archivo | Propósito | Enlace |
-|---------|-----------|--------|
-| `BuyerForm.jsx` | Formulario de datos del comprador | [Documentación](./frontend/app/checkout/components/BuyerForm.jsx.md) |
-| `ShippingOptions.jsx` | Selección de método de envío | [Documentación](./frontend/app/checkout/components/ShippingOptions.jsx.md) |
-| `PaymentMethods.jsx` | Selección de método de pago | [Documentación](./frontend/app/checkout/components/PaymentMethods.jsx.md) |
-| `OrderSummary.jsx` | Resumen final y botón de confirmación | [Documentación](./frontend/app/checkout/components/OrderSummary.jsx.md) |
-| `CheckoutSuccess.jsx` | Pantalla de confirmación ⚠️ Vacío | [Documentación](./frontend/app/checkout/components/CheckoutSuccess.jsx.md) |
+#### 🗂️ Gestión
+- **Productos**: CRUD completo con imágenes
+- **Órdenes**: Actualización de estado
+- **Usuarios**: Visualización y estadísticas
 
 ---
 
-### Frontend - Componentes Compartidos (7 archivos)
+## ⚙️ Configuración y Deploy
 
-| Archivo | Propósito | Enlace |
-|---------|-----------|--------|
-| `Navbar.tsx` | Barra de navegación superior fija | [Documentación](./frontend/components/Navbar.tsx.md) |
-| `Footer.tsx` | Pie de página con enlaces y copyright | [Documentación](./frontend/components/Footer.tsx.md) |
-| `Cart.tsx` | Widget de carrito (versión simplificada) | [Documentación](./frontend/components/Cart.tsx.md) |
-| `Toolbar.tsx` | Panel de herramientas del customizer con controles | [Documentación](./frontend/components/Toolbar.tsx.md) |
-| `MugCanvas.tsx` | Canvas Konva con visualización 3D de la taza | [Documentación](./frontend/components/MugCanvas.tsx.md) |
-| `ShippingCalculator.tsx` | Calculadora de opciones/costos de envío | [Documentación](./frontend/components/ShippingCalculator.tsx.md) |
-| `CheckoutForm.tsx` | Formulario unificado ⚠️ Vacío | [Documentación](./frontend/components/CheckoutForm.tsx.md) |
+### Setup Local
 
----
+#### Frontend
+```bash
+cd frontend
+npm install
+cp .env.example .env.local
+# Editar .env.local con tus credenciales
+npm run dev
+```
 
-### Frontend - Estado y Contexto (3 archivos)
-
-| Archivo | Tipo | Descripción | Enlace |
-|---------|------|-------------|--------|
-| `context/CheckoutContext.jsx` | Context API | Gestión de estado del checkout con localStorage | [Documentación](./frontend/context/CheckoutContext.jsx.md) |
-| `store/cartStore.ts` | Zustand Store | Estado global del carrito con persistencia | [Documentación](./frontend/store/cartStore.ts.md) |
-| `hooks/useCheckout.js` | Custom Hook | Re-exporta useCheckout ⚠️ Redundante | [Documentación](./frontend/hooks/useCheckout.js.md) |
-
----
-
-### Frontend - Estilos (1 archivo)
-
-| Archivo | Descripción | Enlace |
-|---------|-------------|--------|
-| `app/globals.css` | Estilos globales, variables CSS y configuración Tailwind | [Documentación](./frontend/app/globals.css.md) |
-
----
-
-### Frontend - Configuración (5 archivos)
-
-| Archivo | Propósito | Enlace |
-|---------|-----------|--------|
-| `package.json` | Dependencias y scripts del proyecto | [Documentación](./frontend/config/package.json.md) |
-| `next.config.ts` | Configuración de Next.js (imágenes, strict mode) | [Documentación](./frontend/config/next.config.ts.md) |
-| `tsconfig.json` | Configuración de TypeScript | [Documentación](./frontend/config/tsconfig.json.md) |
-| `postcss.config.js` | Configuración de PostCSS y Tailwind | [Documentación](./frontend/config/postcss.config.js.md) |
-| `eslint.config.mjs` | Reglas de linting y Web Vitals | [Documentación](./frontend/config/eslint.config.mjs.md) |
-
----
-
-## 🎯 Funcionalidades Implementadas
-
-### ✅ Completas
-
-- [x] Landing page con diseño ML
-- [x] Catálogo de productos con agregar al carrito
-- [x] **Personalizador de Tazas (/customizer)**
-  - [x] Canvas interactivo con Konva.js
-  - [x] Agregar y editar imágenes
-  - [x] Agregar y editar texto
-  - [x] Edición inline de texto (doble clic)
-  - [x] Selector de fuentes (8 Google Fonts)
-  - [x] Control de color y tamaño de texto
-  - [x] Rotación 3D de la taza (0°, 90°, 180°, 270°)
-  - [x] Visualización realista con forma cilíndrica
-  - [x] Iluminación y sombras para efecto 3D
-  - [x] Asa de taza que rota con el modelo
-  - [x] Control de capas (traer al frente/enviar atrás)
-  - [x] Exportar diseño a imagen
-  - [x] Agregar al carrito con diseño personalizado
-- [x] Carrito con edición de cantidades
-- [x] Cálculo de envío por provincia
-- [x] Persistencia de carrito en localStorage
-- [x] Navbar responsive con contador
-- [x] Footer con enlaces
-- [x] Formularios de checkout (buyer, shipping, payment)
-- [x] Cálculo de total dinámico
-- [x] Optimización de imágenes con Next.js Image
-
-### ⚠️ Parciales/Incompletas
-
-- [ ] Backend con solo endpoint de health check
-- [ ] Integración de pago real (Mercado Pago deshabilitado)
-- [ ] Confirmación de orden (sin handler de submit)
-- [ ] Base de datos (archivo vacío)
-- [ ] Dark mode (variables definidas pero no usadas)
-
----
-
-## 🚧 Limitaciones y TODOs
-
-### Backend
-
-- **Sin implementación funcional**: Solo health check endpoint
-- **Sin base de datos**: Archivo `database.py` vacío
-- **Sin modelos**: No hay schemas de datos
-- **Sin autenticación**: No implementada
-- **Sin endpoints de negocio**: Productos, órdenes, pagos pendientes
-
-### Frontend
-
-#### Estado y Validación
-
-- **BuyerForm NO usa contexto**: Estado local desconectado
-- **Sin validaciones**: Formularios no validan datos
-- **Sin manejo de errores**: No hay feedback de errores
-- **Descuento no aplicado**: Se muestra "10% descuento" pero no se calcula
-
-#### Funcionalidad
-
-- **Botón "Confirmar Compra" sin implementación**: No envía al backend
-- **Productos hardcoded**: No vienen de API
-- **Filtros no funcionales**: Solo visuales en `/products`
-- **Mercado Pago deshabilitado**: Requires integración SDK
-
-#### Rutas Faltantes
-
-- `/checkout/success` - Confirmación de compra
-- `/orders` - Historial de pedidos
-
-### Configuración
-
-- ⚠️ **React 19 RC**: Versión experimental, considerar downgrade a 18.x
-- ⚠️ **Tailwind v4 Beta**: Puede tener bugs
-
----
-
-## 🏗️ Patrones de Diseño Utilizados
-
-### Frontend
-
-1. **App Router (Next.js 13+)**: Enrutamiento basado en archivos
-2. **Server/Client Components**: Optimización de rendering
-3. **Nested Layouts**: Layout global + layout de checkout
-4. **Context API**: CheckoutContext para estado de checkout
-5. **Zustand Store**: cartStore para estado global del carrito
-6. **Custom Hooks**: useCheckout para acceso a contexto
-7. **Compound Components**: Checkout dividido en sub-componentes
-8. **Controlled Components**: Formularios controlados con useState
-
-### Backend
-
-1. **RESTful API**: Arquitectura REST (pendiente de expandir)
-2. **Dependency Injection**: Patrón de FastAPI (futuro)
-
----
-
-## 🚀 Cómo Ejecutar
-
-### Backend
-
+#### Backend
 ```bash
 cd backend
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install fastapi uvicorn
+pip install -r requirements.txt
+cp .env.example .env
+# Editar .env con tus credenciales
 uvicorn main:app --reload
 ```
 
-**URL**: http://localhost:8000
+### Variables de Entorno
 
-### Frontend
+Ver ejemplos completos en:
+- `frontend/.env.example`
+- `backend/.env.example`
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+Credenciales necesarias:
+- Cloudinary (para imágenes)
+- Mercado Pago (para pagos)
+- Resend (para emails)
+- PostgreSQL (para producción)
 
-**URL**: http://localhost:3000
+### Deploy a Producción
 
----
+Ver guía completa: [PRODUCTION_GUIDE.md](./PRODUCTION_GUIDE.md)
 
-## 📝 Convenciones de Código
-
-### TypeScript/JavaScript
-
-- **Archivos**: PascalCase para componentes (`Navbar.tsx`), camelCase para utils
-- **Componentes**: Functional components con hooks
-- **Imports**: Alias `@/` para src
-- **State**: Zustand para global, useState para local
-
-### Python
-
-- **Estilo**: PEP 8
-- **Documentación**: Docstrings en funciones
-- **Async**: Endpoints asíncronos en FastAPI
-
-### CSS
-
-- **Framework**: Tailwind CSS (utility-first)
-- **Variables**: CSS custom properties en `:root`
-- **Responsive**: Mobile-first con breakpoints Tailwind
+**Servicios recomendados**:
+- Frontend: Vercel
+- Backend: Railway / Render
+- Database: Supabase / Neon
+- Email: Resend
 
 ---
 
-## 🔮 Roadmap Sugerido
+## 📚 Documentación
 
-### Fase 1: Completar Backend
-1. Implementar `database.py` con SQLAlchemy
-2. Crear modelos (Product, Order, Customer)
-3. Endpoints de productos (CRUD)
-4. Endpoints de órdenes
-5. Integración con Cloudinary para imágenes
+### Guías
 
-### Fase 2: Conectar Frontend-Backend
-1. Reemplazar datos hardcoded por API calls
-2. Implementar handler de confirmación de compra
-3. Crear página `/checkout/success`
-4. Implementar historial de pedidos
+| Documento | Descripción |
+|-----------|-------------|
+| [PRODUCTION_GUIDE.md](./PRODUCTION_GUIDE.md) | Guía completa de producción |
+| [WALKTHROUGH.md](./WALKTHROUGH.md) | Sistema de diseño y componentes |
+| [webhook_guide.md](../.gemini/antigravity/brain/.../webhook_guide.md) | Configuración de webhooks MP |
 
-### Fase 3: ~~Pagos y Customización~~ Pagos y Mejoras
+### Documentación por Componente
 
-1. Integrar Mercado Pago SDK
-2. ~~Implementar `/customizer` con editor de imágenes~~ ✅ **Completado**
-3. **Mejoras al Customizer**:
-   - [ ] Guardar/cargar diseños en localStorage
-   - [ ] Deshacer/Rehacer (Undo/Redo)
-   - [ ] Galería de stickers/clipart predefinidos
-   - [ ] Negrita/cursiva para textos
-   - [ ] Más opciones de fuentes
-   - [ ] Exportar múltiples vistas (4 lados de la taza)
-4. Aplicar descuento de efectivo en cálculos
-5. Validaciones de formularios
-
-### Fase 4: Optimizaciones
-1. Downgrade a React 18.x y Tailwind v3 para estabilidad
-2. Implementar SEO avanzado
-3. Agregar tests (Jest, Playwright)
-4. Performance optimizations
-5. Dark mode completo
+Cada componente y página tiene su documentación en `docs/frontend/` y `docs/backend/`.
 
 ---
 
-## 📊 Estadísticas del Proyecto
+## 🎯 Estado del Proyecto
 
-### Archivos Documentados
+### ✅ Completado
 
-- **Backend**: 2 archivos Python
-- **Frontend**:
-  - Páginas: 8 archivos
-  - Componentes: 10 archivos
-  - Estado/Contexto: 3 archivos
-  - Estilos: 1 archivo
-  - Configuración: 5 archivos
+#### SEO y Marketing
+- ✅ Open Graph image
+- ✅ Sitemap dinámico
+- ✅ Robots.txt
+- ✅ Metadata optimizado
+- ✅ Google Analytics
 
-**Total**: **29 archivos documentados**
+#### Legal e
+ Cumplimiento
+- ✅ Términos y Condiciones
+- ✅ Política de Privacidad
+- ✅ Cookie Banner
+- ✅ Links en Footer
 
-### Líneas de Código (aproximado)
+#### Infraestructura
+- ✅ Sistema de emails (Resend)
+- ✅ PostgreSQL optimizado (JSONB, pooling)
+- ✅ Optimización de imágenes (next/image + Cloudinary)
+- ✅ Webhook de Mercado Pago (listo para configurar)
 
-- **Backend**: ~10 LOC (solo health check)
-- **Frontend**: ~2,500 LOC
-  - TypeScript/JavaScript: ~2,000 LOC
-  - CSS: ~80 LOC
-  - JSON: ~420 LOC
+#### Features
+- ✅ Editor 3D funcional
+- ✅ Carrito persistente
+- ✅ Checkout completo
+- ✅ Panel de admin
+- ✅ Autenticación JWT
+- ✅ Páginas de producto detalladas
+- ✅ Historial de órdenes
+- ✅ Perfil de usuario
 
-### Componentes React
+### 🚧 Pendiente
 
-- Pages: 6
-- Layout components: 2
-- UI Components: 10
-- Context Providers: 1
+#### Testing
+- ⏳ Tests unitarios
+- ⏳ Tests de integración
+- ⏳ E2E tests
+
+#### Performance
+- ⏳ Lighthouse audit
+- ⏳ Core Web Vitals optimization
+- ⏳ Bundle size reduction
+
+#### Features Futuros
+- ⏳ Sistema de reviews
+- ⏳ Programa de referidos
+- ⏳ Múltiples métodos de pago
+- ⏳ Internacionalización (i18n)
+- ⏳ Búsqueda y filtros avanzados
 
 ---
 
-## 📞 Soporte y Contacto
+## 🤝 Contribuir
 
-Para preguntas sobre esta documentación o el proyecto:
+### Workflow
+1. Fork el repositorio
+2. Crear branch feature: `git checkout -b feature/nueva-funcionalidad`
+3. Commit cambios: `git commit -m 'Add: nueva funcionalidad'`
+4. Push al branch: `git push origin feature/nueva-funcionalidad`
+5. Crear Pull Request
 
-1. Revisa la documentación específica de cada archivo
-2. Consulta los archivos relacionados mencionados
-3. Verifica los TODOs y limitaciones conocidas
+### Convenciones de Código
+- **Frontend**: ESLint + Prettier
+- **Backend**: PEP 8
+- **Commits**: Conventional Commits
 
 ---
 
 ## 📄 Licencia
 
-_Definir licencia del proyecto_
+Este proyecto es privado. Todos los derechos reservados.
 
 ---
 
-**Documentación generada el**: 2025-11-23
+## 👥 Equipo
 
-**Versión del proyecto**: 1.0.0
+Desarrollado con ❤️ para crear la mejor experiencia de personalización de tazas.
 
-**Última actualización**: Primera versión completa de documentación
+---
+
+**Última actualización**: 2026-01-25  
+**Versión**: 2.0

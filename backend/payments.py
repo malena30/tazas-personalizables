@@ -1,67 +1,64 @@
-import os
 import mercadopago
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-MP_ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN", "")
+# En producción, esto debería estar en una variable de entorno
+# Por ahora usamos un token de prueba (Sandbox)
+# NOTA: Este es un token de prueba genérico para desarrollo
+MP_ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
+sdk = mercadopago.SDK(MP_ACCESS_TOKEN)
 
-def _get_sdk():
-    return mercadopago.SDK(MP_ACCESS_TOKEN)
-
-
-def create_preference(order, order_items) -> str:
+def create_preference(order, items):
     """
-    Crea una preferencia de pago en Mercado Pago y devuelve la URL de checkout.
+    Crea una preferencia de pago en Mercado Pago para una orden.
     """
-    sdk = _get_sdk()
-
-    items = []
-    for item in order_items:
-        items.append({
-            "title": f"Diseño personalizado" if item.design_id else "Producto",
-            "quantity": item.quantity,
+    # Preparar los items para Mercado Pago
+    mp_items = []
+    for item in items:
+        # Si es un diseño personalizado, usamos su nombre, si no, un genérico
+        title = "Taza Personalizada"
+        if item.design:
+            title = f"Taza: {item.design.name}"
+        
+        mp_items.append({
+            "id": str(item.id),
+            "title": title,
+            "quantity": int(item.quantity),
             "unit_price": float(item.price),
-            "currency_id": "ARS",
+            "currency_id": "ARS"
         })
 
-    # Si no hay items, agregar uno genérico
-    if not items:
-        items = [{
-            "title": "Pedido tazas personalizadas",
-            "quantity": 1,
-            "unit_price": float(order.total_amount),
-            "currency_id": "ARS",
-        }]
-
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
-
+    # Configurar la preferencia
     preference_data = {
-        "items": items,
-        "external_reference": str(order.id),
+        "items": mp_items,
         "back_urls": {
-            "success": f"{frontend_url}/orders?status=success",
-            "failure": f"{frontend_url}/orders?status=failure",
-            "pending": f"{frontend_url}/orders?status=pending",
+            "success": f"{FRONTEND_URL}/checkout/success",
+            "failure": f"{FRONTEND_URL}/checkout/failure",
+            "pending": f"{FRONTEND_URL}/checkout/success"
         },
         "auto_return": "approved",
-        "notification_url": os.getenv("MP_WEBHOOK_URL", ""),
+        "external_reference": str(order.id),
+        "notification_url": f"{BACKEND_URL}/api/payments/webhook",
     }
 
     preference_response = sdk.preference().create(preference_data)
-    preference = preference_response.get("response", {})
+    preference = preference_response["response"]
+    
+    return preference.get("init_point") # URL para el checkout de Mercado Pago
 
-    # Usar sandbox en dev, producción en prod
-    if os.getenv("ENV") == "production":
-        checkout_url = preference.get("init_point", "")
-    else:
-        checkout_url = preference.get("sandbox_init_point", preference.get("init_point", ""))
-
-    return checkout_url
-
-
-def get_payment_info(payment_id: str) -> dict:
+def get_payment_info(payment_id):
     """
-    Obtiene información de un pago por su ID.
+    Obtiene los detalles de un pago desde Mercado Pago.
     """
-    sdk = _get_sdk()
     payment_response = sdk.payment().get(payment_id)
-    return payment_response.get("response", {})
+    payment = payment_response["response"]
+    
+    return {
+        "status": payment.get("status"),
+        "external_reference": payment.get("external_reference"),
+        "status_detail": payment.get("status_detail")
+    }

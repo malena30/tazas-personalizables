@@ -54,16 +54,71 @@ def get_db():
         db.close()
 ```
 
-## Modelos Esperados
+## Modelos Implementados
 
-Para una aplicación de tazas personalizables, se esperarían modelos como:
+### User
+Tabla: `users`
 
-- **Product**: Productos (tazas)
-- **Order**: Órdenes de compra
-- **OrderItem**: Items individuales en una orden
-- **Customer**: Datos del cliente
-- **ShippingAddress**: Direcciones de envío
-- **CustomDesign**: Diseños personalizados subidos por usuarios
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id` | String (UUID) | Identificador único (PK) |
+| `username` | String | Nombre de usuario único |
+| `email` | String | Correo electrónico único |
+| `hashed_password` | String | Contraseña hasheada (bcrypt) |
+| `created_at` | DateTime | Fecha de creación |
+
+**Relaciones**:
+- `designs`: One-to-Many con `Design`
+
+### Design
+Tabla: `designs`
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id` | String (UUID) | Identificador único (PK) |
+| `user_id` | String (FK) | ID del usuario propietario |
+| `name` | String | Nombre del diseño |
+| `mug_color` | String | Color base de la taza (hex) |
+| `elements` | JSON | Array de elementos del diseño (imágenes, texto) |
+| `thumbnail` | String | URL o Base64 de la vista previa |
+| `created_at` | DateTime | Fecha de creación |
+| `updated_at` | DateTime | Fecha de última actualización |
+
+**Relaciones**:
+- `owner`: Many-to-One con `User`
+
+### Order
+Tabla: `orders`
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id` | String (UUID) | Identificador único (PK) |
+| `user_id` | String (FK) | ID del usuario (opcional para invitados) |
+| `total_amount` | Float | Monto total de la orden |
+| `status` | String | Estado (`pending`, `paid`, `shipped`, `failed`) |
+| `shipping_address` | JSON | Datos de envío |
+| `payment_method` | String | Método (`mercadopago`, `cash`) |
+| `checkout_url` | String | URL de pago de Mercado Pago |
+| `created_at` | DateTime | Fecha de creación |
+
+**Relaciones**:
+- `items`: One-to-Many con `OrderItem`
+- `user`: Many-to-One con `User`
+
+### OrderItem
+Tabla: `order_items`
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id` | String (UUID) | Identificador único (PK) |
+| `order_id` | String (FK) | ID de la orden padre |
+| `design_id` | String (FK) | ID del diseño (si aplica) |
+| `product_id` | String | ID del producto de catálogo |
+| `quantity` | Integer | Cantidad |
+| `price` | Float | Precio unitario al momento de compra |
+
+**Relaciones**:
+- `order`: Many-to-One con `Order`
 
 ## Consideraciones de Seguridad
 

@@ -6,7 +6,7 @@ import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from fastapi import FastAPI, Depends, HTTPException, status, Request, Response
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
@@ -67,13 +67,26 @@ app = FastAPI(title="Tazas Personalizables API")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Middleware para Forzar HTTPS (desactivado temporalmente para depurar CORS)
-# @app.middleware("http")
-# async def force_https_middleware(request: Request, call_next):
-#     if os.getenv("ENV") == "production" and request.url.scheme == "http":
-#         url = request.url.replace(scheme="https")
-#         return RedirectResponse(url, status_code=301)
-#     return await call_next(request)
+# Handler global: agrega CORS headers incluso en respuestas de error 500
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error"},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        },
+    )
+
+# Middleware para Forzar HTTPS (solo si no es localhost)
+@app.middleware("http")
+async def force_https_middleware(request: Request, call_next):
+    if os.getenv("ENV") == "production" and request.url.scheme == "http":
+        url = request.url.replace(scheme="https")
+        return RedirectResponse(url, status_code=301)
+    return await call_next(request)
 
 # Middleware para Headers de Seguridad (Solo en Producción)
 @app.middleware("http")
@@ -87,7 +100,11 @@ async def add_security_headers(request: Request, call_next):
         response.headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' data: https:; script-src 'self'; style-src 'self' 'unsafe-inline';"
     return response
 
-# CORS — configuración amplia para depuración
+# CORS — permitir todos los orígenes (la seguridad la maneja JWT en cada endpoint)
+_default_origins = "http://localhost:3000,http://127.0.0.1:3000,https://kyathos-shops.vercel.app"
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", _default_origins).split(",")
+ALLOWED_ORIGINS = [o.strip() for o in ALLOWED_ORIGINS if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -98,7 +115,7 @@ app.add_middleware(
 
 @app.api_route('/', methods=["GET", "HEAD"])
 async def root():
-    return {'message': 'Backend iniciado correctamente 🚀', 'version': '1.0.1-debug-cors'}
+    return {'message': 'Backend iniciado correctamente 🚀'}
 
 @app.get("/api/debug-sentry")
 async def trigger_error():

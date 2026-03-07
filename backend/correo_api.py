@@ -1,13 +1,13 @@
-﻿"""
-M├│dulo de integraci├│n con la API MiCorreo de Correo Argentino.
-Documentaci├│n: https://api.correoargentino.com.ar/micorreo/v1
+"""
+Módulo de integración con la API MiCorreo de Correo Argentino.
+Documentación: https://api.correoargentino.com.ar/micorreo/v1
 
-Para activar la integraci├│n real, configurar en .env:
+Para activar la integración real, configurar en .env:
   CORREO_USER=tu_usuario
-  CORREO_PASSWORD=tu_contrase├▒a
+  CORREO_PASSWORD=tu_contraseña
   CORREO_ORIGIN_POSTAL_CODE=tu_cp_de_origen
 
-Sin credenciales, el m├│dulo devuelve precios estimados como fallback.
+Sin credenciales, el módulo devuelve precios estimados como fallback.
 """
 
 import os
@@ -19,7 +19,7 @@ CORREO_USER = os.getenv("CORREO_USER", "")
 CORREO_PASSWORD = os.getenv("CORREO_PASSWORD", "")
 ORIGIN_CP = os.getenv("CORREO_ORIGIN_POSTAL_CODE", "1000")
 
-# Cache simple del token (evita pedir un token nuevo en cada cotizaci├│n)
+# Cache simple del token (evita pedir un token nuevo en cada cotización)
 _token_cache: dict = {"token": None, "expires": None}
 
 
@@ -32,7 +32,7 @@ async def _get_token() -> str | None:
     if not _has_credentials():
         return None
 
-    # Reusar token si todav├¡a no venci├│
+    # Reusar token si todavía no venció
     if _token_cache["token"] and _token_cache["expires"]:
         if datetime.utcnow() < _token_cache["expires"]:
             return _token_cache["token"]
@@ -64,7 +64,7 @@ async def get_shipping_rate(
     height_cm: float = 12,
 ) -> dict:
     """
-    Cotiza un env├¡o est├índar desde el CP de origen al CP de destino.
+    Cotiza un envío estándar desde el CP de origen al CP de destino.
 
     Retorna:
         {
@@ -110,7 +110,7 @@ async def get_shipping_rate(
                             "success": True,
                             "mode": "api",
                             "estandar": price,
-                            "prioritario": round(price * 1.4, 2),  # Prioritario ~40% m├ís
+                            "prioritario": round(price * 1.4, 2),  # Prioritario ~40% más
                         }
             except Exception as e:
                 print(f"[correo_api] Error al cotizar: {e}")
@@ -129,7 +129,7 @@ async def get_shipping_rate(
 
 def _get_zone(cp: str) -> str:
     """
-    Estimaci├│n de zona por prefijo de c├│digo postal (GBA/CABA/Interior)
+    Estimación de zona por prefijo de código postal (GBA/CABA/Interior)
     """
     try:
         cp_num = int(cp[:4])

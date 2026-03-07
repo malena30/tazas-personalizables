@@ -12,8 +12,8 @@ Se generó documentación exhaustiva y estructurada para **todo el repositorio**
 
 | Categoría | Cantidad | Ubicación |
 |-----------|----------|-----------|
-| **Backend** | 2 | `docs/backend/` |
-| **Frontend - Páginas** | 9 | `docs/frontend/app/` |
+| **Backend** | 6 | `docs/backend/` |
+| **Frontend - Páginas** | 10 | `docs/frontend/app/` |
 | **Frontend - Componentes** | 12 | `docs/frontend/components/` & `app/checkout/components/` |
 | **Frontend - Estado** | 3 | `docs/frontend/context/`, `store/`, `hooks/` |
 | **Frontend - Estilos** | 1 | `docs/frontend/app/` |
@@ -183,37 +183,6 @@ Para entender la aplicación paso a paso, se recomienda leer la documentación e
 
 ## 🗂️ Estructura Creada
 
-```
-docs/
-├── README.md ⭐ Índice global con arquitectura completa
-│
-├── backend/
-│   ├── database.py.md
-│   └── main.py.md
-│
-└── frontend/
-    ├── app/
-    │   ├── page.tsx.md
-    │   ├── layout.tsx.md
-    │   ├── globals.css.md
-    │   ├── products/
-    │   │   └── page.tsx.md
-    │   ├── cart/
-    │   │   └── page.tsx.md
-    │   └── checkout/
-    │       ├── layout.jsx.md
-    │       ├── page.jsx.md
-    │       └── components/
-    │           ├── BuyerForm.jsx.md
-    │           ├── CheckoutSuccess.jsx.md
-    │           ├── OrderSummary.jsx.md
-    │           ├── PaymentMethods.jsx.md
-    │           └── ShippingOptions.jsx.md
-    │
-    ├── components/
-    │   ├── Cart.tsx.md
-    │   ├── CheckoutForm.tsx.md
-    │   ├── Footer.tsx.md
     │   ├── Navbar.tsx.md
     │   └── ShippingCalculator.tsx.md
     │
@@ -520,15 +489,15 @@ Implementar un sistema de diseño cohesivo, moderno y minimalista con soporte pa
 
 ## 📝 Cambios Realizados
 
-### 1. **Tipografías Google Fonts**
+### 1. **Tipografías Premium**
 
-Se implementaron tres familias tipográficas especializadas:
+Se implementaron dos familias tipográficas que combinan elegancia clásica con legibilidad moderna:
 
 | Tipografía | Uso | Variable CSS | Clase Utility |
 |-----------|-----|--------------|---------------|
-| **Space Grotesk** | Títulos (h1-h6) | `--font-title` | `.font-title` |
-| **Inter** | Textos generales | `--font-text` | `.font-text` |
-| **JetBrains Mono** | Precios, números, detalles | `--font-mono` | `.font-mono` |
+| **Cormorant Garamond** | Branding, Logo, H1, H2, Frases cortas | `--font-title` | `.font-title` |
+| **Inter** | Body, Formularios, Botones, Checkout | `--font-text` | `.font-text` |
+| **JetBrains Mono** | Precios, números, detalles técnicos | `--font-mono` | `.font-mono` |
 
 **Archivo modificado**: [`frontend/src/app/globals.css`](file:///c:/Users/Malena%20Cort%C3%A9s/OneDrive/Desktop/tazas-personalizables/frontend/src/app/globals.css)
 
@@ -539,44 +508,46 @@ Se implementaron tres familias tipográficas especializadas:
 
 ---
 
-### 2. **Paleta de Colores Minimalista**
+### 2. **Paleta de Colores Premium**
 
-#### 🌞 Modo Claro
-- **Background**: `#FAF7F2` (toque cálido minimalista)
-- **Texto principal**: `#1C1C1C`
-- **Acento**: `#D4A373` (terracota suave)
-- **Bordes**: `#EDEAE7`
+#### 🌤️ Modo Claro
+- **Background (Marble White)**: `#FAFAF8`
+- **Texto (Ink Black)**: `#1C1C1C`
+- **Bordes/Divisores (Warm Stone)**: `#CFC8BD`
+- **Acento (Olive Ash)**: `#6E7F6A`
+- **Premium (Muted Gold)**: `#B8A96A`
+- **Detalles (Cream)**: `#FAF7F2`
+- **Navbar/Acento (Cream Dark)**: `#D4A373`
 
-#### 🌙 Modo Oscuro
-- **Background**: `#1C1C1C`
-- **Texto principal**: `#FAF7F2`
-- **Acento**: `#E0B38D`
-- **Bordes**: `#2A2A2A`
+#### 🌑 Modo Oscuro
+- **Background (Obsidian)**: `#0E0F0F`
+- **Texto (Soft Ivory)**: `#EDEBE7`
+- **Cards/Bordes (Charcoal Stone)**: `#2A2A2A`
+- **Acento (Desaturated Olive)**: `#7A8F83`
+- **Premium (Antique Gold)**: `#C2B36E`
+- **Detalles (Cream)**: `#1C1C1C`
 
 **Implementación en CSS**:
 
 ```css
 :root {
-  /* 🌞 Modo Claro */
-  --background: #FAF7F2;
+  /* 🌤️ Modo claro */
+  --background: #FAFAF8;
   --foreground: #1C1C1C;
-  --accent: #D4A373;
-  --border: #EDEAE7;
-  
-  /* Typography */
-  --font-title: "Space Grotesk", sans-serif;
-  --font-text: "Inter", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --stone: #CFC8BD;
+  --border: #CFC8BD;
+  --accent: #6E7F6A;
+  --gold: #B8A96A;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* 🌙 Modo Oscuro */
-    --background: #1C1C1C;
-    --foreground: #FAF7F2;
-    --accent: #E0B38D;
-    --border: #2A2A2A;
-  }
+/* 🌑 Modo oscuro (Activado por clase .dark) */
+.dark {
+  --background: #0E0F0F;
+  --foreground: #EDEBE7;
+  --stone: #2A2A2A;
+  --border: #2A2A2A;
+  --accent: #7A8F83;
+  --gold: #C2B36E;
 }
 ```
 
