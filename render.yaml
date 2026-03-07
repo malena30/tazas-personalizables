@@ -8,3 +8,11 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.11"
+      - key: ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false # User must set this in Render Dashboard
+      - key: ALLOWED_ORIGINS
+        value: "https://kyathos-shops.vercel.app"
+      - key: FRONTEND_URL
+        value: "https://kyathos-shops.vercel.app"
